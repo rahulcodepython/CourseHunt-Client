@@ -5,7 +5,6 @@ import { Formik, Form } from 'formik';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-// import GoogleLoginButton from '@/components/GoogleLoginButton';
 import { AuthContext, AuthContextType, LoggedInUserType, UserType } from '@/context/AuthContext';
 import {
     Card,
@@ -19,8 +18,8 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Link } from 'next-view-transitions';
 import { ReloadIcon } from '@radix-ui/react-icons';
-// import GithubLoginButton from "@/components/GithubLoginButton";
 import { FetchUserData } from "@/utils";
+import { ChromeIcon, GithubIcon } from '@/utils/icons';
 
 interface LoginValuesType {
     email: string
@@ -37,7 +36,7 @@ const LoginPage: React.FC = () => {
     const setUser = authContext?.setUser;
 
     return (
-        <div className="flex items-center justify-center w-screen h-screen">
+        <main className="flex items-center justify-center w-screen h-screen">
             <Card className="max-w-xl w-full">
                 <CardHeader>
                     <CardDescription>
@@ -93,7 +92,7 @@ const LoginPage: React.FC = () => {
                                         />
                                     </div>
                                     <div className="text-right">
-                                        <span className="text-sm font-semibold text-gray-700 hover:text-gray-500 focus:text-gray-500 hover:underline">
+                                        <span className="text-sm font-semibold text-gray-700 hover:text-gray-500 focus:text-gray-500 hover:underline cursor-pointer">
                                             Forgot Password?
                                         </span>
                                     </div>
@@ -118,17 +117,25 @@ const LoginPage: React.FC = () => {
                         <p className="text-center text-sm">OR</p>
                         <hr className="border-gray-500" />
                     </div>
-                    {/* <GoogleLoginButton label={'Sign in with Google'} />
-                    <GithubLoginButton label={'Sign in with Github'} /> */}
+                    <div className="flex flex-col gap-2 w-full">
+                        <Button variant="outline" className="w-full">
+                            <GithubIcon className="mr-2 h-4 w-4" />
+                            Sign up with GitHub
+                        </Button>
+                        <Button variant="outline" className="w-full">
+                            <ChromeIcon className="mr-2 h-4 w-4" />
+                            Sign up with Google
+                        </Button>
+                    </div>
                     <div className="text-sm flex justify-between items-center w-full">
                         <p>If you {`don't`} have an account...</p>
                         <Link href="/auth/register">
-                            <Button>Register</Button>
+                            <span className='underline hover:cursor-pointer'>Register</span>
                         </Link>
                     </div>
                 </CardFooter>
             </Card>
-        </div>
+        </main>
     );
 };
 
