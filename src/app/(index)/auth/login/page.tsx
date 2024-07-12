@@ -136,6 +136,7 @@ const login = async (values: LoginValuesType, LoggedInUser: LoggedInUserType | u
     setLoading(true)
     try {
         const response = await axios.post(`${process.env.BASE_API_URL}/auth/users/jwt/create/`, values);
+        console.log(response)
         await LoggedInUser?.(response.data.access, response.data.refresh);
         await FetchUserData(response.data.access, setUser)
         router.push('/');

@@ -28,7 +28,7 @@ export const FetchUserData = async (
 ): Promise<void> => {
     const options = {
         headers: {
-            Authorization: `JWT ${token}`
+            Authorization: `Bearer ${token}`
         },
         url: `${process.env.BASE_API_URL}/auth/users/me/`,
         method: 'GET'
