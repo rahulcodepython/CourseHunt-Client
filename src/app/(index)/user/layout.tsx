@@ -1,9 +1,9 @@
 "use client"
 import React from "react";
-import {AuthContext, AuthContextType} from "@/context/AuthContext";
-import {useRouter} from "next/navigation";
+import { AuthContext, AuthContextType } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 
-const UserLayout = ({children}: { children: React.ReactNode }) => {
+const UserLayout = ({ children }: { children: React.ReactNode }) => {
     const authContext: AuthContextType | undefined = React.useContext(AuthContext);
     const isAuthenticated: boolean | undefined = authContext?.isAuthenticated;
 
@@ -15,10 +15,7 @@ const UserLayout = ({children}: { children: React.ReactNode }) => {
         }
     }, [isAuthenticated]);
 
-    return !isAuthenticated ? null : <div>
-        <h1>User Layout</h1>
-        {children}
-    </div>
+    return !isAuthenticated ? null : children
 }
 
 export default UserLayout;

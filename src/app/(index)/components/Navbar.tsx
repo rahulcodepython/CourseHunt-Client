@@ -1,8 +1,16 @@
+"use client"
+import { AuthContext, AuthContextType, UserType } from "@/context/AuthContext"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { MountainIcon } from "@/utils/icons"
+import { MountainIcon, UserIcon } from "@/utils/icons"
 import { Link } from "next-view-transitions"
+import React from "react"
 
 const Navbar = () => {
+    const authContext: AuthContextType | undefined = React.useContext(AuthContext);
+    const isAuthenticated: boolean | undefined = authContext?.isAuthenticated;
+    const user: UserType | undefined | null = authContext?.user;
+
     const NavItems: string[] = [
         'Home',
         'About',
@@ -27,16 +35,20 @@ const Navbar = () => {
                             ))
                         }
                     </div>
-                    <div className="flex items-center gap-4">
-                        <Link href={'/auth/login'} prefetch={false}>
-                            <Button variant="outline" size="sm">
-                                Sign in
-                            </Button>
+                    {
+                        !isAuthenticated ? <div className="flex items-center gap-4">
+                            <Link href={'/auth/login'} prefetch={false}>
+                                <Button variant="outline" size="sm">
+                                    Sign in
+                                </Button>
+                            </Link>
+                            <Link href={'/auth/register'} prefetch={false}>
+                                <Button size="sm">Sign up</Button>
+                            </Link>
+                        </div> : <Link href={'/user'} className="border rounded-full p-2 cursor-pointer">
+                            <UserIcon />
                         </Link>
-                        <Link href={'/auth/register'} prefetch={false}>
-                            <Button size="sm">Sign up</Button>
-                        </Link>
-                    </div>
+                    }
                 </div>
             </div>
         </nav>
