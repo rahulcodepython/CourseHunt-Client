@@ -1,10 +1,10 @@
 "use client"
 import { AuthContext, AuthContextType, UserType } from "@/context/AuthContext"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { MountainIcon, UserIcon } from "@/utils/icons"
 import { Link } from "next-view-transitions"
 import React from "react"
+import ModeToggle from "@/components/ModeToggle"
 
 const Navbar = () => {
     const authContext: AuthContextType | undefined = React.useContext(AuthContext);
@@ -35,20 +35,32 @@ const Navbar = () => {
                             ))
                         }
                     </div>
-                    {
-                        !isAuthenticated ? <div className="flex items-center gap-4">
-                            <Link href={'/auth/login'} prefetch={false}>
-                                <Button variant="outline" size="sm">
-                                    Sign in
-                                </Button>
-                            </Link>
-                            <Link href={'/auth/register'} prefetch={false}>
-                                <Button size="sm">Sign up</Button>
-                            </Link>
-                        </div> : <Link href={'/user'} className="border rounded-full p-2 cursor-pointer">
-                            <UserIcon />
-                        </Link>
-                    }
+                    <div className="flex items-center gap-4">
+                        <ModeToggle />
+                        {
+                            !isAuthenticated ? <div className="flex items-center gap-4">
+                                <Link href={'/auth/login'} prefetch={false}>
+                                    <Button variant="outline" size="sm">
+                                        Sign in
+                                    </Button>
+                                </Link>
+                                <Link href={'/auth/register'} prefetch={false}>
+                                    <Button size="sm">Sign up</Button>
+                                </Link>
+                            </div> : <div className="flex items-center gap-4">
+                                {
+                                    user?.is_superuser ? <Link href={'/admin'} prefetch={false}>
+                                        <Button variant="outline" size="sm">
+                                            Admin
+                                        </Button>
+                                    </Link> : null
+                                }
+                                <Link href={'/user'} className="border rounded-full p-2 cursor-pointer">
+                                    <UserIcon />
+                                </Link>
+                            </div>
+                        }
+                    </div>
                 </div>
             </div>
         </nav>
