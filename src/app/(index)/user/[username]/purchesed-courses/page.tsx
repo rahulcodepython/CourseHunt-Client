@@ -175,6 +175,36 @@ const PurchesedCoursesPage = () => {
             ]
         }
     ]
+    const Course = [
+        {
+            title: "Introduction to Web Development",
+            enrollmentDate: "2023-06-01",
+            status: "Enrolled",
+            progress: 2.59,
+            chapters: 20
+        },
+        {
+            title: "React.js Fundamentals",
+            enrollmentDate: "2023-06-15",
+            status: "Enrolled",
+            progress: 50,
+            chapters: 20
+        },
+        {
+            title: "Data Structures and Algorithms",
+            enrollmentDate: "2023-07-01",
+            status: "Completed",
+            progress: 100,
+            chapters: 10
+        },
+        {
+            title: "Machine Learning for Beginners",
+            enrollmentDate: "2023-07-15",
+            status: "Enrolled",
+            progress: 10,
+            chapters: 15
+        }
+    ]
 
     return <section className="grid flex-1 items-start gap-4 p-4 sm:p-6 md:gap-8">
         <div className="grid auto-rows-max items-start gap-4 md:gap-8">
@@ -192,69 +222,40 @@ const PurchesedCoursesPage = () => {
                                 <TableHead>Status</TableHead>
                                 <TableHead>Progress</TableHead>
                                 <TableHead>Show Details</TableHead>
+                                <TableHead>Certificate</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            <TableRow>
-                                <TableCell>Introduction to Web Development</TableCell>
-                                <TableCell>2023-06-01</TableCell>
-                                <TableCell>
-                                    <Badge className="text-xs" variant="secondary">
-                                        Enrolled
-                                    </Badge>
-                                </TableCell>
-                                <TableCell>2/20</TableCell>
-                                <TableCell>
-                                    <Button variant="secondary" size="sm">
-                                        View Details
-                                    </Button>
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell>React.js Fundamentals</TableCell>
-                                <TableCell>2023-06-15</TableCell>
-                                <TableCell>
-                                    <Badge className="text-xs" variant="secondary">
-                                        Enrolled
-                                    </Badge>
-                                </TableCell>
-                                <TableCell>2/20</TableCell>
-                                <TableCell>
-                                    <Button variant="secondary" size="sm">
-                                        View Details
-                                    </Button>
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell>Data Structures and Algorithms</TableCell>
-                                <TableCell>2023-07-01</TableCell>
-                                <TableCell>
-                                    <Badge className="text-xs" variant="secondary">
-                                        Completed
-                                    </Badge>
-                                </TableCell>
-                                <TableCell>20/20</TableCell>
-                                <TableCell>
-                                    <Button variant="secondary" size="sm">
-                                        View Details
-                                    </Button>
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell>Machine Learning for Beginners</TableCell>
-                                <TableCell>2023-07-15</TableCell>
-                                <TableCell>
-                                    <Badge className="text-xs" variant="secondary">
-                                        Enrolled
-                                    </Badge>
-                                </TableCell>
-                                <TableCell>2/20</TableCell>
-                                <TableCell>
-                                    <Button variant="secondary" size="sm">
-                                        View Details
-                                    </Button>
-                                </TableCell>
-                            </TableRow>
+                            {
+                                Course.map((item, index) => {
+                                    return <TableRow key={index}>
+                                        <TableCell>
+                                            {item.title}
+                                        </TableCell>
+                                        <TableCell>
+                                            {item.enrollmentDate}
+                                        </TableCell>
+                                        <TableCell>
+                                            <Badge className="text-xs" variant="secondary">
+                                                {item.status}
+                                            </Badge>
+                                        </TableCell>
+                                        <TableCell>
+                                            {Math.round((item.chapters * item.progress) / 100)}/{item.chapters}
+                                        </TableCell>
+                                        <TableCell>
+                                            <Button variant="secondary" size="sm">
+                                                View Details
+                                            </Button>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Button variant="secondary" size="sm" disabled={item.progress !== 100}>
+                                                Download
+                                            </Button>
+                                        </TableCell>
+                                    </TableRow>
+                                })
+                            }
                         </TableBody>
                     </Table>
                 </CardContent>

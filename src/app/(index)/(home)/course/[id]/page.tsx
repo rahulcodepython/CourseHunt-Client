@@ -213,7 +213,7 @@ const CoursePage = () => {
                                 FAQ.map((item) => (
                                     <AccordionItem key={item.id} value={item.id}>
                                         <AccordionTrigger>{item.question}</AccordionTrigger>
-                                        <AccordionContent>{item.answer}</AccordionContent>
+                                        <AccordionContent className="px-8">{item.answer}</AccordionContent>
                                     </AccordionItem>
                                 ))
                             }

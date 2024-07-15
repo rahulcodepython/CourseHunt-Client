@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from "@/components/ui/dropdown-menu"
 import { BellIcon, BookIcon, HomeIcon, MenuIcon, MountainIcon, Package2Icon, SearchIcon, SettingsIcon, UserIcon } from "@/utils/icons"
 import { GoBook } from "react-icons/go";
+import { AiOutlineDollarCircle } from "react-icons/ai";
 
 const UsernameLayout = ({ children }: { children: React.ReactNode }) => {
     const authContext: AuthContextType | undefined = React.useContext(AuthContext);
@@ -31,6 +32,11 @@ const UsernameLayout = ({ children }: { children: React.ReactNode }) => {
             href: `/user/${user?.username}/study/1`,
         },
         {
+            name: "Transactions",
+            icon: <AiOutlineDollarCircle className="h-5 w-5" />,
+            href: `/user/${user?.username}/transactions`,
+        },
+        {
             name: "Students",
             icon: <UserIcon className="h-5 w-5" />,
             href: "#",
@@ -46,7 +52,7 @@ const UsernameLayout = ({ children }: { children: React.ReactNode }) => {
         <aside className="fixed inset-y-0 left-0 z-50 hidden w-14 flex-col border-r bg-background sm:flex">
             <nav className="flex flex-col items-center gap-4 px-2 sm:py-5">
                 <TooltipProvider>
-                    <Link href="#"
+                    <Link href="/"
                         className="group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
                         prefetch={false}>
                         <MountainIcon className="h-4 w-4 transition-all group-hover:scale-110" />
@@ -88,7 +94,7 @@ const UsernameLayout = ({ children }: { children: React.ReactNode }) => {
                         </SheetTrigger>
                         <SheetContent side="left" className="sm:max-w-xs">
                             <nav className="grid gap-6 text-lg font-medium">
-                                <Link href="#" className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base" prefetch={false}>
+                                <Link href="/" className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base" prefetch={false}>
                                     <MountainIcon className="h-4 w-4 transition-all group-hover:scale-110" />
                                     <span className="sr-only">
                                         Acme Inc
