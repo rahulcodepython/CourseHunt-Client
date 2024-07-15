@@ -10,6 +10,7 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLab
 import { BellIcon, BookIcon, HomeIcon, MenuIcon, MountainIcon, Package2Icon, SearchIcon, SettingsIcon, UserIcon } from "@/utils/icons"
 import { GoBook } from "react-icons/go";
 import { AiOutlineDollarCircle } from "react-icons/ai";
+import { MdOutlineFeedback } from "react-icons/md";
 
 const UsernameLayout = ({ children }: { children: React.ReactNode }) => {
     const authContext: AuthContextType | undefined = React.useContext(AuthContext);
@@ -37,9 +38,9 @@ const UsernameLayout = ({ children }: { children: React.ReactNode }) => {
             href: `/user/${user?.username}/transactions`,
         },
         {
-            name: "Students",
-            icon: <UserIcon className="h-5 w-5" />,
-            href: "#",
+            name: "Feedback",
+            icon: <MdOutlineFeedback className="h-5 w-5" />,
+            href: `/user/${user?.username}/feedback`,
         },
         {
             name: "Settings",

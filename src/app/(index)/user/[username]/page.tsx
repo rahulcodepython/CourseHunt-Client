@@ -26,6 +26,26 @@ const Dashboard = () => {
             title: "You have a new message from your instructor.",
             time: "1 min ago",
         },
+        {
+            status: "read",
+            title: "You have a new message from your instructor.",
+            time: "1 min ago",
+        },
+        {
+            status: "read",
+            title: "You have a new message from your instructor.",
+            time: "1 min ago",
+        },
+        {
+            status: "read",
+            title: "You have a new message from your instructor.",
+            time: "1 min ago",
+        },
+        {
+            status: "read",
+            title: "You have a new message from your instructor.",
+            time: "1 min ago",
+        },
     ]
 
     return <section className="flex min-h-screen w-full flex-col bg-muted/40">
@@ -62,12 +82,12 @@ const Dashboard = () => {
                     </CardContent>
                 </Card>
             </div>
-            <Card>
+            <Card className="pb-8">
                 <CardHeader className="flex flex-row items-center justify-between pb-8">
                     <CardTitle className="text-xl font-semibold">Notifications</CardTitle>
                     <BellIcon className="w-4 h-4 text-muted-foreground" />
                 </CardHeader>
-                <CardContent className="flex flex-col gap-6">
+                <CardContent className="flex flex-col gap-6 h-[357.78px] overflow-y-scroll">
                     {
                         Notification.map((item, i) => {
                             return <div className="grid grid-cols-[25px_1fr_75px] items-start" key={i}>
@@ -91,12 +111,12 @@ const Dashboard = () => {
                     }
                 </CardContent>
             </Card>
-            <Card>
+            <Card className="pb-8">
                 <CardHeader className="flex flex-row items-center justify-between pb-8">
                     <CardTitle className="text-xl font-semibold">Reports</CardTitle>
                     <BellIcon className="w-4 h-4 text-muted-foreground" />
                 </CardHeader>
-                <CardContent className="flex flex-col gap-6">
+                <CardContent className="flex flex-col gap-6 h-[357.78px] overflow-y-scroll">
                     {
                         Notification.map((item, i) => {
                             return <div className="grid grid-cols-[25px_1fr_30px] items-start" key={i}>
