@@ -3,6 +3,7 @@ import React from "react"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { BarchartChart, BarChartIcon, BellIcon, BriefcaseIcon, CircleCheckIcon, EyeIcon, FileTextIcon, LinechartChart, LineChartIcon, TrashIcon, TrophyIcon } from "@/utils/icons"
+import { AiOutlineDollarCircle } from "react-icons/ai";
 
 const Dashboard = () => {
     const Notification = [
@@ -50,7 +51,7 @@ const Dashboard = () => {
 
     return <section className="flex min-h-screen w-full flex-col bg-muted/40">
         <div className="grid items-start gap-4 p-4 sm:p-6 md:gap-8">
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-4 md:grid-cols-4">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="text-sm font-medium">Courses Purchased</CardTitle>
@@ -78,6 +79,16 @@ const Dashboard = () => {
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">85%</div>
+                        <p className="text-xs text-muted-foreground">+5% from last month</p>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between pb-2">
+                        <CardTitle className="text-sm font-medium">Income</CardTitle>
+                        <AiOutlineDollarCircle className="w-4 h-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">$20</div>
                         <p className="text-xs text-muted-foreground">+5% from last month</p>
                     </CardContent>
                 </Card>

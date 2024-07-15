@@ -11,6 +11,7 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button";
+import { Link } from "next-view-transitions";
 
 const PurchesedCoursesPage = () => {
     const ChapterDetails = [
@@ -181,28 +182,32 @@ const PurchesedCoursesPage = () => {
             enrollmentDate: "2023-06-01",
             status: "Enrolled",
             progress: 2.59,
-            chapters: 20
+            chapters: 20,
+            continue: '/user/rahul/study/1'
         },
         {
             title: "React.js Fundamentals",
             enrollmentDate: "2023-06-15",
             status: "Enrolled",
             progress: 50,
-            chapters: 20
+            chapters: 20,
+            continue: '/user/rahul/study/1'
         },
         {
             title: "Data Structures and Algorithms",
             enrollmentDate: "2023-07-01",
             status: "Completed",
             progress: 100,
-            chapters: 10
+            chapters: 10,
+            continue: '/user/rahul/study/1'
         },
         {
             title: "Machine Learning for Beginners",
             enrollmentDate: "2023-07-15",
             status: "Enrolled",
             progress: 10,
-            chapters: 15
+            chapters: 15,
+            continue: '/user/rahul/study/1'
         }
     ]
 
@@ -222,6 +227,7 @@ const PurchesedCoursesPage = () => {
                                 <TableHead>Status</TableHead>
                                 <TableHead>Progress</TableHead>
                                 <TableHead>Show Details</TableHead>
+                                <TableHead>Study</TableHead>
                                 <TableHead>Certificate</TableHead>
                             </TableRow>
                         </TableHeader>
@@ -247,6 +253,13 @@ const PurchesedCoursesPage = () => {
                                             <Button variant="secondary" size="sm">
                                                 View Details
                                             </Button>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Link href={item.continue}>
+                                                <Button variant="secondary" size="sm">
+                                                    Continue
+                                                </Button>
+                                            </Link>
                                         </TableCell>
                                         <TableCell>
                                             <Button variant="secondary" size="sm" disabled={item.progress !== 100}>

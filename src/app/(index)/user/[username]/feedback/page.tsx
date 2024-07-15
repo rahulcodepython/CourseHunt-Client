@@ -37,11 +37,6 @@ const FeedbackPage = () => {
                                         />
                                     ))
                                 }
-                                {/* <StarIcon className="w-5 h-5 fill-primary" />
-                                <StarIcon className="w-5 h-5 fill-primary" />
-                                <StarIcon className="w-5 h-5 fill-primary" />
-                                <StarIcon className="w-5 h-5 fill-muted stroke-muted-foreground" />
-                                <StarIcon className="w-5 h-5 fill-muted stroke-muted-foreground" /> */}
                             </div>
                         </div>
                     </form>
