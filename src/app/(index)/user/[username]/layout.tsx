@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from "@/components/ui/dropdown-menu"
 import { BellIcon, BookIcon, HomeIcon, MenuIcon, MountainIcon, Package2Icon, SearchIcon, SettingsIcon, UserIcon } from "@/utils/icons"
+import { GoBook } from "react-icons/go";
 
 const UsernameLayout = ({ children }: { children: React.ReactNode }) => {
     const authContext: AuthContextType | undefined = React.useContext(AuthContext);
@@ -23,6 +24,11 @@ const UsernameLayout = ({ children }: { children: React.ReactNode }) => {
             name: "Courses",
             icon: <BookIcon className="h-5 w-5" />,
             href: `/user/${user?.username}/purchesed-courses`,
+        },
+        {
+            name: "Study",
+            icon: <GoBook className="h-5 w-5" />,
+            href: `/user/${user?.username}/study/1`,
         },
         {
             name: "Students",
