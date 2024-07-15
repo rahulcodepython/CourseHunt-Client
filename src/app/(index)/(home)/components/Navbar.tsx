@@ -11,11 +11,27 @@ const Navbar = () => {
     const isAuthenticated: boolean | undefined = authContext?.isAuthenticated;
     const user: UserType | undefined | null = authContext?.user;
 
-    const NavItems: string[] = [
-        'Home',
-        'About',
-        'Services',
-        'Contact'
+    const NavItems = [
+        {
+            label: 'Home',
+            href: '/'
+        },
+        {
+            label: 'About',
+            href: '/about'
+        },
+        {
+            label: 'Services',
+            href: '/services'
+        },
+        {
+            label: 'Courses',
+            href: '/courses'
+        },
+        {
+            label: 'Contact',
+            href: '/contact'
+        }
     ]
 
     return (
@@ -29,8 +45,8 @@ const Navbar = () => {
                     <div className="hidden md:flex gap-4">
                         {
                             NavItems.map((item, index) => (
-                                <Link key={index} href="#" className="font-medium flex items-center text-sm transition-colors" prefetch={false}>
-                                    {item}
+                                <Link key={index} href={item.href} className="font-medium flex items-center text-sm transition-colors" prefetch={false}>
+                                    {item.label}
                                 </Link>
                             ))
                         }
