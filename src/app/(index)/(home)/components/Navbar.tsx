@@ -71,7 +71,7 @@ const Navbar = () => {
                                         </Button>
                                     </Link> : null
                                 }
-                                <Link href={'/user'} className="border rounded-full p-2 cursor-pointer">
+                                <Link href={'/user/rahul'} className="border rounded-full p-2 cursor-pointer">
                                     <UserIcon />
                                 </Link>
                             </div>
