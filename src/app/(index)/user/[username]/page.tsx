@@ -102,9 +102,12 @@ const Dashboard = () => {
                     {
                         Notification.map((item, i) => {
                             return <div className="grid grid-cols-[25px_1fr_75px] items-start" key={i}>
-                                <span className={`flex h-2 w-2 translate-y-1.5 rounded-full ${item.status === 'read' ? 'bg-gray-500' : 'bg-blue-500'}`} />
+                                <div className="w-full flex items-center justify-center my-2">
+                                    <span className={`h-2 w-2 rounded-full ${item.status === 'read' ? 'bg-gray-500' : 'bg-blue-500'}`} />
+                                </div>
                                 <div className="grid gap-1">
-                                    <p className="text-sm font-medium">{item.title}</p>
+                                    <p className="text-md font-bold">{item.title}</p>
+                                    <p className="text-sm">{item.title}</p>
                                     <p className="text-sm text-muted-foreground">{item.time}</p>
                                 </div>
                                 <div className="flex items-center">

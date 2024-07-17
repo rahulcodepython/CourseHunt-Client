@@ -373,17 +373,15 @@ const ReferredDataTable = () => {
                                     </PaginationItem>
                                     {
                                         Array.from({ length: ((totalRecords / rowsPerPage) + (totalRecords % rowsPerPage === 0 ? 0 : 1)) }, (_, i) => {
-                                            return (
-                                                <PaginationItem key={i} onClick={() => {
-                                                    setPage(i + 1)
-                                                    table.setPageIndex(i)
-                                                }} className="cursor-pointer">
-                                                    <PaginationLink className={
-                                                        page === i + 1 ?
-                                                            `bg-secondary-foreground text-white hover:bg-secondary-foreground hover:text-white`
-                                                            : ''}>{i + 1}</PaginationLink>
-                                                </PaginationItem>
-                                            )
+                                            return <PaginationItem key={i} onClick={() => {
+                                                setPage(i + 1)
+                                                table.setPageIndex(i)
+                                            }} className="cursor-pointer">
+                                                <PaginationLink className={
+                                                    page === i + 1 ?
+                                                        `bg-secondary-foreground text-white hover:bg-secondary-foreground hover:text-white`
+                                                        : ''}>{i + 1}</PaginationLink>
+                                            </PaginationItem>
                                         })
                                     }
                                     <PaginationItem>
@@ -411,20 +409,17 @@ const ReferredDataTable = () => {
                                 <DropdownMenuContent align="end">
                                     {
                                         rowsOption.map((option) => {
-                                            return (
-                                                <DropdownMenuCheckboxItem
-                                                    key={option}
-                                                    className="capitalize"
-                                                    checked={rowsPerPageDropDown === option}
-                                                    onCheckedChange={() => {
-                                                        table.setPageSize(option)
-                                                        setRowsPerPage(option)
-                                                        setRowsPerPageDropDown(option)
-                                                    }}
-                                                >
-                                                    {option}
-                                                </DropdownMenuCheckboxItem>
-                                            )
+                                            return <DropdownMenuCheckboxItem
+                                                key={option}
+                                                className="capitalize"
+                                                checked={rowsPerPageDropDown === option}
+                                                onCheckedChange={() => {
+                                                    table.setPageSize(option)
+                                                    setRowsPerPage(option)
+                                                    setRowsPerPageDropDown(option)
+                                                }}>
+                                                {option}
+                                            </DropdownMenuCheckboxItem>
                                         })
                                     }
                                 </DropdownMenuContent>

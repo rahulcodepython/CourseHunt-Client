@@ -65,13 +65,13 @@ const Navbar = () => {
                                 </Link>
                             </div> : <div className="flex items-center gap-4">
                                 {
-                                    user?.is_superuser ? <Link href={'/admin'} prefetch={false}>
+                                    user?.is_superuser ? <Link href={`/user/${user.username}/admin`} prefetch={false}>
                                         <Button variant="outline" size="sm">
                                             Admin
                                         </Button>
                                     </Link> : null
                                 }
-                                <Link href={'/user/rahul'} className="border rounded-full p-2 cursor-pointer">
+                                <Link href={`/user/${user?.username}`} className="border rounded-full p-2 cursor-pointer">
                                     <UserIcon />
                                 </Link>
                             </div>

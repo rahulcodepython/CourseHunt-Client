@@ -11,12 +11,33 @@ import { BellIcon, BookIcon, HomeIcon, MenuIcon, MountainIcon, SearchIcon, UserI
 import { GoCrossReference } from "react-icons/go";
 import { AiOutlineDollarCircle } from "react-icons/ai";
 import { MdOutlineFeedback } from "react-icons/md";
+import { IoIosNotificationsOutline } from "react-icons/io";
+import { usePathname } from "next/navigation";
+import { MdOutlineReportGmailerrorred } from "react-icons/md";
 
 const UsernameLayout = ({ children }: { children: React.ReactNode }) => {
     const authContext: AuthContextType | undefined = React.useContext(AuthContext);
     const user = authContext?.user;
 
-    const sideNav = [
+    const pathname = usePathname();
+
+    const sideNav = user?.is_superuser && pathname.includes('/admin') ? [
+        {
+            name: "Add Notification",
+            icon: <IoIosNotificationsOutline className="h-5 w-5" />,
+            href: `/user/${user?.username}/admin/add-notification`,
+        },
+        {
+            name: "Add Report",
+            icon: <MdOutlineReportGmailerrorred className="h-5 w-5" />,
+            href: `/user/${user?.username}/admin/add-report`,
+        },
+        {
+            name: "Feedback",
+            icon: <MdOutlineFeedback className="h-5 w-5" />,
+            href: `/user/${user?.username}/admin/feedback`,
+        },
+    ] : [
         {
             name: "Dashboard",
             icon: <HomeIcon className="h-5 w-5" />,
@@ -41,7 +62,7 @@ const UsernameLayout = ({ children }: { children: React.ReactNode }) => {
             name: "Referrals",
             icon: <GoCrossReference className="h-5 w-5" />,
             href: `/user/${user?.username}/referrals`,
-        },
+        }
     ]
 
     return <main className="flex min-h-screen w-full">
