@@ -47,47 +47,48 @@ import {
 
 export type RecordType = {
     id: string
-    "Course Name": string
-    "Enrollment Date": string
-    "Status": string
-    "Progress": string
+    name: string
+    date: string
+    status: string
+    progress: string
 }
 
 const Home = () => {
     const ROWS_PER_PAGE = 2
     const [data, setData] = React.useState<RecordType[]>([{
         id: "1",
-        "Course Name": "Introduction to Programming",
-        "Enrollment Date": "2023-01-01",
-        "Status": "Active",
-        "Progress": "80%"
+        name: "Introduction to Programming",
+        date: "2023-01-01",
+        status: "Active",
+        progress: "80%"
     },
     {
         id: "2",
-        "Course Name": "Advanced Web Development",
-        "Enrollment Date": "2023-02-15",
-        "Status": "Inactive",
-        "Progress": "40%"
+        name: "Advanced Web Development",
+        date: "2023-02-15",
+        status: "Inactive",
+        progress: "40%"
     },
     {
         id: "3",
-        "Course Name": "Data Structures and Algorithms",
-        "Enrollment Date": "2023-03-10",
-        "Status": "Active",
-        "Progress": "90%"
+        name: "Data Structures and Algorithms",
+        date: "2023-03-10",
+        status: "Active",
+        progress: "90%"
     },
     {
         id: "4",
-        "Course Name": "Machine Learning Basics",
-        "Enrollment Date": "2023-04-05",
-        "Status": "Active",
-        "Progress": "70%"
+        name: "Machine Learning Basics",
+        date: "2023-04-05",
+        status: "Active",
+        progress: "70%"
     }])
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [filters, setFilters] = React.useState<string>('')
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
     const [rowSelection, setRowSelection] = React.useState({})
     const [rowsPerPage, setRowsPerPage] = React.useState<number>(ROWS_PER_PAGE)
+    const [rowsPerPageDropDown, setRowsPerPageDropDown] = React.useState<number>(ROWS_PER_PAGE)
     const [totalRecords, setTotalRecords] = React.useState<number>(0)
     const [hasNext, setHasNext] = React.useState(false)
     const [page, setPage] = React.useState(1)
@@ -96,11 +97,23 @@ const Home = () => {
 
     const rowsOption: (number)[] = [2, 4, 6]
 
-    const columnsList: string[] = [
-        'Course Name',
-        'Enrollment Date',
-        'Status',
-        'Progress',
+    const columnsList = [
+        {
+            key: "name",
+            label: 'Course Name'
+        },
+        {
+            key: "date",
+            label: 'Enrollment Date'
+        },
+        {
+            key: "status",
+            label: 'Status'
+        },
+        {
+            key: "progress",
+            label: 'Progress'
+        },
     ]
 
     const columns: ColumnDef<RecordType>[] = [
@@ -128,19 +141,19 @@ const Home = () => {
             enableHiding: false,
         },
     ];
-    columnsList.forEach((columnName) => {
+    columnsList.forEach((columnValue) => {
         columns.push({
-            id: columnName,
-            accessorKey: columnName,
+            id: columnValue.key,
+            accessorKey: columnValue.key,
             header: ({ column }) => {
-                return <Button variant="ghost" className="px-0 capitalize"
+                return <Button variant="ghost" className="capitalize"
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-                    {columnName}
+                    {columnValue.label}
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             },
             cell: ({ row }) => (
-                <div className="capitalize">{row.getValue(columnName)}</div>
+                <div className="capitalize">{row.getValue(columnValue.key)}</div>
             ),
         });
     });
@@ -180,6 +193,7 @@ const Home = () => {
     React.useEffect(() => {
         const handler = async () => {
             table.setPageSize(ROWS_PER_PAGE)
+            setRowsPerPageDropDown(ROWS_PER_PAGE)
             // await fetch(`${process.env.API_URL}api/get-sessions-regions/`, {
             //     method: "GET",
             //     headers: {
@@ -327,7 +341,7 @@ const Home = () => {
                                     data-state={row.getIsSelected() && "selected"}>
                                     {
                                         row.getVisibleCells().map((cell) => (
-                                            <TableCell key={cell.id}>
+                                            <TableCell key={cell.id} className={cell.column.columnDef.id === 'select' || cell.column.columnDef.id === 'actions' ? "px-4" : "px-8"}>
                                                 {
                                                     flexRender(
                                                         cell.column.columnDef.cell,
@@ -406,10 +420,11 @@ const Home = () => {
                                     <DropdownMenuCheckboxItem
                                         key={option}
                                         className="capitalize"
-                                        checked={rowsPerPage === option}
+                                        checked={rowsPerPageDropDown === option}
                                         onCheckedChange={() => {
                                             table.setPageSize(option)
                                             setRowsPerPage(option)
+                                            setRowsPerPageDropDown(option)
                                         }}
                                     >
                                         {option}
