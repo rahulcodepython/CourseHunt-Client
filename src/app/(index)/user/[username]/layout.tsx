@@ -23,6 +23,11 @@ const UsernameLayout = ({ children }: { children: React.ReactNode }) => {
 
     const sideNav = user?.is_superuser && pathname.includes('/admin') ? [
         {
+            name: "Purchase",
+            icon: <AiOutlineDollarCircle className="h-5 w-5" />,
+            href: `/user/${user?.username}/admin/purchase`,
+        },
+        {
             name: "Add Notification",
             icon: <IoIosNotificationsOutline className="h-5 w-5" />,
             href: `/user/${user?.username}/admin/add-notification`,

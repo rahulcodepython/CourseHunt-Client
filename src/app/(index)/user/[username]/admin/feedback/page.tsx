@@ -54,7 +54,7 @@ import {
 } from "@/components/ui/dialog"
 import { StarIcon } from "@/utils/icons"
 
-export type RecordType = {
+type RecordType = {
     id: string
     username: string
     date: string
@@ -397,7 +397,7 @@ const FeedbackDataTable = () => {
                                         table.nextPage()
                                     }
                                 }} className="cursor-pointer" /> :
-                                    <span className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 gap-1 pl-2.5 cursor-not-allowed opacity-50">
+                                    <span className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 gap-1 pr-2.5 cursor-not-allowed opacity-50">
                                         Next
                                         <ChevronRight className="h-4 w-4" />
                                     </span>
