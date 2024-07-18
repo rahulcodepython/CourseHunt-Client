@@ -10,6 +10,7 @@ import { FilterIcon } from "@/utils/icons";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
 
 const Courses = () => {
     return (
@@ -81,7 +82,9 @@ const Courses = () => {
                                         <div className="grid grid-cols-2 gap-4 text-sm">
                                             <div className="flex items-center gap-2">
                                                 <p className="font-medium">Price:</p>
-                                                <p>$99</p>
+                                                <p className="line-through text-xs">$99</p>
+                                                <p>$59</p>
+                                                <Badge className="text-[9px] py-0.1 px-1.5">20% off</Badge>
                                             </div>
                                             <div className="flex items-center gap-2">
                                                 <p className="font-medium">Published:</p>

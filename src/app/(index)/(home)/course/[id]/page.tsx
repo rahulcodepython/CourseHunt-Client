@@ -9,6 +9,7 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion"
 import Image from "next/image"
+import { Card, CardHeader, CardTitle } from "@/components/ui/card"
 
 const CoursePage = () => {
     const FAQ = [
@@ -136,23 +137,31 @@ const CoursePage = () => {
             </section>
             <section className="w-full py-12 md:py-24 lg:py-32 flex flex-col items-center justify-center">
                 <div className="container grid gap-12 px-4 md:px-6">
-                    <div className="grid gap-6 md:grid-cols-2 justify-items-center">
-                        <div className="space-y-2">
-                            <p className="text-sm font-medium text-muted-foreground">Price</p>
-                            <p className="text-2xl font-bold">$99</p>
-                        </div>
-                        <div className="space-y-2">
-                            <p className="text-sm font-medium text-muted-foreground">Duration</p>
-                            <p className="text-2xl font-bold">12 weeks</p>
-                        </div>
-                        <div className="space-y-2">
-                            <p className="text-sm font-medium text-muted-foreground">Published</p>
-                            <p className="text-2xl font-bold">2023-07-14</p>
-                        </div>
-                        <div className="space-y-2">
-                            <p className="text-sm font-medium text-muted-foreground">Instructor</p>
-                            <p className="text-2xl font-bold">Rahul Das</p>
-                        </div>
+                    <div className="grid gap-6 md:grid-cols-2">
+                        <Card className="space-y-2">
+                            <CardHeader className="flex items-center justify-center">
+                                <CardTitle className="text-sm font-medium text-muted-foreground">Price</CardTitle>
+                                <p className="text-2xl font-bold">$99</p>
+                            </CardHeader>
+                        </Card>
+                        <Card className="space-y-2">
+                            <CardHeader className="flex items-center justify-center">
+                                <CardTitle className="text-sm font-medium text-muted-foreground">Duration</CardTitle>
+                                <p className="text-2xl font-bold">12 weeks</p>
+                            </CardHeader>
+                        </Card>
+                        <Card className="space-y-2">
+                            <CardHeader className="flex items-center justify-center">
+                                <CardTitle className="text-sm font-medium text-muted-foreground">Published</CardTitle>
+                                <p className="text-2xl font-bold">2023-07-14</p>
+                            </CardHeader>
+                        </Card>
+                        <Card className="space-y-2">
+                            <CardHeader className="flex items-center justify-center">
+                                <CardTitle className="text-sm font-medium text-muted-foreground">Instructor</CardTitle>
+                                <p className="text-2xl font-bold">Rahul Das</p>
+                            </CardHeader>
+                        </Card>
                     </div>
                     <Button className="w-full">Enroll Now</Button>
                 </div>

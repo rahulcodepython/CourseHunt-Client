@@ -53,6 +53,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import { StarIcon } from "@/utils/icons"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 
 type RecordType = {
     id: string
@@ -62,20 +63,7 @@ type RecordType = {
     star: number
 }
 
-
 const FeedbackPage = () => {
-    return <section className="grid items-start gap-4 p-4 sm:p-6 md:gap-8">
-        <div className="mb-8 text-center">
-            <h1 className="text-3xl font-bold tracking-tighter md:text-4xl">Feedback</h1>
-            <p className="mt-2 text-muted-foreground md:text-md">
-                Inspect your feedback and stay on top of important updates.
-            </p>
-        </div>
-        <FeedbackDataTable />
-    </section>
-}
-
-const FeedbackDataTable = () => {
     const ROWS_PER_PAGE = 2
     const [data, setData] = React.useState<RecordType[]>([
         {
@@ -261,175 +249,193 @@ const FeedbackDataTable = () => {
 
     return (
         <div className="w-full p-4">
-            <div className="flex items-center justify-end py-4">
-                <div className="flex items-center justify-end gap-4">
-                    <Menubar>
-                        <MenubarMenu>
-                            <MenubarTrigger>Columns</MenubarTrigger>
-                            <MenubarContent>
+            <Card>
+                <CardHeader>
+                    <div className="flex items-center justify-between py-4">
+                        <div className="flex flex-col gap-1.5">
+                            <CardTitle>
+                                All Feedback
+                            </CardTitle>
+                            <CardDescription>
+                                Inspect your feedback and stay on top of important updates.
+                            </CardDescription>
+                        </div>
+                        <div className="flex items-center justify-end gap-4">
+                            <Menubar>
+                                <MenubarMenu>
+                                    <MenubarTrigger>Columns</MenubarTrigger>
+                                    <MenubarContent>
+                                        {
+                                            columns.map((column) => {
+                                                return !(column.id == 'select' || column.id == 'actions') &&
+                                                    <MenubarCheckboxItem
+                                                        className="capitalize cursor-pointer"
+                                                        key={column.id}
+                                                        checked={table.getColumn(column.id ?? '')?.getIsVisible()}
+                                                        onCheckedChange={() => table.getColumn(column.id ?? '')?.toggleVisibility()}>
+                                                        {column.id}
+                                                    </MenubarCheckboxItem>
+                                            })
+                                        }
+                                    </MenubarContent>
+                                </MenubarMenu>
+                                <MenubarMenu>
+                                    <MenubarTrigger className="cursor-pointer" onClick={() => {
+                                        setSorting([])
+                                        setFilters('')
+                                        setColumnVisibility({})
+                                    }}>Unfiilter</MenubarTrigger>
+                                </MenubarMenu>
+                            </Menubar>
+                            <Input
+                                placeholder="Search..."
+                                value={filters}
+                                onChange={(event) => setFilters(event.target.value)}
+                                className="max-w-lg"
+                            />
+                        </div>
+                    </div>
+                </CardHeader>
+                <CardContent>
+                    <div className="rounded-md border">
+                        <Table>
+                            <TableHeader>
                                 {
-                                    columns.map((column) => {
-                                        return !(column.id == 'select' || column.id == 'actions') &&
-                                            <MenubarCheckboxItem
-                                                className="capitalize cursor-pointer"
-                                                key={column.id}
-                                                checked={table.getColumn(column.id ?? '')?.getIsVisible()}
-                                                onCheckedChange={() => table.getColumn(column.id ?? '')?.toggleVisibility()}>
-                                                {column.id}
-                                            </MenubarCheckboxItem>
-                                    })
+                                    table.getHeaderGroups().map((headerGroup) => (
+                                        <TableRow key={headerGroup.id}>
+                                            {headerGroup.headers.map((header) => {
+                                                return <TableHead key={header.id}>
+                                                    {
+                                                        header.isPlaceholder ? null : flexRender(
+                                                            header.column.columnDef.header,
+                                                            header.getContext()
+                                                        )
+                                                    }
+                                                </TableHead>
+                                            })}
+                                        </TableRow>
+                                    ))
                                 }
-                            </MenubarContent>
-                        </MenubarMenu>
-                        <MenubarMenu>
-                            <MenubarTrigger className="cursor-pointer" onClick={() => {
-                                setSorting([])
-                                setFilters('')
-                                setColumnVisibility({})
-                            }}>Unfiilter</MenubarTrigger>
-                        </MenubarMenu>
-                    </Menubar>
-                    <Input
-                        placeholder="Search..."
-                        value={filters}
-                        onChange={(event) => setFilters(event.target.value)}
-                        className="max-w-lg"
-                    />
-                </div>
-            </div>
-            <div className="rounded-md border">
-                <Table>
-                    <TableHeader>
-                        {
-                            table.getHeaderGroups().map((headerGroup) => (
-                                <TableRow key={headerGroup.id}>
-                                    {headerGroup.headers.map((header) => {
-                                        return <TableHead key={header.id}>
+                            </TableHeader>
+                            <TableBody>
+                                {
+                                    isFetching ? <TableRow>
+                                        <TableCell colSpan={columns.length} className="h-24 text-center">
+                                            Fetching...
+                                        </TableCell>
+                                    </TableRow> : table.getRowModel().rows?.length ? table.getRowModel().rows.map((row) => {
+                                        return <TableRow
+                                            key={row.id}
+                                            data-state={row.getIsSelected() && "selected"}>
                                             {
-                                                header.isPlaceholder ? null : flexRender(
-                                                    header.column.columnDef.header,
-                                                    header.getContext()
-                                                )
+                                                row.getVisibleCells().map((cell) => (
+                                                    <TableCell key={cell.id} className={`${cell.column.columnDef.id === 'select' || cell.column.columnDef.id === 'actions' ? "px-4" : "px-8"}`}>
+                                                        {
+                                                            flexRender(
+                                                                cell.column.columnDef.cell,
+                                                                cell.getContext()
+                                                            )
+                                                        }
+                                                    </TableCell>
+                                                ))
                                             }
-                                        </TableHead>
-                                    })}
-                                </TableRow>
-                            ))
-                        }
-                    </TableHeader>
-                    <TableBody>
-                        {
-                            isFetching ? <TableRow>
-                                <TableCell colSpan={columns.length} className="h-24 text-center">
-                                    Fetching...
-                                </TableCell>
-                            </TableRow> : table.getRowModel().rows?.length ? table.getRowModel().rows.map((row) => {
-                                return <TableRow
-                                    key={row.id}
-                                    data-state={row.getIsSelected() && "selected"}>
-                                    {
-                                        row.getVisibleCells().map((cell) => (
-                                            <TableCell key={cell.id} className={`${cell.column.columnDef.id === 'select' || cell.column.columnDef.id === 'actions' ? "px-4" : "px-8"}`}>
-                                                {
-                                                    flexRender(
-                                                        cell.column.columnDef.cell,
-                                                        cell.getContext()
-                                                    )
-                                                }
-                                            </TableCell>
-                                        ))
-                                    }
-                                </TableRow>
-                            }) : <TableRow>
-                                <TableCell colSpan={columns.length} className="h-24 text-center">
-                                    No results.
-                                </TableCell>
-                            </TableRow>
-                        }
-                    </TableBody>
-                </Table>
-            </div>
-            <div className="flex items-center justify-between py-4">
-                <div className="text-sm text-muted-foreground">
-                    {table.getFilteredSelectedRowModel().rows.length} of{" "}
-                    {table.getFilteredRowModel().rows.length} row(s) selected
-                </div>
-                <div className={'text-sm text-muted-foreground'}>
-                    Shows {table.getFilteredRowModel().rows.length < rowsPerPage ? table.getFilteredRowModel().rows.length : rowsPerPage} out
-                    of {table.getFilteredRowModel().rows.length} rows
-                </div>
-            </div>
-            <div className={'flex items-center justify-center gap-4'}>
-                <Pagination className={'w-fit mx-0'}>
-                    <PaginationContent>
-                        <PaginationItem>
-                            {
-                                table.getCanPreviousPage() ? <PaginationPrevious onClick={() => {
-                                    if (table.getCanPreviousPage()) {
-                                        setPage(page - 1)
-                                        table.previousPage()
-                                    }
-                                }} className="cursor-pointer" /> :
-                                    <span className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 gap-1 pl-2.5 cursor-not-allowed opacity-50">
+                                        </TableRow>
+                                    }) : <TableRow>
+                                        <TableCell colSpan={columns.length} className="h-24 text-center">
+                                            No results.
+                                        </TableCell>
+                                    </TableRow>
+                                }
+                            </TableBody>
+                        </Table>
+                    </div>
+                    <div className="flex items-center justify-between py-4">
+                        <div className="text-sm text-muted-foreground">
+                            {table.getFilteredSelectedRowModel().rows.length} of{" "}
+                            {table.getFilteredRowModel().rows.length} row(s) selected
+                        </div>
+                        <div className={'text-sm text-muted-foreground'}>
+                            Shows {table.getFilteredRowModel().rows.length < rowsPerPage ? table.getFilteredRowModel().rows.length : rowsPerPage} out
+                            of {table.getFilteredRowModel().rows.length} rows
+                        </div>
+                    </div>
+                </CardContent>
+                <CardFooter className="justify-center gap-4">
+                    <Pagination className={'w-fit mx-0'}>
+                        <PaginationContent>
+                            <PaginationItem>
+                                {
+                                    table.getCanPreviousPage() ? <PaginationPrevious onClick={() => {
+                                        if (table.getCanPreviousPage()) {
+                                            setPage(page - 1)
+                                            table.previousPage()
+                                        }
+                                    }} className="cursor-pointer" /> : <span className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 gap-1 pl-2.5 cursor-not-allowed opacity-50">
                                         <ChevronLeft className="h-4 w-4" />
                                         Previous
                                     </span>
-                            }
-                        </PaginationItem>
-                        {
-                            Array.from({ length: ((totalRecords / rowsPerPage) + (totalRecords % rowsPerPage === 0 ? 0 : 1)) }, (_, i) => {
-                                return <PaginationItem key={i} onClick={() => {
-                                    setPage(i + 1)
-                                    table.setPageIndex(i)
-                                }} className="cursor-pointer">
-                                    <PaginationLink className={
-                                        page === i + 1 ?
-                                            `bg-secondary-foreground text-white hover:bg-secondary-foreground hover:text-white`
-                                            : ''}>{i + 1}</PaginationLink>
-                                </PaginationItem>
-                            })
-                        }
-                        <PaginationItem>
+                                }
+                            </PaginationItem>
                             {
-                                table.getCanNextPage() ? <PaginationNext onClick={() => {
-                                    if (table.getCanNextPage() || hasNext) {
-                                        setPage(page + 1)
-                                        table.nextPage()
-                                    }
-                                }} className="cursor-pointer" /> :
-                                    <span className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 gap-1 pr-2.5 cursor-not-allowed opacity-50">
-                                        Next
-                                        <ChevronRight className="h-4 w-4" />
-                                    </span>
+                                Array.from({ length: ((totalRecords / rowsPerPage) + (totalRecords % rowsPerPage === 0 ? 0 : 1)) }, (_, i) => {
+                                    return (
+                                        <PaginationItem key={i} onClick={() => {
+                                            setPage(i + 1)
+                                            table.setPageIndex(i)
+                                        }} className="cursor-pointer">
+                                            <PaginationLink className={
+                                                page === i + 1 ?
+                                                    `bg-secondary-foreground text-white hover:bg-secondary-foreground hover:text-white`
+                                                    : ''}>{i + 1}</PaginationLink>
+                                        </PaginationItem>
+                                    )
+                                })
                             }
-                        </PaginationItem>
-                    </PaginationContent>
-                </Pagination>
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="outline">
-                            {rowsPerPage} <ChevronDown className="ml-2 h-4 w-4" />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                        {
-                            rowsOption.map((option) => {
-                                return <DropdownMenuCheckboxItem
-                                    key={option}
-                                    className="capitalize"
-                                    checked={rowsPerPageDropDown === option}
-                                    onCheckedChange={() => {
-                                        table.setPageSize(option)
-                                        setRowsPerPage(option)
-                                        setRowsPerPageDropDown(option)
-                                    }}>
-                                    {option}
-                                </DropdownMenuCheckboxItem>
-                            })
-                        }
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            </div>
+                            <PaginationItem>
+                                {
+                                    table.getCanNextPage() ? <PaginationNext onClick={() => {
+                                        if (table.getCanNextPage() || hasNext) {
+                                            setPage(page + 1)
+                                            table.nextPage()
+                                        }
+                                    }} className="cursor-pointer" /> :
+                                        <span className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 gap-1 pr-2.5 cursor-not-allowed opacity-50">
+                                            Next
+                                            <ChevronRight className="h-4 w-4" />
+                                        </span>
+                                }
+                            </PaginationItem>
+                        </PaginationContent>
+                    </Pagination>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="outline">
+                                {rowsPerPage} <ChevronDown className="ml-2 h-4 w-4" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            {
+                                rowsOption.map((option) => {
+                                    return (
+                                        <DropdownMenuCheckboxItem
+                                            key={option}
+                                            className="capitalize"
+                                            checked={rowsPerPageDropDown === option}
+                                            onCheckedChange={() => {
+                                                table.setPageSize(option)
+                                                setRowsPerPage(option)
+                                                setRowsPerPageDropDown(option)
+                                            }}
+                                        >
+                                            {option}
+                                        </DropdownMenuCheckboxItem>
+                                    )
+                                })
+                            }
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </CardFooter>
+            </Card>
         </div>
     )
 }

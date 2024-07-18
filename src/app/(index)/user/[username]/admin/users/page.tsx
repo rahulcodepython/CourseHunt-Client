@@ -45,58 +45,63 @@ import {
     MenubarTrigger,
 } from "@/components/ui/menubar"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+
 
 type RecordType = {
     id: string
     name: string
-    course: string
-    coursePrice: number
+    email: string
+    courseCount: number
     date: string
-    discount: number
-    cuponCode: string
-    amount: number
-    transactionId: string
+    investment: number
     referral: string
 }
 
-const PurchasePage = () => {
+const UsersPage = () => {
     const ROWS_PER_PAGE = 2
     const [data, setData] = React.useState<RecordType[]>([
         {
-            id: "1",
-            name: "John Doe",
-            course: "React",
-            coursePrice: 100,
-            date: "2021-09-01",
-            discount: 0,
-            cuponCode: "CUPON-001",
-            amount: 100,
-            transactionId: "123456",
-            referral: "REF-001"
+            id: '1',
+            name: 'John Doe',
+            email: 'xyz@gmail.com',
+            courseCount: 5,
+            date: '2021-10-10',
+            investment: 100,
+            referral: 'xyz'
         },
         {
-            id: "2",
-            name: "Jane Doe",
-            course: "Angular",
-            coursePrice: 100,
-            date: "2021-09-01",
-            discount: 0,
-            cuponCode: "CUPON-001",
-            amount: 100,
-            transactionId: "123456",
-            referral: "REF-001"
+            id: '1',
+            name: 'John Doe',
+            email: 'xyz@gmail.com',
+            courseCount: 5,
+            date: '2021-10-10',
+            investment: 100,
+            referral: 'xyz'
         },
         {
-            id: "3",
-            name: "John Doe",
-            course: "React",
-            coursePrice: 100,
-            date: "2021-09-01",
-            discount: 0,
-            cuponCode: "CUPON-001",
-            amount: 100,
-            transactionId: "123456",
-            referral: "REF-001"
+            id: '1',
+            name: 'John Doe',
+            email: 'xyz@gmail.com',
+            courseCount: 5,
+            date: '2021-10-10',
+            investment: 100,
+            referral: 'xyz'
+        },
+        {
+            id: '1',
+            name: 'John Doe',
+            email: 'xyz@gmail.com',
+            courseCount: 5,
+            date: '2021-10-10',
+            investment: 100,
+            referral: 'xyz'
         },
     ])
     const [sorting, setSorting] = React.useState<SortingState>([])
@@ -114,42 +119,12 @@ const PurchasePage = () => {
     const rowsOption: (number)[] = [2, 4, 6]
 
     const columnsList = [
-        {
-            key: "name",
-            label: 'Username'
-        },
-        {
-            key: "course",
-            label: 'Course Name'
-        },
-        {
-            key: "coursePrice",
-            label: 'Course Price'
-        },
-        {
-            key: "date",
-            label: 'Enrollment Date'
-        },
-        {
-            key: "discount",
-            label: 'Discount'
-        },
-        {
-            key: "cuponCode",
-            label: 'Cupon Code'
-        },
-        {
-            key: "amount",
-            label: 'Purchased Price'
-        },
-        {
-            key: "transactionId",
-            label: 'Transaction ID'
-        },
-        {
-            key: "referral",
-            label: 'Referral'
-        },
+        { key: 'name', label: 'Name' },
+        { key: 'email', label: 'Email' },
+        { key: 'courseCount', label: 'Course Purchased' },
+        { key: 'date', label: 'Date of Join' },
+        { key: 'investment', label: 'Investment' },
+        { key: 'referral', label: 'Referral' }
     ]
 
     const columns: ColumnDef<RecordType>[] = [
@@ -189,7 +164,7 @@ const PurchasePage = () => {
                 </Button>
             },
             cell: ({ row }) => (
-                <div className="capitalize">{row.getValue(columnValue.key)}</div>
+                <div className={columnValue.key !== "email" ? "capitalize" : ""}>{row.getValue(columnValue.key)}</div>
             ),
         });
     });
@@ -242,13 +217,24 @@ const PurchasePage = () => {
                     <div className="flex items-center justify-between py-4">
                         <div className="flex flex-col gap-1.5">
                             <CardTitle>
-                                All Purchases
+                                All Users
                             </CardTitle>
                             <CardDescription>
-                                List of all the purchases made by the users.
+                                List of all users.
                             </CardDescription>
                         </div>
                         <div className="flex items-center justify-end gap-4">
+                            <Select>
+                                <SelectTrigger className="w-[180px]">
+                                    <SelectValue placeholder="Theme" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="light">Light</SelectItem>
+                                    <SelectItem value="dark">Dark</SelectItem>
+                                    <SelectItem value="system">System</SelectItem>
+                                </SelectContent>
+                            </Select>
+
                             <Menubar>
                                 <MenubarMenu>
                                     <MenubarTrigger>Columns</MenubarTrigger>
@@ -428,4 +414,4 @@ const PurchasePage = () => {
     )
 }
 
-export default PurchasePage
+export default UsersPage

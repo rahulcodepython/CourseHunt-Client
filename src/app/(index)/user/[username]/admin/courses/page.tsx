@@ -1,10 +1,5 @@
 "use client"
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { CheckIcon } from "@radix-ui/react-icons";
-import { Car, ChevronLeft, ChevronRight, CopyIcon } from "lucide-react";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
+import * as React from "react"
 import {
     ColumnDef,
     SortingState,
@@ -16,15 +11,16 @@ import {
     getSortedRowModel,
     useReactTable, Row as RowType, Table as TableType
 } from "@tanstack/react-table"
-import { ArrowUpDown, ChevronDown } from "lucide-react"
+import { ArrowUpDown, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
     DropdownMenuContent,
-    DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Input } from "@/components/ui/input"
 import {
     Table,
     TableBody,
@@ -48,42 +44,66 @@ import {
     MenubarMenu,
     MenubarTrigger,
 } from "@/components/ui/menubar"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 
-type ReferralType = {
-    id: string;
-    user: string;
-    email: string;
-    date: string;
-    status: "Active" | "Inactive" | "Purchased";
-    reward: number;
+type RecordType = {
+    id: string
+    name: string
+    date: string
+    duration: number
+    chapter: string
+    price: number
+    offer: number
+    cuponCode: string
+    instructor: string
 }
 
-const ReferralsPage = () => {
+const Home = () => {
     const ROWS_PER_PAGE = 2
-    const [data, setData] = React.useState<ReferralType[]>([
+    const [data, setData] = React.useState<RecordType[]>([
         {
             id: "1",
-            user: "John Doe",
-            email: "abc@example.com",
-            date: "01/01/2022",
-            status: "Active",
-            reward: 1
+            name: "Course 1",
+            date: "2021-10-01",
+            duration: 10,
+            chapter: "Chapter 1",
+            price: 100,
+            offer: 0,
+            cuponCode: "Cupon Code 1",
+            instructor: "Instructor 1",
         },
         {
             id: "2",
-            user: "Jane Doe",
-            email: "xyz@example.com",
-            date: "01/01/2022",
-            status: "Inactive",
-            reward: 0
+            name: "Course 2",
+            date: "2021-10-02",
+            duration: 20,
+            chapter: "Chapter 2",
+            price: 200,
+            offer: 0,
+            cuponCode: "Cupon Code 2",
+            instructor: "Instructor 2",
         },
         {
             id: "3",
-            user: "Rahul Das",
-            email: "rahul@example.com",
-            date: "01/01/2022",
-            status: "Purchased",
-            reward: 40
+            name: "Course 3",
+            date: "2021-10-03",
+            duration: 30,
+            chapter: "Chapter 3",
+            price: 300,
+            offer: 0,
+            cuponCode: "Cupon Code 3",
+            instructor: "Instructor 3",
+        },
+        {
+            id: "4",
+            name: "Course 4",
+            date: "2021-10-04",
+            duration: 40,
+            chapter: "Chapter 4",
+            price: 400,
+            offer: 0,
+            cuponCode: "Cupon Code 4",
+            instructor: "Instructor 4",
         },
     ])
     const [sorting, setSorting] = React.useState<SortingState>([])
@@ -101,29 +121,17 @@ const ReferralsPage = () => {
     const rowsOption: (number)[] = [2, 4, 6]
 
     const columnsList = [
-        {
-            key: 'user',
-            label: "User"
-        },
-        {
-            key: 'email',
-            label: "Email"
-        },
-        {
-            key: 'date',
-            label: "Data"
-        },
-        {
-            key: 'status',
-            label: "Status"
-        },
-        {
-            key: 'reward',
-            label: "Reward"
-        }
+        { key: 'name', label: 'Course Name' },
+        { key: 'date', label: 'Published Date' },
+        { key: 'duration', label: 'Duration' },
+        { key: 'chapter', label: 'Chapter' },
+        { key: 'price', label: 'Price' },
+        { key: 'offer', label: 'Offer' },
+        { key: 'cuponCode', label: 'Cupon Code' },
+        { key: 'instructor', label: 'Instructor' },
     ]
 
-    const columns: ColumnDef<ReferralType>[] = [
+    const columns: ColumnDef<RecordType>[] = [
         {
             id: "select",
             accessorKey: "select",
@@ -148,21 +156,37 @@ const ReferralsPage = () => {
             enableHiding: false,
         },
     ];
-    columnsList.forEach((columnName) => {
+    columnsList.forEach((columnValue) => {
         columns.push({
-            id: columnName.key,
-            accessorKey: columnName.key,
+            id: columnValue.key,
+            accessorKey: columnValue.key,
             header: ({ column }) => {
                 return <Button variant="ghost" className="capitalize"
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-                    {columnName.label}
+                    {columnValue.label}
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             },
             cell: ({ row }) => (
-                <div className="capitalize">{row.getValue(columnName.key)}</div>
+                <div className="capitalize">{row.getValue(columnValue.key)}</div>
             ),
         });
+    });
+    columns.push({
+        id: "actions",
+        accessorKey: "actions",
+        enableHiding: false,
+        cell: ({ row }) => {
+            const info = row.original;
+            return <div className={'flex items-center gap-2'}>
+                <Button>
+                    Edit Content
+                </Button>
+                <Button variant={'destructive'}>
+                    Delete
+                </Button>
+            </div>
+        },
     });
 
     const table = useReactTable({
@@ -194,7 +218,6 @@ const ReferralsPage = () => {
 
     React.useEffect(() => {
         const handler = async () => {
-            // fetch next page data
         }
         handler()
     }, [page])
@@ -207,50 +230,18 @@ const ReferralsPage = () => {
         }
     }, [data, totalRecords])
 
-    return <section className="grid gap-4 pt-8">
-        <div className="container mx-auto">
+    return (
+        <div className="w-full p-4">
             <Card>
-                <CardHeader>
-                    <CardTitle>Referrals</CardTitle>
-                    <CardDescription>Share your unique referral link and earn rewards.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="flex items-center justify-between">
-                        <div className="text-sm font-medium">Your Referral Link</div>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button variant="outline" size="sm">
-                                    <CopyIcon className="mr-2 h-4 w-4" />
-                                    Copy
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="center">
-                                <DropdownMenuItem>
-                                    <div className="flex items-center gap-2">
-                                        <CheckIcon className="h-4 w-4" />
-                                        <span>Copied to clipboard!</span>
-                                    </div>
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </div>
-                    <div className="mt-2 flex items-center justify-center rounded-md bg-muted px-3 py-2">
-                        <Input
-                            readOnly
-                            value="https://example.com/referral/abc123"
-                            className="w-full bg-transparent text-center font-medium"
-                        />
-                    </div>
-                </CardContent>
-            </Card>
-        </div>
-        <div className="grid flex-1 items-start gap-4 p-4 sm:p-6 md:gap-8">
-            <div className="grid auto-rows-max items-start gap-4 md:gap-8">
-                <Card x-chunk="dashboard-06-chunk-0">
-                    <CardHeader className="flex flex-row items-center justify-between">
-                        <div className="flex flex-col gap-4 justify-start">
-                            <CardTitle>Purchesed Course</CardTitle>
-                            <CardDescription>View all purchesed course.</CardDescription>
+                <CardHeader className="flex-row justify-between">
+                    <div className="flex items-center justify-between py-4 w-full">
+                        <div className="flex flex-col gap-1.5">
+                            <CardTitle>
+                                All Courses
+                            </CardTitle>
+                            <CardDescription>
+                                List of all courses.
+                            </CardDescription>
                         </div>
                         <div className="flex items-center justify-end gap-4">
                             <Menubar>
@@ -286,25 +277,25 @@ const ReferralsPage = () => {
                                 className="max-w-lg"
                             />
                         </div>
-                    </CardHeader>
-                    <CardContent>
+                    </div>
+                </CardHeader>
+                <CardContent>
+                    <div className="rounded-md border">
                         <Table>
                             <TableHeader>
                                 {
                                     table.getHeaderGroups().map((headerGroup) => (
                                         <TableRow key={headerGroup.id}>
-                                            {
-                                                headerGroup.headers.map((header) => {
-                                                    return <TableHead key={header.id}>
-                                                        {
-                                                            header.isPlaceholder ? null : flexRender(
-                                                                header.column.columnDef.header,
-                                                                header.getContext()
-                                                            )
-                                                        }
-                                                    </TableHead>
-                                                })
-                                            }
+                                            {headerGroup.headers.map((header) => {
+                                                return <TableHead key={header.id}>
+                                                    {
+                                                        header.isPlaceholder ? null : flexRender(
+                                                            header.column.columnDef.header,
+                                                            header.getContext()
+                                                        )
+                                                    }
+                                                </TableHead>
+                                            })}
                                         </TableRow>
                                     ))
                                 }
@@ -340,38 +331,39 @@ const ReferralsPage = () => {
                                 }
                             </TableBody>
                         </Table>
-                        <div className="flex items-center justify-between py-4">
-                            <div className="text-sm text-muted-foreground">
-                                {table.getFilteredSelectedRowModel().rows.length} of{" "}
-                                {table.getFilteredRowModel().rows.length} row(s) selected
-                            </div>
-                            <div className={'text-sm text-muted-foreground'}>
-                                Shows {table.getFilteredRowModel().rows.length < rowsPerPage ? table.getFilteredRowModel().rows.length : rowsPerPage} out
-                                of {table.getFilteredRowModel().rows.length} rows
-                            </div>
+                    </div>
+                    <div className="flex items-center justify-between py-4">
+                        <div className="text-sm text-muted-foreground">
+                            {table.getFilteredSelectedRowModel().rows.length} of{" "}
+                            {table.getFilteredRowModel().rows.length} row(s) selected
                         </div>
-                    </CardContent>
-                    <CardFooter className="justify-center">
-                        <div className={'flex items-center justify-center gap-4'}>
-                            <Pagination className={'w-fit mx-0'}>
-                                <PaginationContent>
-                                    <PaginationItem>
-                                        {
-                                            table.getCanPreviousPage() ? <PaginationPrevious onClick={() => {
-                                                if (table.getCanPreviousPage()) {
-                                                    setPage(page - 1)
-                                                    table.previousPage()
-                                                }
-                                            }} className="cursor-pointer" /> :
-                                                <span className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 gap-1 pl-2.5 cursor-not-allowed opacity-50">
-                                                    <ChevronLeft className="h-4 w-4" />
-                                                    Previous
-                                                </span>
-                                        }
-                                    </PaginationItem>
+                        <div className={'text-sm text-muted-foreground'}>
+                            Shows {table.getFilteredRowModel().rows.length < rowsPerPage ? table.getFilteredRowModel().rows.length : rowsPerPage} out
+                            of {table.getFilteredRowModel().rows.length} rows
+                        </div>
+                    </div>
+                </CardContent>
+                <CardFooter className="justify-center">
+                    <div className={'flex items-center justify-center gap-4'}>
+                        <Pagination className={'w-fit mx-0'}>
+                            <PaginationContent>
+                                <PaginationItem>
                                     {
-                                        Array.from({ length: ((totalRecords / rowsPerPage) + (totalRecords % rowsPerPage === 0 ? 0 : 1)) }, (_, i) => {
-                                            return <PaginationItem key={i} onClick={() => {
+                                        table.getCanPreviousPage() ? <PaginationPrevious onClick={() => {
+                                            if (table.getCanPreviousPage()) {
+                                                setPage(page - 1)
+                                                table.previousPage()
+                                            }
+                                        }} className="cursor-pointer" /> : <span className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 gap-1 pl-2.5 cursor-not-allowed opacity-50">
+                                            <ChevronLeft className="h-4 w-4" />
+                                            Previous
+                                        </span>
+                                    }
+                                </PaginationItem>
+                                {
+                                    Array.from({ length: ((totalRecords / rowsPerPage) + (totalRecords % rowsPerPage === 0 ? 0 : 1)) }, (_, i) => {
+                                        return (
+                                            <PaginationItem key={i} onClick={() => {
                                                 setPage(i + 1)
                                                 table.setPageIndex(i)
                                             }} className="cursor-pointer">
@@ -380,34 +372,36 @@ const ReferralsPage = () => {
                                                         `bg-secondary-foreground text-white hover:bg-secondary-foreground hover:text-white`
                                                         : ''}>{i + 1}</PaginationLink>
                                             </PaginationItem>
-                                        })
-                                    }
-                                    <PaginationItem>
-                                        {
-                                            table.getCanNextPage() ? <PaginationNext onClick={() => {
-                                                if (table.getCanNextPage() || hasNext) {
-                                                    setPage(page + 1)
-                                                    table.nextPage()
-                                                }
-                                            }} className="cursor-pointer" /> :
-                                                <span className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 gap-1 pl-2.5 cursor-not-allowed opacity-50">
-                                                    Next
-                                                    <ChevronRight className="h-4 w-4" />
-                                                </span>
-                                        }
-                                    </PaginationItem>
-                                </PaginationContent>
-                            </Pagination>
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button variant="outline">
-                                        {rowsPerPage} <ChevronDown className="ml-2 h-4 w-4" />
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
+                                        )
+                                    })
+                                }
+                                <PaginationItem>
                                     {
-                                        rowsOption.map((option) => {
-                                            return <DropdownMenuCheckboxItem
+                                        table.getCanNextPage() ? <PaginationNext onClick={() => {
+                                            if (table.getCanNextPage() || hasNext) {
+                                                setPage(page + 1)
+                                                table.nextPage()
+                                            }
+                                        }} className="cursor-pointer" /> :
+                                            <span className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 gap-1 pr-2.5 cursor-not-allowed opacity-50">
+                                                Next
+                                                <ChevronRight className="h-4 w-4" />
+                                            </span>
+                                    }
+                                </PaginationItem>
+                            </PaginationContent>
+                        </Pagination>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="outline">
+                                    {rowsPerPage} <ChevronDown className="ml-2 h-4 w-4" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                {
+                                    rowsOption.map((option) => {
+                                        return (
+                                            <DropdownMenuCheckboxItem
                                                 key={option}
                                                 className="capitalize"
                                                 checked={rowsPerPageDropDown === option}
@@ -415,20 +409,20 @@ const ReferralsPage = () => {
                                                     table.setPageSize(option)
                                                     setRowsPerPage(option)
                                                     setRowsPerPageDropDown(option)
-                                                }}>
+                                                }}
+                                            >
                                                 {option}
                                             </DropdownMenuCheckboxItem>
-                                        })
-                                    }
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </div>
-                    </CardFooter>
-                </Card>
-            </div>
+                                        )
+                                    })
+                                }
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
+                </CardFooter>
+            </Card>
         </div>
-    </section>
+    )
 }
 
-
-export default ReferralsPage;
+export default Home

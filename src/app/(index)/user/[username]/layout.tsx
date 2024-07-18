@@ -14,6 +14,7 @@ import { MdOutlineFeedback } from "react-icons/md";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { usePathname } from "next/navigation";
 import { MdOutlineReportGmailerrorred } from "react-icons/md";
+import { TbPassword } from "react-icons/tb";
 
 const UsernameLayout = ({ children }: { children: React.ReactNode }) => {
     const authContext: AuthContextType | undefined = React.useContext(AuthContext);
@@ -41,6 +42,21 @@ const UsernameLayout = ({ children }: { children: React.ReactNode }) => {
             name: "Feedback",
             icon: <MdOutlineFeedback className="h-5 w-5" />,
             href: `/user/${user?.username}/admin/feedback`,
+        },
+        {
+            name: "Courses",
+            icon: <BookIcon className="h-5 w-5" />,
+            href: `/user/${user?.username}/admin/courses`,
+        },
+        {
+            name: "Users",
+            icon: <UserIcon className="h-5 w-5" />,
+            href: `/user/${user?.username}/admin/users`,
+        },
+        {
+            name: "Cupone Codes",
+            icon: <TbPassword className="h-5 w-5" />,
+            href: `/user/${user?.username}/admin/cupone-codes`,
         },
     ] : [
         {

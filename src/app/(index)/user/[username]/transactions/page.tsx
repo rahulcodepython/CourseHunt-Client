@@ -3,13 +3,6 @@ import React from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
-import { CircleCheckIcon } from "@/utils/icons"
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button";
 
 const TransactionsPage = () => {
@@ -19,6 +12,9 @@ const TransactionsPage = () => {
             course: "Course 1",
             date: "2021-10-01",
             amount: 100,
+            off: 0,
+            cuponCode: "CUPON-001",
+            purchasedPrice: 100,
             status: "success",
         },
         {
@@ -26,6 +22,9 @@ const TransactionsPage = () => {
             course: "Course 2",
             date: "2021-10-02",
             amount: 200,
+            off: 0,
+            cuponCode: "CUPON-001",
+            purchasedPrice: 100,
             status: "success",
         },
         {
@@ -33,6 +32,9 @@ const TransactionsPage = () => {
             course: "Course 3",
             date: "2021-10-03",
             amount: 300,
+            off: 0,
+            cuponCode: "CUPON-001",
+            purchasedPrice: 100,
             status: "success",
         },
         {
@@ -40,6 +42,9 @@ const TransactionsPage = () => {
             course: "Course 4",
             date: "2021-10-04",
             amount: 400,
+            off: 0,
+            cuponCode: "CUPON-001",
+            purchasedPrice: 100,
             status: "success",
         },
     ]
@@ -60,6 +65,9 @@ const TransactionsPage = () => {
                                 <TableHead>Status</TableHead>
                                 <TableHead>Date</TableHead>
                                 <TableHead>Amount</TableHead>
+                                <TableHead>Offer</TableHead>
+                                <TableHead>Cupone Code</TableHead>
+                                <TableHead>Purchased Price</TableHead>
                                 <TableHead>Invoice</TableHead>
                             </TableRow>
                         </TableHeader>
@@ -83,6 +91,15 @@ const TransactionsPage = () => {
                                         </TableCell>
                                         <TableCell>
                                             {item.amount}
+                                        </TableCell>
+                                        <TableCell>
+                                            {item.off}
+                                        </TableCell>
+                                        <TableCell>
+                                            {item.cuponCode}
+                                        </TableCell>
+                                        <TableCell>
+                                            {item.purchasedPrice}
                                         </TableCell>
                                         <TableCell>
                                             <Button variant="secondary" size="sm">
