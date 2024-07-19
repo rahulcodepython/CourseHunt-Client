@@ -45,6 +45,22 @@ import {
     MenubarTrigger,
 } from "@/components/ui/menubar"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+import { Tabs, TabsContent } from "@/components/ui/tabs"
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "@/components/ui/accordion"
+import { Field, FieldArray, Form, Formik } from "formik"
 
 type RecordType = {
     id: string
@@ -244,6 +260,7 @@ const Home = () => {
                             </CardDescription>
                         </div>
                         <div className="flex items-center justify-end gap-4">
+                            <CreateCourse />
                             <Menubar>
                                 <MenubarMenu>
                                     <MenubarTrigger>Columns</MenubarTrigger>
@@ -421,6 +438,242 @@ const Home = () => {
                     </div>
                 </CardFooter>
             </Card>
+        </div>
+    )
+}
+
+const CreateCourse = () => {
+    const [tabValue, setTabValue] = React.useState<string>('course-basic')
+    const [tabsList, setTabsList] = React.useState<string[]>(['course-basic', 'course-chapter', 'password-2', 'password-3'])
+    const [pageIndex, setPageIndex] = React.useState<number>(0)
+    const [totalChapter, setTotalChapter] = React.useState<number>(5)
+
+    return <Dialog>
+        <DialogTrigger>
+            <Button>
+                Create Course
+            </Button>
+        </DialogTrigger>
+        <DialogContent className="max-w-7xl">
+            <DialogHeader className="space-y-0">
+                <DialogTitle className="pb-6 text-2xl">Create Course</DialogTitle>
+                <DialogDescription>
+                    <Card>
+                        <CardContent className="pt-6 max-h-[500px] h-full overflow-y-scroll">
+                            <Tabs defaultValue={tabsList[0]} value={tabValue} onValueChange={setTabValue} className="w-full">
+                                <TabsContent value="course-basic" className="mt-0">
+                                    <CourseBasic />
+                                </TabsContent>
+                                <TabsContent value="course-chapter" className="mt-0">
+                                    <CourseChapter totalChapter={totalChapter} />
+                                </TabsContent>
+                                <TabsContent value="password-2" className="mt-0">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eaque, animi.</TabsContent>
+                                <TabsContent value="password-3" className="mt-0">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Accusamus quam, ut explicabo nam dolores libero a dolor reiciendis obcaecati asperiores.</TabsContent>
+                            </Tabs>
+                        </CardContent>
+                        <CardFooter className="border-t p-6 justify-end gap-6">
+                            <Button onClick={() => {
+                                if (pageIndex > 0) {
+                                    setPageIndex(pageIndex - 1)
+                                    setTabValue(tabsList[pageIndex - 1])
+                                }
+                            }} disabled={pageIndex === 0} className="pl-2.5 items-center">
+                                <ChevronLeft className="h-4 w-4" />
+                                Previous
+                            </Button>
+                            <Button onClick={() => {
+                                if (pageIndex < tabsList.length - 1) {
+                                    setPageIndex(pageIndex + 1)
+                                    setTabValue(tabsList[pageIndex + 1])
+                                }
+                            }} disabled={pageIndex === tabsList.length - 1} className="pr-2.5 items-center">
+                                Next
+                                <ChevronRight className="h-4 w-4" />
+                            </Button>
+                        </CardFooter>
+                    </Card>
+                </DialogDescription>
+            </DialogHeader>
+        </DialogContent>
+    </Dialog>
+}
+
+const CourseBasic = () => {
+    return <form>
+        <div className="grid grid-cols-1 gap-4">
+            <div>
+                <label htmlFor="name" className="block text-sm font-medium text-muted-foreground">Course Name</label>
+                <Input
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="Enter course name"
+                    className="mt-1"
+                />
+            </div>
+            <div>
+                <label htmlFor="date" className="block text-sm font-medium text-muted-foreground">Published Date</label>
+                <Input
+                    type="date"
+                    id="date"
+                    name="date"
+                    className="mt-1"
+                />
+            </div>
+            <div>
+                <label htmlFor="duration" className="block text-sm font-medium text-muted-foreground">Duration</label>
+                <Input
+                    type="number"
+                    id="duration"
+                    name="duration"
+                    placeholder="Enter duration"
+                    className="mt-1"
+                />
+            </div>
+            <div>
+                <label htmlFor="chapter" className="block text-sm font-medium text-muted-foreground">Chapter</label>
+                <Input
+                    type="text"
+                    id="chapter"
+                    name="chapter"
+                    placeholder="Enter chapter"
+                    className="mt-1"
+                />
+            </div>
+            <div>
+                <label htmlFor="price" className="block text-sm font-medium text-muted-foreground">Price</label>
+                <Input
+                    type="number"
+                    id="price"
+                    name="price"
+                    placeholder="Enter price"
+                    className="mt-1"
+                />
+            </div>
+            <div>
+                <label htmlFor="offer" className="block text-sm font-medium text-muted-foreground">Offer</label>
+                <Input
+                    type="number"
+                    id="offer"
+                    name="offer"
+                    placeholder="Enter offer"
+                    className="mt-1"
+                />
+            </div>
+            <div>
+                <label htmlFor="cuponCode" className="block text-sm font-medium text-muted-foreground">Cupon Code</label>
+                <Input
+                    type="text"
+                    id="cuponCode"
+                    name="cuponCode"
+                    placeholder="Enter cupon code"
+                    className="mt-1"
+                />
+            </div>
+            <div>
+                <label htmlFor="instructor" className="block text-sm font-medium text-muted-foreground">Instructor</label>
+                <Input
+                    type="text"
+                    id="instructor"
+
+                    name="instructor"
+                    placeholder="Enter instructor"
+                    className="mt-1"
+                />
+            </div>
+        </div>
+    </form>
+}
+
+const CourseChapter = ({ totalChapter }: { totalChapter: number }) => {
+    const [lessonValue, setLessonValue] = React.useState<string>('')
+
+    return <Formik initialValues={{
+        // fields: Array.from({ length: totalChapter }, () => ({ label: '', lessons: [''] })),
+        fields: [{ label: '', lessons: [] }],
+    }} onSubmit={values => console.log(values)}>
+        {
+            ({
+                values,
+                handleChange,
+                handleBlur,
+                handleSubmit,
+                isSubmitting,
+            }) => {
+                return <Form>
+                    <FieldArray name="fields">
+                        {({ push, remove }) => {
+                            return <Accordion type="single" collapsible className="w-full">
+                                {
+                                    values.fields.map((_, i) => {
+                                        return <AccordionItem key={i} value={`item-${i + 1}`} className="last:border-b-0">
+                                            <AccordionTrigger className="hover:no-underline">
+                                                <CustomField name={`fields.${i}.label`} placeholder={'Lesson Name'} />
+                                            </AccordionTrigger>
+                                            <AccordionContent className="px-6">
+                                                <FieldArray name={`fields.${i}.lessons`}>
+                                                    {({ push, remove }) => {
+                                                        return <div className="flex flex-col gap-4">
+                                                            <div className="flex items-center gap-6">
+                                                                <Input value={lessonValue} onChange={e => setLessonValue(e.target.value)} />
+                                                                <Button onClick={() => {
+                                                                    if (lessonValue.length > 0) {
+                                                                        push(lessonValue)
+                                                                        setLessonValue('')
+                                                                    }
+                                                                }} type="button">
+                                                                    Add Lesson
+                                                                </Button>
+                                                            </div>
+                                                            <div className="flex flex-col gap-4">
+                                                                {
+                                                                    values.fields[i].lessons.map((lesson, j) => {
+                                                                        return <div key={j} className="flex items-center gap-6">
+                                                                            <p className="w-full bg-accent rounded-md p-2">{lesson}</p>
+                                                                            <Button onClick={() => {
+                                                                                remove(j)
+                                                                            }} type="button">
+                                                                                Remove Lesson
+                                                                            </Button>
+                                                                        </div>
+                                                                    })
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    }}
+                                                </FieldArray>
+                                            </AccordionContent>
+                                        </AccordionItem>
+                                    })
+                                }
+                                <div className="flex justify-end items-center pt-4">
+                                    {
+                                        values.fields.length < totalChapter ? <Button onClick={() => push({ label: '', lessons: [] })} type="button">
+                                            Add Chapter
+                                        </Button> : <Button onClick={() => handleSubmit} type="submit">
+                                            Save Changes
+                                        </Button>
+                                    }
+                                </div>
+                            </Accordion>
+                        }}
+                    </FieldArray>
+                </Form>
+            }
+        }
+    </Formik>
+}
+
+
+const CustomField = ({ ...props }) => {
+    return <Field {...props} className="flex h-10 w-full bg-accent rounded-md px-3 py-2 mr-6 text-sm placeholder:text-muted-foreground focus:outline-none" />
+}
+
+
+const EditCourse = () => {
+    return (
+        <div>
+            Edit Course
         </div>
     )
 }
