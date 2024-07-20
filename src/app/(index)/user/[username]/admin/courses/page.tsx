@@ -62,6 +62,7 @@ import {
 } from "@/components/ui/accordion"
 import { Field, FieldArray, Form, Formik } from "formik"
 import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 
 type RecordType = {
     id: string
@@ -71,12 +72,14 @@ type RecordType = {
     chapter: string
     price: number
     offer: number
+    status: 'published' | 'draft'
     cuponCode: string
     instructor: string
 }
 type CourseBasicDataType = {
     name: string
-    date: string
+    description: string
+    overview: string
     duration: number
     chapter: number
     price: number
@@ -86,6 +89,10 @@ type CourseBasicDataType = {
 }
 type CourseChapterDataType = {
     chapters: { label: string, lessons: string[] }[]
+}
+type CourseFAQDataType = {
+    question: string
+    answer: string
 }
 
 const CoursesPage = () => {
@@ -99,6 +106,7 @@ const CoursesPage = () => {
             chapter: "Chapter 1",
             price: 100,
             offer: 0,
+            status: 'published',
             cuponCode: "Cupon Code 1",
             instructor: "Instructor 1",
         },
@@ -110,6 +118,7 @@ const CoursesPage = () => {
             chapter: "Chapter 2",
             price: 200,
             offer: 0,
+            status: 'published',
             cuponCode: "Cupon Code 2",
             instructor: "Instructor 2",
         },
@@ -121,6 +130,7 @@ const CoursesPage = () => {
             chapter: "Chapter 3",
             price: 300,
             offer: 0,
+            status: 'published',
             cuponCode: "Cupon Code 3",
             instructor: "Instructor 3",
         },
@@ -132,6 +142,7 @@ const CoursesPage = () => {
             chapter: "Chapter 4",
             price: 400,
             offer: 0,
+            status: 'draft',
             cuponCode: "Cupon Code 4",
             instructor: "Instructor 4",
         },
@@ -157,6 +168,7 @@ const CoursesPage = () => {
         { key: 'chapter', label: 'Chapter' },
         { key: 'price', label: 'Price' },
         { key: 'offer', label: 'Offer' },
+        { key: 'status', label: 'Status' },
         { key: 'cuponCode', label: 'Cupon Code' },
         { key: 'instructor', label: 'Instructor' },
     ]
@@ -198,7 +210,14 @@ const CoursesPage = () => {
                 </Button>
             },
             cell: ({ row }) => (
-                <div className="capitalize">{row.getValue(columnValue.key)}</div>
+                <div className="capitalize">
+                    {
+                        columnValue.key === 'status' ? <span
+                            className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${row.getValue(columnValue.key) === 'published' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                            {row.getValue(columnValue.key)}
+                        </span> : row.getValue(columnValue.key)
+                    }
+                </div>
             ),
         });
     });
@@ -208,11 +227,10 @@ const CoursesPage = () => {
         enableHiding: false,
         cell: ({ row }) => {
             const info = row.original;
-            return <div className={'flex items-center gap-2'}>
-                <Button>
-                    Edit Content
-                </Button>
-                <Button variant={'destructive'}>
+            return <div className={'flex flex-col items-center gap-2'}>
+
+                <EditCourse />
+                <Button variant={'destructive'} className="w-full">
                     Delete
                 </Button>
             </div>
@@ -274,7 +292,7 @@ const CoursesPage = () => {
                             </CardDescription>
                         </div>
                         <div className="flex items-center justify-end gap-4">
-                            <CreateCourse />
+                            <CourseModulation action="create" defaultValue={null} />
                             <Menubar>
                                 <MenubarMenu>
                                     <MenubarTrigger>Columns</MenubarTrigger>
@@ -456,14 +474,31 @@ const CoursesPage = () => {
     )
 }
 
-const CreateCourse = () => {
+type CourseDataType = {
+    basic: {
+        name: string
+        description: string
+        overview: string
+        duration: number
+        chapter: number
+        price: number
+        offer: number
+        cuponCode: string
+        instructor: string
+    }
+    chapters: { label: string, lessons: string[] }[]
+    faq: { question: string, answer: string }[]
+}
+
+const CourseModulation = ({ action, defaultValue }: { action: "update" | "create", defaultValue: CourseDataType | null }) => {
     const [tabValue, setTabValue] = React.useState<string>('course-basic')
-    const [tabsList, setTabsList] = React.useState<string[]>(['course-basic', 'course-chapter'])
+    const [tabsList, setTabsList] = React.useState<string[]>(['course-basic', 'course-chapter', 'course-faq'])
     const [pageIndex, setPageIndex] = React.useState<number>(0)
-    const [totalChapter, setTotalChapter] = React.useState<number>(0)
-    const [courseBasicData, setCourseBasicData] = React.useState<CourseBasicDataType>({
+    const [totalChapter, setTotalChapter] = React.useState<number>((action === 'update' && defaultValue) ? defaultValue.basic.chapter : 0)
+    const [courseBasicData, setCourseBasicData] = React.useState<CourseBasicDataType>((action === 'update' && defaultValue) ? defaultValue.basic : {
         name: '',
-        date: '',
+        description: '',
+        overview: '',
         duration: 0,
         chapter: 0,
         price: 0,
@@ -472,6 +507,7 @@ const CreateCourse = () => {
         instructor: '',
     })
     const [courseChapterData, setCourseChapterData] = React.useState<CourseChapterDataType | null>(null)
+    const [courseFAQData, setCourseFAQData] = React.useState<CourseFAQDataType[]>([])
 
     React.useEffect(() => {
         setTabValue(tabsList[pageIndex])
@@ -485,7 +521,11 @@ const CreateCourse = () => {
         </DialogTrigger>
         <DialogContent className="max-w-7xl">
             <DialogHeader className="space-y-0">
-                <DialogTitle className="pb-6 text-2xl">Create Course hi {tabsList.length}</DialogTitle>
+                <DialogTitle className="pb-6 text-2xl">
+                    {
+                        action === 'update' ? 'Edit Course' : 'Create Course'
+                    }
+                </DialogTitle>
                 <DialogDescription>
                     <Card>
                         <CardContent className="pt-6 max-h-[500px] h-full overflow-y-scroll">
@@ -494,15 +534,11 @@ const CreateCourse = () => {
                                     <CourseBasic setTotalChapter={setTotalChapter} courseBasicData={courseBasicData} setCourseBasicData={setCourseBasicData} setPageIndex={setPageIndex} />
                                 </TabsContent>
                                 <TabsContent value="course-chapter" className="mt-0">
-                                    <CourseChapter totalChapter={totalChapter} setCourseChapterData={setCourseChapterData} setPageIndex={setPageIndex} tabsList={tabsList} />
+                                    <CourseChapter totalChapter={totalChapter} setCourseChapterData={setCourseChapterData} setPageIndex={setPageIndex} action={action} defaultChaptersValue={defaultValue?.chapters} />
                                 </TabsContent>
-                                {
-                                    tabsList.slice(2, tabsList.length).map((tab, i) => {
-                                        return <TabsContent key={i} value={tab} className="mt-0">
-                                            {tab}
-                                        </TabsContent>
-                                    })
-                                }
+                                <TabsContent value="course-faq" className="mt-0">
+                                    <CourseFAQ setCourseFAQData={setCourseFAQData} action={action} defaultFAQValue={defaultValue?.faq} />
+                                </TabsContent>
                             </Tabs>
                         </CardContent>
                         <CardFooter className="border-t p-6 justify-end gap-6">
@@ -514,16 +550,20 @@ const CreateCourse = () => {
                                 <ChevronLeft className="h-4 w-4" />
                                 Previous
                             </Button>
-                            <Button onClick={() => {
-                                console.log("Course Basic Data", courseBasicData)
-                                console.log("Course Chapter Data", courseChapterData)
-                                if (pageIndex < tabsList.length - 1) {
-                                    setPageIndex(pageIndex + 1)
-                                }
-                            }} disabled={pageIndex === tabsList.length - 1} className="pr-2.5 items-center">
-                                Next
-                                <ChevronRight className="h-4 w-4" />
-                            </Button>
+                            {
+                                pageIndex === tabsList.length - 1 ? <Button>
+                                    Create Course
+                                </Button> : <Button onClick={() => {
+                                    console.log("Course Basic Data", courseBasicData)
+                                    console.log("Course Chapter Data", courseChapterData)
+                                    if (pageIndex < tabsList.length - 1) {
+                                        setPageIndex(pageIndex + 1)
+                                    }
+                                }} disabled={pageIndex === tabsList.length - 1} className="pr-2.5 items-center">
+                                    Next
+                                    <ChevronRight className="h-4 w-4" />
+                                </Button>
+                            }
                         </CardFooter>
                     </Card>
                 </DialogDescription>
@@ -563,90 +603,95 @@ const CourseBasic = ({ setTotalChapter, courseBasicData, setCourseBasicData, set
                     />
                 </div>
                 <div>
-                    <Label htmlFor="date" className="block text-sm font-medium text-muted-foreground">Published Date</Label>
-                    <Input
-                        type="date"
-                        id="date"
-                        name="date"
-                        className="mt-1"
-                        value={values.date}
-                        onChange={handleChange}
-                    />
+                    <Label htmlFor="description" className="block text-sm font-medium text-muted-foreground">Description</Label>
+                    <Textarea className="mt-1" value={values.description} onChange={handleChange} id="description">
+                    </Textarea>
                 </div>
                 <div>
-                    <Label htmlFor="duration" className="block text-sm font-medium text-muted-foreground">Duration</Label>
-                    <Input
-                        type="number"
-                        id="duration"
-                        name="duration"
-                        placeholder="Enter duration"
-                        className="mt-1"
-                        value={values.duration}
-                        onChange={handleChange}
-                    />
+                    <Label htmlFor="overview" className="block text-sm font-medium text-muted-foreground">Overview</Label>
+                    <Textarea className="mt-1" value={values.overview} onChange={handleChange} id="overview">
+                    </Textarea>
                 </div>
-                <div>
-                    <Label htmlFor="chapter" className="block text-sm font-medium text-muted-foreground">Chapter</Label>
-                    <Input
-                        type="text"
-                        id="chapter"
-                        name="chapter"
-                        placeholder="Enter chapter"
-                        className="mt-1"
-                        value={values.chapter}
-                        onChange={(e) => {
-                            setTotalChapter(parseInt(e.target.value))
-                            handleChange(e)
-                        }}
-                    />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <Label htmlFor="duration" className="block text-sm font-medium text-muted-foreground">Duration</Label>
+                        <Input
+                            type="number"
+                            id="duration"
+                            name="duration"
+                            placeholder="Enter duration"
+                            className="mt-1"
+                            value={values.duration}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div>
+                        <Label htmlFor="chapter" className="block text-sm font-medium text-muted-foreground">Chapter</Label>
+                        <Input
+                            type="text"
+                            id="chapter"
+                            name="chapter"
+                            placeholder="Enter chapter"
+                            className="mt-1"
+                            value={values.chapter}
+                            onChange={(e) => {
+                                setTotalChapter(parseInt(e.target.value))
+                                handleChange(e)
+                            }}
+                        />
+                    </div>
                 </div>
-                <div>
-                    <Label htmlFor="price" className="block text-sm font-medium text-muted-foreground">Price</Label>
-                    <Input
-                        type="number"
-                        id="price"
-                        name="price"
-                        placeholder="Enter price"
-                        className="mt-1"
-                        value={values.price}
-                        onChange={handleChange}
-                    />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <Label htmlFor="price" className="block text-sm font-medium text-muted-foreground">Price</Label>
+                        <Input
+                            type="number"
+                            id="price"
+                            name="price"
+                            placeholder="Enter price"
+                            className="mt-1"
+                            value={values.price}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div>
+                        <Label htmlFor="offer" className="block text-sm font-medium text-muted-foreground">Offer</Label>
+                        <Input
+                            type="number"
+                            id="offer"
+                            name="offer"
+                            placeholder="Enter offer"
+                            className="mt-1"
+                            value={values.offer}
+                            onChange={handleChange}
+                        />
+                    </div>
                 </div>
-                <div>
-                    <Label htmlFor="offer" className="block text-sm font-medium text-muted-foreground">Offer</Label>
-                    <Input
-                        type="number"
-                        id="offer"
-                        name="offer"
-                        placeholder="Enter offer"
-                        className="mt-1"
-                        value={values.offer}
-                        onChange={handleChange}
-                    />
-                </div>
-                <div>
-                    <Label htmlFor="cuponCode" className="block text-sm font-medium text-muted-foreground">Cupon Code</Label>
-                    <Input
-                        type="text"
-                        id="cuponCode"
-                        name="cuponCode"
-                        placeholder="Enter cupon code"
-                        className="mt-1"
-                        value={values.cuponCode}
-                        onChange={handleChange}
-                    />
-                </div>
-                <div>
-                    <Label htmlFor="instructor" className="block text-sm font-medium text-muted-foreground">Instructor</Label>
-                    <Input
-                        type="text"
-                        id="instructor"
-                        name="instructor"
-                        placeholder="Enter instructor"
-                        className="mt-1"
-                        value={values.instructor}
-                        onChange={handleChange}
-                    />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <Label htmlFor="cuponCode" className="block text-sm font-medium text-muted-foreground">Cupon Code</Label>
+                        <Input
+                            type="text"
+                            id="cuponCode"
+                            name="cuponCode"
+                            placeholder="Enter cupon code"
+                            className="mt-1"
+                            value={values.cuponCode}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div>
+                        <Label htmlFor="instructor" className="block text-sm font-medium text-muted-foreground">Instructor</Label>
+                        <Input
+                            type="text"
+                            id="instructor"
+                            name="instructor"
+                            placeholder="Enter instructor"
+                            className="mt-1"
+                            value={values.instructor}
+                            onChange={handleChange}
+                        />
+                    </div>
                 </div>
                 <div className="flex justify-end">
                     {
@@ -667,12 +712,13 @@ const CourseBasic = ({ setTotalChapter, courseBasicData, setCourseBasicData, set
     </Formik>
 }
 
-const CourseChapter = ({ totalChapter, setCourseChapterData, setPageIndex, tabsList }:
+const CourseChapter = ({ totalChapter, setCourseChapterData, setPageIndex, action, defaultChaptersValue }:
     {
         totalChapter: number,
         setCourseChapterData: React.Dispatch<React.SetStateAction<CourseChapterDataType | null>>,
         setPageIndex: React.Dispatch<React.SetStateAction<number>>,
-        tabsList: string[]
+        action: string,
+        defaultChaptersValue: { label: string, lessons: string[] }[] | undefined
     }) => {
     const [lessonValue, setLessonValue] = React.useState<string>('')
     const [submited, setSubmited] = React.useState<boolean>(false)
@@ -683,29 +729,17 @@ const CourseChapter = ({ totalChapter, setCourseChapterData, setPageIndex, tabsL
         }, 2000)
     }, [submited])
 
-    const AddChapterLessonsInTabsList = (values: {
-        chapters: {
-            label: string;
-            lessons: never[];
-        }[];
-    }) => {
-        values.chapters.map((value, i) => {
-            value.lessons.map((lesson, j) => {
-                tabsList.push(`chapter-${i + 1}-lessson-${j + 1}`)
-            })
-        })
-    }
-
     return <Formik initialValues={{
-        chapters: Array.from({ length: totalChapter }, () => ({ label: '', lessons: [] }))
+        lessonValue: '',
+        chapters: (action === 'update' && defaultChaptersValue) ?
+            defaultChaptersValue : Array.from({ length: totalChapter }, () => ({ label: '', lessons: [] }))
     }} onSubmit={values => {
         setCourseChapterData?.(values)
         setSubmited(true)
         setPageIndex(pre => pre + 1)
-        AddChapterLessonsInTabsList(values)
     }}>
         {
-            ({ values, handleSubmit }) => {
+            ({ values, handleSubmit, setFieldValue, handleChange }) => {
                 return <Form>
                     <FieldArray name="chapters">
                         {
@@ -736,7 +770,7 @@ const CourseChapter = ({ totalChapter, setCourseChapterData, setPageIndex, tabsL
                                                                     {
                                                                         values.chapters[i].lessons.map((lesson, j) => {
                                                                             return <div key={j} className="flex items-center gap-6">
-                                                                                <p className="w-full bg-accent rounded-md p-2">{lesson}</p>
+                                                                                <UpdateLessonValueInputComponent lessonValue={lesson} values={values} i={i} j={j} />
                                                                                 <Button onClick={() => {
                                                                                     remove(j)
                                                                                 }} type="button">
@@ -753,21 +787,112 @@ const CourseChapter = ({ totalChapter, setCourseChapterData, setPageIndex, tabsL
                                             </AccordionItem>
                                         })
                                     }
-                                    <div className="flex justify-end items-center pt-4">
-                                        {
-                                            submited ? <Button type="button">
-                                                <CheckIcon className="h-4 w-4 mr-2" />
-                                                Saved Changes
-                                            </Button> : <Button
-                                                onClick={() => handleSubmit()} type="submit">
-                                                Save Changes
-                                            </Button>
-                                        }
-                                    </div>
+                                    {
+                                        totalChapter > 0 ? <div className="flex justify-end items-center pt-4">
+                                            {
+                                                submited ? <Button type="button">
+                                                    <CheckIcon className="h-4 w-4 mr-2" />
+                                                    Saved Changes
+                                                </Button> : <Button
+                                                    onClick={() => handleSubmit()} type="submit">
+                                                    Save Changes
+                                                </Button>
+                                            }
+                                        </div> : null
+                                    }
                                 </Accordion>
                             }
                         }
                     </FieldArray>
+                </Form>
+            }
+        }
+    </Formik>
+}
+
+type FormCourseFAQDataType = {
+    question: string
+    answer: string
+    faq: { question: string, answer: string }[]
+}
+
+const UpdateLessonValueInputComponent = ({ lessonValue, values, i, j }: {
+    lessonValue: string,
+    values: { chapters: { label: string, lessons: string[] }[] },
+    i: number,
+    j: number
+}) => {
+    const [value, setValue] = React.useState<string>(lessonValue)
+    return <Input className="w-full bg-accent rounded-md p-2" value={value} onChange={e => {
+        setValue(e.target.value)
+        values.chapters[i].lessons[j] = e.target.value
+    }} />
+}
+
+const CourseFAQ = ({ setCourseFAQData, action, defaultFAQValue }: {
+    setCourseFAQData: React.Dispatch<React.SetStateAction<CourseFAQDataType[]>>,
+    action: "update" | "create"
+    defaultFAQValue: { question: string, answer: string }[] | undefined
+}) => {
+    const initialValues: FormCourseFAQDataType = {
+        question: '',
+        answer: '',
+        faq: (action === 'update' && defaultFAQValue) ? defaultFAQValue : []
+    }
+
+    return <Formik initialValues={initialValues} onSubmit={values => setCourseFAQData?.(values.faq)}>
+        {
+            ({ values, handleSubmit, handleChange, setFieldValue }) => {
+                return <Form className="space-y-8">
+                    <FieldArray name="faq">
+                        {
+                            ({ push, remove }) => {
+                                return <div className="space-y-12">
+                                    <div className="space-y-4">
+                                        <Input placeholder="Enter Question" value={values.question} onChange={handleChange} name="question" />
+                                        <Textarea placeholder="Enter Answer" value={values.answer} onChange={handleChange} name="answer" />
+                                        <div className="flex justify-end items-center">
+                                            <Button onClick={() => {
+                                                push({ question: values.question, answer: values.answer })
+                                                setFieldValue('question', '')
+                                                setFieldValue('answer', '')
+                                            }}>
+                                                Add FAQ
+                                            </Button>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <Accordion type="single" collapsible className="w-full">
+                                            {
+                                                values.faq.map((faq, i) => {
+                                                    return <AccordionItem value={'item-' + i} key={i}>
+                                                        <AccordionTrigger>
+                                                            <div className="flex items-center justify-between w-full mr-8">
+                                                                {faq.question}
+                                                                <Button onClick={() => {
+                                                                    remove(i)
+                                                                }}>
+                                                                    Remove FAQ
+                                                                </Button>
+                                                            </div>
+                                                        </AccordionTrigger>
+                                                        <AccordionContent>
+                                                            {faq.answer}
+                                                        </AccordionContent>
+                                                    </AccordionItem>
+                                                })
+                                            }
+                                        </Accordion>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </FieldArray>
+                    <div className="flex justify-end items-center">
+                        <Button onClick={() => handleSubmit()} type="submit">
+                            Save Changes
+                        </Button>
+                    </div>
                 </Form>
             }
         }
@@ -779,11 +904,40 @@ const CustomField = ({ ...props }) => {
 }
 
 const EditCourse = () => {
-    return (
-        <div>
-            Edit Course
-        </div>
-    )
+    const defaultValue: CourseDataType = {
+        basic: {
+            name: 'Course 1',
+            description: 'Course Description',
+            overview: 'Course Overview',
+            duration: 10,
+            chapter: 2,
+            price: 100,
+            offer: 0,
+            cuponCode: 'Cupon Code',
+            instructor: 'Instructor',
+        },
+        chapters: [
+            {
+                label: 'Chapter 1',
+                lessons: ['Lesson 1', 'Lesson 2']
+            },
+            {
+                label: 'Chapter 2',
+                lessons: ['Lesson 1', 'Lesson 2']
+            }
+        ],
+        faq: [
+            {
+                question: 'Question 1',
+                answer: 'Answer 1'
+            },
+            {
+                question: 'Question 2',
+                answer: 'Answer 2'
+            }
+        ]
+    }
+    return <CourseModulation action={'update'} defaultValue={defaultValue} />
 }
 
 export default CoursesPage
