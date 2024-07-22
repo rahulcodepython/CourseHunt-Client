@@ -13,7 +13,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
         if (isAuthenticated) {
             router.push("/");
         }
-    }, [isAuthenticated]);
+    }, [isAuthenticated, router]);
 
     return isAuthenticated ? null : children
 }

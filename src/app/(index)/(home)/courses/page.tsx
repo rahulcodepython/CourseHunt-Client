@@ -11,6 +11,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
+import Image from "next/image";
 
 const Courses = () => {
     return (
@@ -69,7 +70,7 @@ const Courses = () => {
                         Array.from({ length: 6 }).map((_, i) => {
                             return <div className="flex items-center justify-center w-full" key={i}>
                                 <Card className="w-full max-w-md">
-                                    <img src="/placeholder.svg" alt="Course thumbnail" className="rounded-t-lg object-cover w-full aspect-[2/1]" />
+                                    <Image src="/placeholder.svg" alt="Course thumbnail" className="rounded-t-lg object-cover w-full aspect-[2/1]" />
                                     <CardContent className="p-6 grid gap-6">
                                         <div className="space-y-2">
                                             <Link href={`/course/${i}`} className="text-xl font-semibold hover:underline">

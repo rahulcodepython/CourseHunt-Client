@@ -209,7 +209,9 @@ const CoursePage = () => {
                 <div className="container grid gap-6 px-4 md:px-6 space-y-4">
                     <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Course Overview</h2>
                     <p className="w-full text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                        {`
                         In this comprehensive course, you'll dive deep into the world of React, the most popular JavaScript library for building user interfaces. You'll learn how to create powerful, scalable, and maintainable web applications from the ground up. Starting with the fundamentals, you'll explore React's core concepts, such as components, props, and state management. You'll then delve into more advanced topics, including hooks, context, and performance optimization, equipping you with the skills to build complex, feature-rich applications. Throughout the course, you'll work on hands-on projects, applying your newfound knowledge to real-world scenarios. You'll also learn about React's ecosystem and tooling, ensuring you're well-equipped to navigate the ever-evolving landscape of web development. By the end of this course, you'll have the confidence and expertise to build modern, responsive, and scalable web applications using React, a skill that is highly sought-after in the industry.
+                        `}
                     </p>
                 </div>
             </section>

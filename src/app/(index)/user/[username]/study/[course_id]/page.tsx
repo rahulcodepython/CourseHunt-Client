@@ -89,7 +89,7 @@ const StudyPage = () => {
                     <div className="prose max-w-none">
                         <p>
                             In this course, you will learn the fundamentals of web development, including HTML, CSS, and JavaScript.
-                            We'll cover topics such as responsive design, accessibility, and modern web development frameworks.
+                            {`We'll`} cover topics such as responsive design, accessibility, and modern web development frameworks.
                         </p>
                         <h3>Topics Covered:</h3>
                         <ul>

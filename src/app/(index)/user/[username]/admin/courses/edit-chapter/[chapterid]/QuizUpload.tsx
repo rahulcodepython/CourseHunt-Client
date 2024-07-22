@@ -44,7 +44,7 @@ const QuizUpload = () => {
                                                 return <div className="space-y-8 mb-8">
                                                     {
                                                         values.quiz.map((item, qIndex) => {
-                                                            return <div>
+                                                            return <div key={qIndex}>
                                                                 <Input name={`quiz[${qIndex}].question`} id="question" value={values.quiz[qIndex].question} onChange={handleChange} placeholder="Enter Questions" />
                                                                 <div className="my-4 space-y-1">
                                                                     {
