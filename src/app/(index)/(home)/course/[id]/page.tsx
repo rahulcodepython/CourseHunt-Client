@@ -112,7 +112,7 @@ const CoursePage = () => {
     ]
 
     return (
-        <div className="flex flex-col min-h-[100dvh]">
+        <section className="flex flex-col min-h-[100dvh]">
             <section className="w-full py-8 md:py-24 lg:py-32 flex flex-col items-center justify-center">
                 <div className="container px-4 md:px-6 space-y-4">
                     <div className="space-y-2 flex items-center justify-center flex-col gap-10">
@@ -135,7 +135,7 @@ const CoursePage = () => {
                     </div>
                 </div>
             </section>
-            <section className="w-full py-12 md:py-24 lg:py-32 flex flex-col items-center justify-center">
+            <section className="w-full pb-12 md:pb-24 lg:pb-32 flex flex-col items-center justify-center">
                 <div className="container grid gap-12 px-4 md:px-6">
                     <div className="grid gap-6 md:grid-cols-2">
                         <Card className="space-y-2">
@@ -232,7 +232,7 @@ const CoursePage = () => {
                     </div>
                 </div>
             </section>
-        </div>
+        </section>
     )
 }
 

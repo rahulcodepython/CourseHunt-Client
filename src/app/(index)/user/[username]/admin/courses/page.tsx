@@ -18,6 +18,7 @@ import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
     DropdownMenuContent,
+    DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
@@ -47,7 +48,6 @@ import {
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Link } from "next-view-transitions"
 import { AuthContext } from "@/context/AuthContext"
-import CourseModulation, { CourseDataType } from "./CourseEditForm"
 
 type RecordType = {
     id: string
@@ -197,17 +197,25 @@ const CoursesPage = () => {
         enableHiding: false,
         cell: ({ row }) => {
             const info = row.original;
-            return <div className={'flex flex-col items-center gap-2'}>
-                <Link href={`/user/${user?.username}/admin/courses/edit-chapter/${'web'}/?chapter=1&lesson=2`} className="w-full">
-                    <Button className="w-full">
-                        Edit Chapter
-                    </Button>
-                </Link>
-                <EditCourse />
-                <Button variant={'destructive'} className="w-full">
-                    Delete
-                </Button>
-            </div>
+            return <DropdownMenu>
+                <DropdownMenuTrigger>Action</DropdownMenuTrigger>
+                <DropdownMenuContent>
+                    <DropdownMenuItem>
+                        <Link href={`/user/${user?.username}/admin/courses/edit-chapter/${'web'}/?chapter=1&lesson=2`} className="w-full">
+                            Edit Chapter
+                        </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                        <Link href={`/user/${user?.username}/admin/courses/edit-course/?action=update`} className="w-full">
+                            Edit Course
+                        </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                        Delete
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
+
         },
     });
 
@@ -252,237 +260,202 @@ const CoursesPage = () => {
         }
     }, [data, totalRecords])
 
-    return (
-        <div className="w-full p-4">
-            <Card>
-                <CardHeader className="flex-row justify-between">
-                    <div className="flex items-center justify-between py-4 w-full">
-                        <div className="flex flex-col gap-1.5">
-                            <CardTitle>
-                                All Courses
-                            </CardTitle>
-                            <CardDescription>
-                                List of all courses.
-                            </CardDescription>
-                        </div>
-                        <div className="flex items-center justify-end gap-4">
-                            <CourseModulation action="create" defaultValue={null} />
-                            <Menubar>
-                                <MenubarMenu>
-                                    <MenubarTrigger>Columns</MenubarTrigger>
-                                    <MenubarContent>
-                                        {
-                                            columns.map((column) => {
-                                                return !(column.id == 'select' || column.id == 'actions') &&
-                                                    <MenubarCheckboxItem
-                                                        className="capitalize cursor-pointer"
-                                                        key={column.id}
-                                                        checked={table.getColumn(column.id ?? '')?.getIsVisible()}
-                                                        onCheckedChange={() => table.getColumn(column.id ?? '')?.toggleVisibility()}>
-                                                        {column.id}
-                                                    </MenubarCheckboxItem>
-                                            })
-                                        }
-                                    </MenubarContent>
-                                </MenubarMenu>
-                                <MenubarMenu>
-                                    <MenubarTrigger className="cursor-pointer" onClick={() => {
-                                        setSorting([])
-                                        setFilters('')
-                                        setColumnVisibility({})
-                                    }}>Unfiilter</MenubarTrigger>
-                                </MenubarMenu>
-                            </Menubar>
-                            <Input
-                                placeholder="Search..."
-                                value={filters}
-                                onChange={(event) => setFilters(event.target.value)}
-                                className="max-w-lg"
-                            />
-                        </div>
+    return <div className="w-full p-4">
+        <Card>
+            <CardHeader className="flex-row justify-between">
+                <div className="flex items-center justify-between py-4 w-full">
+                    <div className="flex flex-col gap-1.5">
+                        <CardTitle>
+                            All Courses
+                        </CardTitle>
+                        <CardDescription>
+                            List of all courses.
+                        </CardDescription>
                     </div>
-                </CardHeader>
-                <CardContent>
-                    <div className="rounded-md border">
-                        <Table>
-                            <TableHeader>
-                                {
-                                    table.getHeaderGroups().map((headerGroup) => (
-                                        <TableRow key={headerGroup.id}>
-                                            {headerGroup.headers.map((header) => {
-                                                return <TableHead key={header.id}>
+                    <div className="flex items-center justify-end gap-4">
+                        <Link href={`/user/${user?.username}/admin/courses/edit-course/`}>
+                            <Button className="w-full">
+                                Create Course
+                            </Button>
+                        </Link>
+                        <Menubar>
+                            <MenubarMenu>
+                                <MenubarTrigger>Columns</MenubarTrigger>
+                                <MenubarContent>
+                                    {
+                                        columns.map((column) => {
+                                            return !(column.id == 'select' || column.id == 'actions') &&
+                                                <MenubarCheckboxItem
+                                                    className="capitalize cursor-pointer"
+                                                    key={column.id}
+                                                    checked={table.getColumn(column.id ?? '')?.getIsVisible()}
+                                                    onCheckedChange={() => table.getColumn(column.id ?? '')?.toggleVisibility()}>
+                                                    {column.id}
+                                                </MenubarCheckboxItem>
+                                        })
+                                    }
+                                </MenubarContent>
+                            </MenubarMenu>
+                            <MenubarMenu>
+                                <MenubarTrigger className="cursor-pointer" onClick={() => {
+                                    setSorting([])
+                                    setFilters('')
+                                    setColumnVisibility({})
+                                }}>Unfiilter</MenubarTrigger>
+                            </MenubarMenu>
+                        </Menubar>
+                        <Input
+                            placeholder="Search..."
+                            value={filters}
+                            onChange={(event) => setFilters(event.target.value)}
+                            className="max-w-lg"
+                        />
+                    </div>
+                </div>
+            </CardHeader>
+            <CardContent>
+                <div className="rounded-md border">
+                    <Table>
+                        <TableHeader>
+                            {
+                                table.getHeaderGroups().map((headerGroup) => (
+                                    <TableRow key={headerGroup.id}>
+                                        {headerGroup.headers.map((header) => {
+                                            return <TableHead key={header.id}>
+                                                {
+                                                    header.isPlaceholder ? null : flexRender(
+                                                        header.column.columnDef.header,
+                                                        header.getContext()
+                                                    )
+                                                }
+                                            </TableHead>
+                                        })}
+                                    </TableRow>
+                                ))
+                            }
+                        </TableHeader>
+                        <TableBody>
+                            {
+                                isFetching ? <TableRow>
+                                    <TableCell colSpan={columns.length} className="h-24 text-center">
+                                        Fetching...
+                                    </TableCell>
+                                </TableRow> : table.getRowModel().rows?.length ? table.getRowModel().rows.map((row) => {
+                                    return <TableRow
+                                        key={row.id}
+                                        data-state={row.getIsSelected() && "selected"}>
+                                        {
+                                            row.getVisibleCells().map((cell) => (
+                                                <TableCell key={cell.id} className={cell.column.columnDef.id === 'select' || cell.column.columnDef.id === 'actions' ? "px-4" : "px-8"}>
                                                     {
-                                                        header.isPlaceholder ? null : flexRender(
-                                                            header.column.columnDef.header,
-                                                            header.getContext()
+                                                        flexRender(
+                                                            cell.column.columnDef.cell,
+                                                            cell.getContext()
                                                         )
                                                     }
-                                                </TableHead>
-                                            })}
-                                        </TableRow>
-                                    ))
-                                }
-                            </TableHeader>
-                            <TableBody>
-                                {
-                                    isFetching ? <TableRow>
-                                        <TableCell colSpan={columns.length} className="h-24 text-center">
-                                            Fetching...
-                                        </TableCell>
-                                    </TableRow> : table.getRowModel().rows?.length ? table.getRowModel().rows.map((row) => {
-                                        return <TableRow
-                                            key={row.id}
-                                            data-state={row.getIsSelected() && "selected"}>
-                                            {
-                                                row.getVisibleCells().map((cell) => (
-                                                    <TableCell key={cell.id} className={cell.column.columnDef.id === 'select' || cell.column.columnDef.id === 'actions' ? "px-4" : "px-8"}>
-                                                        {
-                                                            flexRender(
-                                                                cell.column.columnDef.cell,
-                                                                cell.getContext()
-                                                            )
-                                                        }
-                                                    </TableCell>
-                                                ))
-                                            }
-                                        </TableRow>
-                                    }) : <TableRow>
-                                        <TableCell colSpan={columns.length} className="h-24 text-center">
-                                            No results.
-                                        </TableCell>
+                                                </TableCell>
+                                            ))
+                                        }
                                     </TableRow>
+                                }) : <TableRow>
+                                    <TableCell colSpan={columns.length} className="h-24 text-center">
+                                        No results.
+                                    </TableCell>
+                                </TableRow>
+                            }
+                        </TableBody>
+                    </Table>
+                </div>
+                <div className="flex items-center justify-between py-4">
+                    <div className="text-sm text-muted-foreground">
+                        {table.getFilteredSelectedRowModel().rows.length} of{" "}
+                        {table.getFilteredRowModel().rows.length} row(s) selected
+                    </div>
+                    <div className={'text-sm text-muted-foreground'}>
+                        Shows {table.getFilteredRowModel().rows.length < rowsPerPage ? table.getFilteredRowModel().rows.length : rowsPerPage} out
+                        of {table.getFilteredRowModel().rows.length} rows
+                    </div>
+                </div>
+            </CardContent>
+            <CardFooter className="justify-center">
+                <div className={'flex items-center justify-center gap-4'}>
+                    <Pagination className={'w-fit mx-0'}>
+                        <PaginationContent>
+                            <PaginationItem>
+                                {
+                                    table.getCanPreviousPage() ? <PaginationPrevious onClick={() => {
+                                        if (table.getCanPreviousPage()) {
+                                            setPage(page - 1)
+                                            table.previousPage()
+                                        }
+                                    }} className="cursor-pointer" /> : <span className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 gap-1 pl-2.5 cursor-not-allowed opacity-50">
+                                        <ChevronLeft className="h-4 w-4" />
+                                        Previous
+                                    </span>
                                 }
-                            </TableBody>
-                        </Table>
-                    </div>
-                    <div className="flex items-center justify-between py-4">
-                        <div className="text-sm text-muted-foreground">
-                            {table.getFilteredSelectedRowModel().rows.length} of{" "}
-                            {table.getFilteredRowModel().rows.length} row(s) selected
-                        </div>
-                        <div className={'text-sm text-muted-foreground'}>
-                            Shows {table.getFilteredRowModel().rows.length < rowsPerPage ? table.getFilteredRowModel().rows.length : rowsPerPage} out
-                            of {table.getFilteredRowModel().rows.length} rows
-                        </div>
-                    </div>
-                </CardContent>
-                <CardFooter className="justify-center">
-                    <div className={'flex items-center justify-center gap-4'}>
-                        <Pagination className={'w-fit mx-0'}>
-                            <PaginationContent>
-                                <PaginationItem>
-                                    {
-                                        table.getCanPreviousPage() ? <PaginationPrevious onClick={() => {
-                                            if (table.getCanPreviousPage()) {
-                                                setPage(page - 1)
-                                                table.previousPage()
-                                            }
-                                        }} className="cursor-pointer" /> : <span className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 gap-1 pl-2.5 cursor-not-allowed opacity-50">
-                                            <ChevronLeft className="h-4 w-4" />
-                                            Previous
+                            </PaginationItem>
+                            {
+                                Array.from({ length: ((totalRecords / rowsPerPage) + (totalRecords % rowsPerPage === 0 ? 0 : 1)) }, (_, i) => {
+                                    return (
+                                        <PaginationItem key={i} onClick={() => {
+                                            setPage(i + 1)
+                                            table.setPageIndex(i)
+                                        }} className="cursor-pointer">
+                                            <PaginationLink className={
+                                                page === i + 1 ?
+                                                    `bg-secondary-foreground text-white hover:bg-secondary-foreground hover:text-white`
+                                                    : ''}>{i + 1}</PaginationLink>
+                                        </PaginationItem>
+                                    )
+                                })
+                            }
+                            <PaginationItem>
+                                {
+                                    table.getCanNextPage() ? <PaginationNext onClick={() => {
+                                        if (table.getCanNextPage() || hasNext) {
+                                            setPage(page + 1)
+                                            table.nextPage()
+                                        }
+                                    }} className="cursor-pointer" /> :
+                                        <span className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 gap-1 pr-2.5 cursor-not-allowed opacity-50">
+                                            Next
+                                            <ChevronRight className="h-4 w-4" />
                                         </span>
-                                    }
-                                </PaginationItem>
-                                {
-                                    Array.from({ length: ((totalRecords / rowsPerPage) + (totalRecords % rowsPerPage === 0 ? 0 : 1)) }, (_, i) => {
-                                        return (
-                                            <PaginationItem key={i} onClick={() => {
-                                                setPage(i + 1)
-                                                table.setPageIndex(i)
-                                            }} className="cursor-pointer">
-                                                <PaginationLink className={
-                                                    page === i + 1 ?
-                                                        `bg-secondary-foreground text-white hover:bg-secondary-foreground hover:text-white`
-                                                        : ''}>{i + 1}</PaginationLink>
-                                            </PaginationItem>
-                                        )
-                                    })
                                 }
-                                <PaginationItem>
-                                    {
-                                        table.getCanNextPage() ? <PaginationNext onClick={() => {
-                                            if (table.getCanNextPage() || hasNext) {
-                                                setPage(page + 1)
-                                                table.nextPage()
-                                            }
-                                        }} className="cursor-pointer" /> :
-                                            <span className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 gap-1 pr-2.5 cursor-not-allowed opacity-50">
-                                                Next
-                                                <ChevronRight className="h-4 w-4" />
-                                            </span>
-                                    }
-                                </PaginationItem>
-                            </PaginationContent>
-                        </Pagination>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button variant="outline">
-                                    {rowsPerPage} <ChevronDown className="ml-2 h-4 w-4" />
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                                {
-                                    rowsOption.map((option) => {
-                                        return (
-                                            <DropdownMenuCheckboxItem
-                                                key={option}
-                                                className="capitalize"
-                                                checked={rowsPerPageDropDown === option}
-                                                onCheckedChange={() => {
-                                                    table.setPageSize(option)
-                                                    setRowsPerPage(option)
-                                                    setRowsPerPageDropDown(option)
-                                                }}
-                                            >
-                                                {option}
-                                            </DropdownMenuCheckboxItem>
-                                        )
-                                    })
-                                }
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </div>
-                </CardFooter>
-            </Card>
-        </div>
-    )
-}
-
-const EditCourse = () => {
-    const defaultValue: CourseDataType = {
-        basic: {
-            name: 'Course 1',
-            description: 'Course Description',
-            overview: 'Course Overview',
-            duration: 10,
-            chapter: 2,
-            price: 100,
-            offer: 0,
-            cuponCode: 'Cupon Code',
-            instructor: 'Instructor',
-        },
-        chapters: [
-            {
-                label: 'Chapter 1',
-                lessons: ['Lesson 1', 'Lesson 2']
-            },
-            {
-                label: 'Chapter 2',
-                lessons: ['Lesson 1', 'Lesson 2']
-            }
-        ],
-        faq: [
-            {
-                question: 'Question 1',
-                answer: 'Answer 1'
-            },
-            {
-                question: 'Question 2',
-                answer: 'Answer 2'
-            }
-        ]
-    }
-    return <CourseModulation action={'update'} defaultValue={defaultValue} />
+                            </PaginationItem>
+                        </PaginationContent>
+                    </Pagination>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="outline">
+                                {rowsPerPage} <ChevronDown className="ml-2 h-4 w-4" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            {
+                                rowsOption.map((option) => {
+                                    return (
+                                        <DropdownMenuCheckboxItem
+                                            key={option}
+                                            className="capitalize"
+                                            checked={rowsPerPageDropDown === option}
+                                            onCheckedChange={() => {
+                                                table.setPageSize(option)
+                                                setRowsPerPage(option)
+                                                setRowsPerPageDropDown(option)
+                                            }}
+                                        >
+                                            {option}
+                                        </DropdownMenuCheckboxItem>
+                                    )
+                                })
+                            }
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
+            </CardFooter>
+        </Card>
+    </div>
 }
 
 export default CoursesPage
