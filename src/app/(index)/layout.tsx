@@ -1,8 +1,8 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { Decrypt, FetchUserData } from '@/utils';
+import { Decrypt } from '@/utils';
+import { FetchUserData, RefreshTheAccessToken, VerifyToken } from '@/axios';
 import Loading from '@/components/Loading';
-import axios from 'axios';
 import { Actions, useAuthStore } from '@/context/AuthStore';
 
 const IndexLayout = ({ children }: { children: React.ReactNode }) => {
@@ -24,44 +24,6 @@ const IndexLayout = ({ children }: { children: React.ReactNode }) => {
 
     return loading ? <Loading /> : children;
 }
-
-const VerifyToken = async (token: string): Promise<boolean> => {
-    try {
-        const options = {
-            url: `${process.env.BASE_API_URL}/auth/users/jwt/verify/`,
-            method: 'POST',
-            data: {
-                token: token
-            }
-        };
-
-        await axios.request(options);
-        return true;
-    } catch (error) {
-        return false;
-    }
-};
-
-const RefreshTheAccessToken = async (
-    token: string | null,
-    loggedInUser: Actions['LoggedInUser'],
-    updateUser: Actions['UpdateUser'],
-): Promise<void> => {
-    const options = {
-        url: `${process.env.BASE_API_URL}/auth/users/jwt/refresh/`,
-        method: 'POST',
-        data: {
-            refresh: token
-        }
-    };
-    try {
-        const response = await axios.request(options);
-        await loggedInUser(response.data.access, response.data.refresh);
-        await FetchUserData(response.data.access, updateUser);
-    } catch (error) {
-        return;
-    }
-};
 
 const CheckUser = async (
     updateUser: Actions['UpdateUser'],

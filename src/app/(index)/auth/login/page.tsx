@@ -2,8 +2,6 @@
 import React from 'react';
 import { Formik, Form } from 'formik';
 import { useRouter } from 'next/navigation';
-import axios from 'axios';
-import { toast } from 'react-toastify';
 import {
     Card,
     CardContent,
@@ -16,11 +14,11 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Link } from 'next-view-transitions';
 import { GitHubLogoIcon, ReloadIcon } from '@radix-ui/react-icons';
-import { FetchUserData } from "@/utils";
-import { Actions, useAuthStore } from '@/context/AuthStore';
+import { useAuthStore } from '@/context/AuthStore';
 import { Chrome, SendHorizonal } from 'lucide-react';
+import { LogIn } from '@/axios';
 
-interface InitialValuesType {
+export interface InitialLoginValuesType {
     email: string
     password: string
 }
@@ -32,7 +30,7 @@ const LoginPage: React.FC = () => {
     const loggedInUser = useAuthStore((state) => state.LoggedInUser)
     const router = useRouter();
 
-    const initialValues: InitialValuesType = {
+    const initialValues: InitialLoginValuesType = {
         email: '',
         password: ''
     }
@@ -50,7 +48,7 @@ const LoginPage: React.FC = () => {
                 <Formik
                     initialValues={initialValues} onSubmit={async (values, actions) => {
                         setLoading(true)
-                        await login(values, loggedInUser, updateUser, setLoading, router)
+                        await LogIn(values, loggedInUser, updateUser, setLoading, router)
                         actions.resetForm();
                     }}>
                     {({ values, handleChange, handleSubmit }) => (
@@ -137,25 +135,5 @@ const LoginPage: React.FC = () => {
     </main>
 };
 
-const login = async (
-    values: InitialValuesType,
-    loggedInUser: Actions['LoggedInUser'],
-    updateUser: Actions['UpdateUser'],
-    setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-    router: any,
-) => {
-    try {
-        const response = await axios.post(`${process.env.BASE_API_URL}/auth/users/jwt/create/`, values);
-        console.log(response)
-        await loggedInUser(response.data.access, response.data.refresh);
-        await FetchUserData(response.data.access, updateUser)
-        router.push('/');
-        toast.success('You are logged in.');
-    } catch (error: any) {
-        toast.error(error?.response?.data?.error ?? 'Something went wrong');
-    } finally {
-        setLoading(false);
-    }
-};
 
 export default LoginPage;

@@ -1,5 +1,4 @@
-import { Actions, State } from "@/context/AuthStore";
-import axios from "axios";
+import { State } from "@/context/AuthStore";
 
 export const Decrypt = (token: State['accessToken'], key: String | undefined) => {
     let decryptedToken = '';
@@ -20,22 +19,3 @@ export const Encrypt = (token: State['accessToken'], key: String | undefined) =>
     }
     return encryptedToken;
 }
-
-export const FetchUserData = async (
-    token: string | null,
-    updateUser: Actions['UpdateUser'],
-): Promise<void> => {
-    const options = {
-        headers: {
-            Authorization: `Bearer ${token}`
-        },
-        url: `${process.env.BASE_API_URL}/auth/users/me/`,
-        method: 'GET'
-    };
-    try {
-        const response = await axios.request(options);
-        updateUser(response.data);
-    } catch (error) {
-        updateUser(null);
-    }
-};
