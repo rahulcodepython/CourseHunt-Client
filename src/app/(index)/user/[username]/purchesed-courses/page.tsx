@@ -3,7 +3,6 @@ import React from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
-import { CircleCheckIcon } from "@/utils/icons"
 import {
     Accordion,
     AccordionContent,
@@ -11,7 +10,8 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button";
-import { Link } from "next-view-transitions";
+import Link from "next/link";
+import { CircleCheckIcon } from "lucide-react";
 
 const PurchesedCoursesPage = () => {
     const ChapterDetails = [

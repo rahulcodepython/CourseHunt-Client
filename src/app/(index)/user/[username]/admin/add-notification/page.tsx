@@ -1,7 +1,6 @@
 "use client"
 import { Button } from "@/components/ui/button";
-import { BellIcon, EyeIcon } from "@/utils/icons";
-import { TrashIcon } from "lucide-react";
+import { BellIcon, TrashIcon } from "lucide-react";
 import React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Label } from "@/components/ui/label";

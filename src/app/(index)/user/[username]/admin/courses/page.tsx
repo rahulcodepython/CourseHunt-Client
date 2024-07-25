@@ -46,8 +46,8 @@ import {
     MenubarTrigger,
 } from "@/components/ui/menubar"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Link } from "next-view-transitions"
-import { AuthContext } from "@/context/AuthContext"
+import Link from "next/link"
+import { useAuthStore } from "@/context/AuthStore"
 
 type RecordType = {
     id: string
@@ -63,8 +63,7 @@ type RecordType = {
 }
 
 const CoursesPage = () => {
-    const authContext = React.useContext(AuthContext)
-    const user = authContext?.user
+    const user = useAuthStore((state) => state.user)
 
     const ROWS_PER_PAGE = 2
     const [data, setData] = React.useState<RecordType[]>([
@@ -244,7 +243,7 @@ const CoursesPage = () => {
             setRowsPerPageDropDown(ROWS_PER_PAGE)
         }
         handler()
-    }, [])
+    }, [table])
 
     React.useEffect(() => {
         const handler = async () => {

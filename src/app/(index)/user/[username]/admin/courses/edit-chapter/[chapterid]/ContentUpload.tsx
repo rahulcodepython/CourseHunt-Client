@@ -30,22 +30,20 @@ const ContentUpload = () => {
         'link', 'image', 'video'
     ];
 
-    return (
-        <section>
-            <ReactQuill
-                value={editorHtml}
-                onChange={handleChange}
-                modules={modules}
-                formats={formats}
-            />
-            <Card className='my-4'>
-                <CardHeader>Output:</CardHeader>
-                <CardContent>
-                    <div dangerouslySetInnerHTML={{ __html: editorHtml }} />
-                </CardContent>
-            </Card>
-        </section>
-    );
+    return <section>
+        <ReactQuill
+            value={editorHtml}
+            onChange={handleChange}
+            modules={modules}
+            formats={formats}
+        />
+        <Card className='my-4'>
+            <CardHeader>Output:</CardHeader>
+            <CardContent>
+                <div dangerouslySetInnerHTML={{ __html: editorHtml }} />
+            </CardContent>
+        </Card>
+    </section>
 };
 
 export default ContentUpload;

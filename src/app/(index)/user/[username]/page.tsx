@@ -2,8 +2,7 @@
 import React from "react"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { BarchartChart, BarChartIcon, BellIcon, BriefcaseIcon, CircleCheckIcon, EyeIcon, FileTextIcon, LinechartChart, LineChartIcon, TrashIcon, TrophyIcon } from "@/utils/icons"
-import { AiOutlineDollarCircle } from "react-icons/ai";
+import { BarChart, BarChartIcon, BellIcon, BriefcaseIcon, CircleCheckIcon, CircleDollarSign, EyeIcon, LineChart, LineChartIcon, TrashIcon, TrophyIcon } from "lucide-react"
 
 const Dashboard = () => {
     const Notification = [
@@ -85,7 +84,7 @@ const Dashboard = () => {
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="text-sm font-medium">Income</CardTitle>
-                        <AiOutlineDollarCircle className="w-4 h-4 text-muted-foreground" />
+                        <CircleDollarSign className="w-4 h-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">$20</div>
@@ -155,7 +154,7 @@ const Dashboard = () => {
                         <LineChartIcon className="w-4 h-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <LinechartChart className="aspect-[9/4]" />
+                        <LineChart className="aspect-[9/4]" />
                     </CardContent>
                 </Card>
                 <Card>
@@ -164,7 +163,7 @@ const Dashboard = () => {
                         <BarChartIcon className="w-4 h-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <BarchartChart className="aspect-[9/4]" />
+                        <BarChart className="aspect-[9/4]" />
                     </CardContent>
                 </Card>
             </div>

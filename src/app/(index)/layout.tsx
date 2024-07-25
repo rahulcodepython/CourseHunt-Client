@@ -1,21 +1,20 @@
 "use client";
-import {AuthContext, AuthContextType, LoggedInUserType, UserType} from '@/context/AuthContext';
-import React, {useEffect, useState, useContext, Dispatch, SetStateAction} from 'react';
-import {Decrypt, FetchUserData} from '@/utils';
+import React, { useEffect, useState } from 'react';
+import { Decrypt, FetchUserData } from '@/utils';
 import Loading from '@/components/Loading';
 import axios from 'axios';
+import { Actions, useAuthStore } from '@/context/AuthStore';
 
-const IndexLayout = ({children}: { children: React.ReactNode }) => {
+const IndexLayout = ({ children }: { children: React.ReactNode }) => {
     const [loading, setLoading] = useState<boolean>(true);
 
-    const authContext = useContext<AuthContextType | undefined>(AuthContext);
-    const setUser = authContext?.setUser;
-    const LoggedInUser = authContext?.LoggedInUser;
-    const LogoutUser = authContext?.LogoutUser;
+    const updateUser = useAuthStore((state) => state.UpdateUser)
+    const loggedInUser = useAuthStore((state) => state.LoggedInUser)
+    const loggedOutUser = useAuthStore((state) => state.LogoutUser)
 
     useEffect(() => {
         const handler = async () => {
-            await CheckUser(setUser, LoggedInUser, LogoutUser);
+            await CheckUser(updateUser, loggedInUser, loggedOutUser);
         };
 
         handler().finally(() => {
@@ -23,10 +22,8 @@ const IndexLayout = ({children}: { children: React.ReactNode }) => {
         });
     }, []);
 
-    return loading ? <Loading/> : children;
+    return loading ? <Loading /> : children;
 }
-
-export default IndexLayout;
 
 const VerifyToken = async (token: string): Promise<boolean> => {
     try {
@@ -47,8 +44,8 @@ const VerifyToken = async (token: string): Promise<boolean> => {
 
 const RefreshTheAccessToken = async (
     token: string | null,
-    LoggedInUser: LoggedInUserType | undefined,
-    setUser: Dispatch<SetStateAction<UserType | null>> | undefined
+    loggedInUser: Actions['LoggedInUser'],
+    updateUser: Actions['UpdateUser'],
 ): Promise<void> => {
     const options = {
         url: `${process.env.BASE_API_URL}/auth/users/jwt/refresh/`,
@@ -59,35 +56,37 @@ const RefreshTheAccessToken = async (
     };
     try {
         const response = await axios.request(options);
-        await LoggedInUser?.(response.data.access, response.data.refresh);
-        await FetchUserData(response.data.access, setUser);
+        await loggedInUser(response.data.access, response.data.refresh);
+        await FetchUserData(response.data.access, updateUser);
     } catch (error) {
         return;
     }
 };
 
 const CheckUser = async (
-    setUser: Dispatch<SetStateAction<UserType | null>> | undefined,
-    LoggedInUser: LoggedInUserType | undefined,
-    LogoutUser: (() => Promise<void>) | undefined,
+    updateUser: Actions['UpdateUser'],
+    loggedInUser: Actions['LoggedInUser'],
+    logoutUser: Actions['LogoutUser'],
 ): Promise<void> => {
     const isRefreshTokenExists = localStorage.getItem("refresh") ?? null;
     const refresh_token = isRefreshTokenExists ? Decrypt(localStorage.getItem("refresh"), process.env.ENCRYPTION_KEY) : null;
     const isValidateRefreshToken = refresh_token ? await VerifyToken(refresh_token) : null;
 
     if (!isValidateRefreshToken) {
-        await LogoutUser?.();
+        await logoutUser();
     } else {
         const isAccessTokenExists = sessionStorage.getItem("access") ?? null;
         const access_token = isAccessTokenExists ? Decrypt(sessionStorage.getItem("access"), process.env.ENCRYPTION_KEY) : null;
         const isValidateAccessToken = access_token ? await VerifyToken(access_token) : null;
 
         if (!isValidateAccessToken) {
-            await RefreshTheAccessToken(refresh_token, LoggedInUser, setUser);
+            await RefreshTheAccessToken(refresh_token, loggedInUser, updateUser);
         } else {
-            LoggedInUser?.(access_token, refresh_token);
+            access_token && refresh_token && loggedInUser(access_token, refresh_token);
         }
 
-        isValidateAccessToken && await FetchUserData(access_token, setUser);
+        isValidateAccessToken && await FetchUserData(access_token, updateUser);
     }
 };
+
+export default IndexLayout;

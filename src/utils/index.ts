@@ -1,8 +1,7 @@
-import { AccessToken, UserType } from "@/context/AuthContext";
-import React from "react";
+import { Actions, State } from "@/context/AuthStore";
 import axios from "axios";
 
-export const Decrypt = (token: AccessToken, key: String | undefined) => {
+export const Decrypt = (token: State['accessToken'], key: String | undefined) => {
     let decryptedToken = '';
     if (token && key) {
         for (let i = 0; i < token?.length; i++) {
@@ -12,7 +11,7 @@ export const Decrypt = (token: AccessToken, key: String | undefined) => {
     return decryptedToken;
 }
 
-export const Encrypt = (token: AccessToken, key: String | undefined) => {
+export const Encrypt = (token: State['accessToken'], key: String | undefined) => {
     let encryptedToken = '';
     if (token && key) {
         for (let i = 0; i < token?.length; i++) {
@@ -24,7 +23,7 @@ export const Encrypt = (token: AccessToken, key: String | undefined) => {
 
 export const FetchUserData = async (
     token: string | null,
-    setUser: React.Dispatch<React.SetStateAction<UserType | null>> | undefined
+    updateUser: Actions['UpdateUser'],
 ): Promise<void> => {
     const options = {
         headers: {
@@ -35,9 +34,8 @@ export const FetchUserData = async (
     };
     try {
         const response = await axios.request(options);
-        setUser?.(response.data);
-        return;
+        updateUser(response.data);
     } catch (error) {
-        return;
+        updateUser(null);
     }
 };

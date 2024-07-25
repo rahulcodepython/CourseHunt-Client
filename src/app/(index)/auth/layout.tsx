@@ -1,11 +1,10 @@
 "use client"
 import React from "react";
-import { AuthContext, AuthContextType } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/context/AuthStore";
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
-    const authContext: AuthContextType | undefined = React.useContext(AuthContext);
-    const isAuthenticated: boolean | undefined = authContext?.isAuthenticated;
+    const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
 
     const router = useRouter();
 

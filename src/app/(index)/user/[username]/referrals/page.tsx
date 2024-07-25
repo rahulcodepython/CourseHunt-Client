@@ -3,7 +3,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CheckIcon } from "@radix-ui/react-icons";
-import { Car, ChevronLeft, ChevronRight, CopyIcon } from "lucide-react";
+import { ChevronLeft, ChevronRight, CopyIcon } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
 import {
     ColumnDef,
@@ -190,7 +190,7 @@ const ReferralsPage = () => {
             setRowsPerPageDropDown(ROWS_PER_PAGE)
         }
         handler()
-    }, [])
+    }, [table])
 
     React.useEffect(() => {
         const handler = async () => {

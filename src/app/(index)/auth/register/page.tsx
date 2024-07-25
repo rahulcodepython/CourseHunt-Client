@@ -4,11 +4,26 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Formik, Form } from 'formik';
-import Link from "next/link"
-import { BiSend } from 'react-icons/bi';
-import { ChromeIcon, GithubIcon } from "@/utils/icons"
+import Link from "next/link";
+import { ChromeIcon, GithubIcon, SendHorizonal } from "lucide-react"
+
+interface InitialValuesType {
+    first_name: string
+    last_name: string
+    email: string
+    password: string
+    confirmpassword: string
+}
 
 const RegisterPage = () => {
+    const initialValues: InitialValuesType = {
+        first_name: '',
+        last_name: '',
+        email: '',
+        password: '',
+        confirmpassword: '',
+    }
+
     return <main className="flex items-center justify-center w-screen h-screen">
         <Card className="max-w-xl w-full">
             <CardHeader>
@@ -20,13 +35,7 @@ const RegisterPage = () => {
             </CardHeader>
             <CardContent>
                 <Formik
-                    initialValues={{
-                        first_name: '',
-                        last_name: '',
-                        email: '',
-                        password: '',
-                        confirmpassword: '',
-                    }} onSubmit={(values) => console.log(values)}>
+                    initialValues={initialValues} onSubmit={(values) => console.log(values)}>
                     {({ values, handleChange, handleSubmit }) => (
                         <Form className="flex flex-col gap-6">
                             <div className="flex flex-col gap-4">
@@ -122,7 +131,7 @@ const RegisterPage = () => {
                                 </div>
                             </div>
                             <Button type="submit" onClick={() => handleSubmit()} className="gap-2">
-                                <BiSend className="text-base" />
+                                <SendHorizonal className="h-4 w-4" />
                                 <span>Register</span>
                             </Button>
                         </Form>

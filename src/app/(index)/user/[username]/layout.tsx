@@ -1,51 +1,44 @@
 "use client"
 import React from "react";
-import { AuthContext, AuthContextType } from "@/context/AuthContext";
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
 import Link from "next/link"
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from "@/components/ui/dropdown-menu"
-import { BellIcon, BookIcon, HomeIcon, MenuIcon, MountainIcon, SearchIcon, UserIcon } from "@/utils/icons"
-import { GoCrossReference } from "react-icons/go";
-import { AiOutlineDollarCircle } from "react-icons/ai";
-import { MdOutlineFeedback } from "react-icons/md";
-import { IoIosNotificationsOutline } from "react-icons/io";
 import { usePathname } from "next/navigation";
-import { MdOutlineReportGmailerrorred } from "react-icons/md";
-import { TbPassword } from "react-icons/tb";
+import { useAuthStore } from "@/context/AuthStore";
+import { Asterisk, Bell, Book, CircleDollarSign, FlagTriangleRightIcon, House, Menu, MessageCircleMore, MountainIcon, Search, Tag, UserIcon } from "lucide-react";
 
 const UsernameLayout = ({ children }: { children: React.ReactNode }) => {
-    const authContext: AuthContextType | undefined = React.useContext(AuthContext);
-    const user = authContext?.user;
+    const user = useAuthStore((state) => state.user);
 
     const pathname = usePathname();
 
     const sideNav = user?.is_superuser && pathname.includes('/admin') ? [
         {
             name: "Purchase",
-            icon: <AiOutlineDollarCircle className="h-5 w-5" />,
+            icon: <CircleDollarSign className="h-5 w-5" />,
             href: `/user/${user?.username}/admin/purchase`,
         },
         {
             name: "Add Notification",
-            icon: <IoIosNotificationsOutline className="h-5 w-5" />,
+            icon: <Bell className="h-5 w-5" />,
             href: `/user/${user?.username}/admin/add-notification`,
         },
         {
             name: "Add Report",
-            icon: <MdOutlineReportGmailerrorred className="h-5 w-5" />,
+            icon: <FlagTriangleRightIcon className="h-5 w-5" />,
             href: `/user/${user?.username}/admin/add-report`,
         },
         {
             name: "Feedback",
-            icon: <MdOutlineFeedback className="h-5 w-5" />,
+            icon: <MessageCircleMore className="h-5 w-5" />,
             href: `/user/${user?.username}/admin/feedback`,
         },
         {
             name: "Courses",
-            icon: <BookIcon className="h-5 w-5" />,
+            icon: <Book className="h-5 w-5" />,
             href: `/user/${user?.username}/admin/courses`,
         },
         {
@@ -55,33 +48,33 @@ const UsernameLayout = ({ children }: { children: React.ReactNode }) => {
         },
         {
             name: "Cupone Codes",
-            icon: <TbPassword className="h-5 w-5" />,
+            icon: <Asterisk className="h-5 w-5" />,
             href: `/user/${user?.username}/admin/cupone-codes`,
         },
     ] : [
         {
             name: "Dashboard",
-            icon: <HomeIcon className="h-5 w-5" />,
+            icon: <House className="h-5 w-5" />,
             href: `/user/${user?.username}`,
         },
         {
             name: "Courses",
-            icon: <BookIcon className="h-5 w-5" />,
+            icon: <Book className="h-5 w-5" />,
             href: `/user/${user?.username}/purchesed-courses`,
         },
         {
             name: "Transactions",
-            icon: <AiOutlineDollarCircle className="h-5 w-5" />,
+            icon: <CircleDollarSign className="h-5 w-5" />,
             href: `/user/${user?.username}/transactions`,
         },
         {
             name: "Feedback",
-            icon: <MdOutlineFeedback className="h-5 w-5" />,
+            icon: <FlagTriangleRightIcon className="h-5 w-5" />,
             href: `/user/${user?.username}/feedback`,
         },
         {
             name: "Referrals",
-            icon: <GoCrossReference className="h-5 w-5" />,
+            icon: <Tag className="h-5 w-5" />,
             href: `/user/${user?.username}/referrals`,
         }
     ]
@@ -126,7 +119,7 @@ const UsernameLayout = ({ children }: { children: React.ReactNode }) => {
                     <Sheet>
                         <SheetTrigger asChild>
                             <Button size="icon" variant="outline">
-                                <MenuIcon className="h-5 w-5" />
+                                <Menu className="h-5 w-5" />
                                 <span className="sr-only">Toggle Menu</span>
                             </Button>
                         </SheetTrigger>
@@ -153,7 +146,7 @@ const UsernameLayout = ({ children }: { children: React.ReactNode }) => {
                     </Sheet>
                 </div>
                 <div className="relative flex-1 sm:grow-0">
-                    <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
                         type="search"
                         placeholder="Search courses..."
@@ -162,7 +155,7 @@ const UsernameLayout = ({ children }: { children: React.ReactNode }) => {
                 </div>
                 <div className="flex items-center gap-2">
                     <Button size="icon" variant="ghost" className="rounded-full">
-                        <BellIcon className="h-5 w-5" />
+                        <Bell className="h-5 w-5" />
                         <span className="sr-only">Notifications</span>
                     </Button>
                     <DropdownMenu>

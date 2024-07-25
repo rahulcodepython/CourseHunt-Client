@@ -4,7 +4,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
-import { StarIcon } from "@/utils/icons";
+import { StarIcon } from "lucide-react";
 
 const FeedbackPage = () => {
     const [rating, setRating] = React.useState(0);

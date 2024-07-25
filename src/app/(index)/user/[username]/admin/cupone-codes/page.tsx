@@ -2,8 +2,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { CheckIcon } from "@radix-ui/react-icons";
-import { ChevronLeft, ChevronRight, CopyIcon } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
 import {
     ColumnDef,
@@ -200,7 +199,7 @@ const CuponeCodesPage = () => {
             setRowsPerPageDropDown(ROWS_PER_PAGE)
         }
         handler()
-    }, [])
+    }, [table])
 
     React.useEffect(() => {
         const handler = async () => {
@@ -218,66 +217,6 @@ const CuponeCodesPage = () => {
     }, [data, totalRecords])
 
     return <section className="grid gap-4 pt-8">
-        {/* <div className="container mx-auto">
-            <Card>
-                <CardHeader>
-                    <CardTitle>Cupone Codes</CardTitle>
-                    <CardDescription>
-                        Create cupone codes.
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <form className="space-y-4">
-                        <div className="flex flex-col gap-2">
-                            <Label htmlFor="code">
-                                Cupone Code
-                            </Label>
-                            <Input id="code" />
-                        </div>
-                        <div className="flex flex-col gap-2">
-                            <Label htmlFor="discount">
-                                Discount
-                            </Label>
-                            <Input type="number" id="discount" />
-                        </div>
-                        <div className="flex flex-col gap-2">
-                            <Label htmlFor="expiry">
-                                Expiry Date
-                            </Label>
-                            <Input type="date" id="expiry" />
-                        </div>
-                        <div className="flex flex-col gap-2">
-                            <Label htmlFor="quantity">
-                                Quantity
-                            </Label>
-                            <Input type="number" id="quantity" />
-                        </div>
-                        <div className="flex flex-col gap-2">
-                            <Label htmlFor="Course">
-                                Course
-                            </Label>
-                            <Select>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Theme" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="light">Light</SelectItem>
-                                    <SelectItem value="dark">Dark</SelectItem>
-                                    <SelectItem value="system">System</SelectItem>
-                                </SelectContent>
-                            </Select>
-
-                        </div>
-
-                    </form>
-                    <div className="flex justify-end mt-4">
-                        <Button>
-                            Add New Cupone
-                        </Button>
-                    </div>
-                </CardContent>
-            </Card>
-        </div> */}
         <div className="grid flex-1 items-start gap-4 p-4 sm:p-6 md:gap-8">
             <div className="grid auto-rows-max items-start gap-4 md:gap-8">
                 <Card x-chunk="dashboard-06-chunk-0">

@@ -14,6 +14,7 @@ import { Field, FieldArray, Form, Formik } from "formik"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { useSearchParams } from "next/navigation"
+import Loading from "@/components/Loading"
 
 type CourseBasicDataType = {
     name: string
@@ -88,7 +89,6 @@ const defaultValue: CourseDataType = {
 const CourseEditPage = () => {
     const [action, setAction] = React.useState<"update" | "create">("create")
     const [tabValue, setTabValue] = React.useState<string>('course-basic')
-    const [tabsList, setTabsList] = React.useState<string[]>(['course-basic', 'course-chapter', 'course-faq'])
     const [pageIndex, setPageIndex] = React.useState<number>(0)
     const [totalChapter, setTotalChapter] = React.useState<number>(0)
     const [courseBasicData, setCourseBasicData] = React.useState<CourseBasicDataType>({
@@ -106,6 +106,8 @@ const CourseEditPage = () => {
     const [courseFAQData, setCourseFAQData] = React.useState<CourseFAQDataType[]>([])
     const [loading, setLoading] = React.useState<boolean>(true)
 
+    const tabsList: string[] = ['course-basic', 'course-chapter', 'course-faq']
+
     const searchParams = useSearchParams()
 
     React.useEffect(() => {
@@ -116,16 +118,16 @@ const CourseEditPage = () => {
             setCourseBasicData(defaultValue.basic)
             setCourseChapterData(defaultValue.chapters)
             setCourseFAQData(defaultValue.faq)
-            setLoading(false)
         }
+        setLoading(false)
         setTabValue(tabsList[pageIndex])
-    }, [pageIndex])
+    }, [pageIndex, searchParams, tabsList])
 
     React.useEffect(() => {
         setCourseChapterData(Array.from({ length: totalChapter }, () => ({ label: '', lessons: [] })))
     }, [totalChapter])
 
-    return !loading && <section className="py-6 flex flex-col gap-8">
+    return loading ? <Loading /> : <section className="py-6 flex flex-col gap-8">
         <div className="mx-4 sm:mx-8 md:mx-12">
             <h1 className="text-2xl font-semibold">
                 {

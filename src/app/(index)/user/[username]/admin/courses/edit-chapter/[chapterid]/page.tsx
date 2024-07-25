@@ -23,7 +23,7 @@ const EditChapterPage = () => {
         if (query_lesson) {
             setLesson(parseInt(query_lesson))
         }
-    }, [])
+    }, [searchParams])
 
     return <div className="flex flex-col min-h-dvh bg-background">
         <header className="px-4 lg:px-6 py-6 border-b">
