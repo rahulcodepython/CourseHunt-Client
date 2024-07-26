@@ -2,6 +2,8 @@ import { InitialLoginValuesType } from "@/app/(index)/auth/login/page";
 import { Actions } from "@/context/AuthStore";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { setCookie } from "cookies-next";
+import { Encrypt } from "@/utils";
 
 export const VerifyToken = async (token: string): Promise<boolean> => {
     try {
@@ -36,6 +38,8 @@ export const RefreshTheAccessToken = async (
         const response = await axios.request(options);
         await loggedInUser(response.data.access, response.data.refresh);
         await FetchUserData(response.data.access, updateUser);
+        setCookie('access', Encrypt(response.data.access), { path: '/' });
+        setCookie('refresh', Encrypt(response.data.refresh), { path: '/' });
     } catch (error) {
         return;
     }
@@ -69,9 +73,10 @@ export const LogIn = async (
 ) => {
     try {
         const response = await axios.post(`${process.env.BASE_API_URL}/auth/users/jwt/create/`, values);
-        console.log(response)
         await loggedInUser(response.data.access, response.data.refresh);
         await FetchUserData(response.data.access, updateUser)
+        setCookie('access', Encrypt(response.data.access), { path: '/' });
+        setCookie('refresh', Encrypt(response.data.refresh), { path: '/' });
         router.push('/');
         toast.success('You are logged in.');
     } catch (error: any) {
