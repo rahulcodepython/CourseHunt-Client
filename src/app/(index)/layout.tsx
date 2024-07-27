@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { Decrypt } from '@/utils';
-import { FetchUserData, RefreshTheAccessToken, VerifyToken } from '@/axios';
+import { FetchUserData, RefreshTheAccessToken } from '@/axios';
 import Loading from '@/components/Loading';
 import { Actions, useAuthStore } from '@/context/AuthStore';
 
@@ -11,10 +11,11 @@ const IndexLayout = ({ children }: { children: React.ReactNode }) => {
     const updateUser = useAuthStore((state) => state.UpdateUser)
     const loggedInUser = useAuthStore((state) => state.LoggedInUser)
     const loggedOutUser = useAuthStore((state) => state.LogoutUser)
+    const verifyToken = useAuthStore((state) => state.VerifyToken)
 
     useEffect(() => {
         const handler = async () => {
-            await CheckUser(updateUser, loggedInUser, loggedOutUser);
+            await CheckUser(updateUser, loggedInUser, loggedOutUser, verifyToken);
             setLoading(false);
         };
         handler();
@@ -27,6 +28,7 @@ const CheckUser = async (
     updateUser: Actions['UpdateUser'],
     loggedInUser: Actions['LoggedInUser'],
     logoutUser: Actions['LogoutUser'],
+    VerifyToken: Actions['VerifyToken']
 ): Promise<void> => {
     const isRefreshTokenExists = localStorage.getItem("refresh") ?? null;
     const refresh_token = isRefreshTokenExists ? Decrypt(localStorage.getItem("refresh")) : null;

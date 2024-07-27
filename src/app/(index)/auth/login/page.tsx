@@ -16,7 +16,11 @@ import { Link } from 'next-view-transitions';
 import { GitHubLogoIcon, ReloadIcon } from '@radix-ui/react-icons';
 import { useAuthStore } from '@/context/AuthStore';
 import { Chrome, SendHorizonal } from 'lucide-react';
-import { LogIn } from '@/axios';
+import { FetchUserData } from '@/axios';
+import { useFnCall } from '@/hook';
+import { toast } from 'react-toastify';
+import { Encrypt } from '@/utils';
+import axios from 'axios';
 
 export interface InitialLoginValuesType {
     email: string
@@ -24,36 +28,54 @@ export interface InitialLoginValuesType {
 }
 
 const LoginPage: React.FC = () => {
-    const [loading, setLoading] = React.useState<boolean>(false);
-
     const updateUser = useAuthStore((state) => state.UpdateUser)
     const loggedInUser = useAuthStore((state) => state.LoggedInUser)
     const router = useRouter();
+
+    const { isLoading, isError, error, data, call } = useFnCall(
+        async (values: InitialLoginValuesType) => await axios.post(`${process.env.BASE_API_URL}/auth/users/jwt/create/`, values)
+    );
 
     const initialValues: InitialLoginValuesType = {
         email: '',
         password: ''
     }
 
+    React.useEffect(() => {
+        const handler = async () => {
+            if (data) {
+                toast.success(data.success);
+                await loggedInUser(data.access, data.refresh);
+                await FetchUserData(data.access, updateUser)
+                sessionStorage.setItem('access', Encrypt(data.access));
+                localStorage.setItem('refresh', Encrypt(data.refresh));
+                router.push('/');
+            } else if (isError) {
+                toast.error(error);
+            }
+        }
+        handler();
+    }, [data])
+
     return <main className="flex items-center justify-center w-screen h-screen">
         <Card className="max-w-xl w-full">
             <CardHeader>
                 <CardDescription>
-                    <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                    <span className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                         Sign in to your account
-                    </h1>
+                    </span>
                 </CardDescription>
             </CardHeader>
             <CardContent>
                 <Formik
                     initialValues={initialValues} onSubmit={async (values, actions) => {
-                        setLoading(true)
-                        await LogIn(values, loggedInUser, updateUser, setLoading, router)
+                        call(values);
                         actions.resetForm();
                     }}>
                     {({ values, handleChange, handleSubmit }) => (
                         <Form className="flex flex-col gap-6">
                             <div className="flex flex-col gap-4">
+                                {data && <p>Data: {JSON.stringify(data)}</p>}
                                 <div className="flex flex-col gap-2">
                                     <Label htmlFor="email" className="uppercase text-gray-600 text-xs">
                                         Email
@@ -95,7 +117,7 @@ const LoginPage: React.FC = () => {
                                 </div>
                             </div>
                             {
-                                loading ? <Button disabled className="gap-2">
+                                isLoading ? <Button disabled className="gap-2">
                                     <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
                                     Please wait
                                 </Button> :

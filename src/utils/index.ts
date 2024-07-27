@@ -1,6 +1,4 @@
 import { State } from "@/context/AuthStore";
-import { CookieValueTypes } from "cookies-next";
-import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 
 const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY;
 
@@ -22,18 +20,4 @@ export const Encrypt = (token: State['accessToken' | 'refreshToken']) => {
         }
     }
     return encryptedToken;
-}
-
-export const GetDecryptedToken = (token: RequestCookie | CookieValueTypes | undefined) => {
-    let value = '';
-
-    if (token) {
-        if (typeof token === 'object' && 'value' in token) {
-            value = token.value;
-        } else {
-            value = token.toString();
-        }
-    }
-
-    return token ? Decrypt(value) : null;
 }
