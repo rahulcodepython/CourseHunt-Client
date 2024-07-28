@@ -48,6 +48,12 @@ import {
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from "next/link"
 import { useAuthStore } from "@/context/AuthStore"
+import { useRouter } from "next/navigation"
+import { ReloadIcon } from "@radix-ui/react-icons"
+import axios from "axios"
+import { useFnCall } from "@/hook"
+import { toast } from "react-toastify"
+import { FormatDate } from "@/utils"
 
 type RecordType = {
     id: string
@@ -64,6 +70,7 @@ type RecordType = {
 
 const CoursesPage = () => {
     const user = useAuthStore((state) => state.user)
+    const accessToken = useAuthStore((state) => state.accessToken)
 
     const ROWS_PER_PAGE = 2
     const [data, setData] = React.useState<RecordType[]>([
@@ -127,6 +134,21 @@ const CoursesPage = () => {
     const [page, setPage] = React.useState(1)
     const [isFetching, setIsFetching] = React.useState(false)
     const [hasMore, setHasMore] = React.useState(true)
+
+    const router = useRouter()
+
+    const { isLoading, isError, error, data: createCourseResponse, call } = useFnCall(
+        async () => {
+            const response = await axios.post(`${process.env.BASE_API_URL}/course/create-course/`, {
+                "created_at": FormatDate(new Date().toISOString())
+            }, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                }
+            })
+            return response.data
+        }
+    )
 
     const rowsOption: (number)[] = [2, 4, 6]
 
@@ -259,6 +281,15 @@ const CoursesPage = () => {
         }
     }, [data, totalRecords])
 
+    React.useEffect(() => {
+        isError && toast.error(error)
+        if (createCourseResponse) {
+            toast.success('Course created successfully')
+            router.push(`/user/${user?.username}/admin/courses/edit-course/${createCourseResponse.id}`)
+        }
+
+    }, [isError, createCourseResponse])
+
     return <div className="w-full p-4">
         <Card>
             <CardHeader className="flex-row justify-between">
@@ -272,11 +303,17 @@ const CoursesPage = () => {
                         </CardDescription>
                     </div>
                     <div className="flex items-center justify-end gap-4">
-                        <Link href={`/user/${user?.username}/admin/courses/edit-course/`}>
-                            <Button className="w-full">
+                        {
+                            isLoading ? <Button disabled className="gap-2">
+                                <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                                Please wait
+                            </Button> : <Button className="w-full" onClick={async () => {
+                                await call()
+                                // !isLoading && data && router.push(`/user/${user?.username}/admin/courses/edit-course/${createCourseResponse.id}`)
+                            }}>
                                 Create Course
                             </Button>
-                        </Link>
+                        }
                         <Menubar>
                             <MenubarMenu>
                                 <MenubarTrigger>Columns</MenubarTrigger>

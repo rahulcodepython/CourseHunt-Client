@@ -4,6 +4,12 @@ import { Decrypt } from '@/utils';
 import { FetchUserData, RefreshTheAccessToken } from '@/axios';
 import Loading from '@/components/Loading';
 import { Actions, useAuthStore } from '@/context/AuthStore';
+import {
+    QueryClient,
+    QueryClientProvider,
+} from '@tanstack/react-query'
+
+const queryClient = new QueryClient();
 
 const IndexLayout = ({ children }: { children: React.ReactNode }) => {
     const [loading, setLoading] = useState<boolean>(true);
@@ -21,7 +27,9 @@ const IndexLayout = ({ children }: { children: React.ReactNode }) => {
         handler();
     }, []);
 
-    return loading ? <Loading /> : children;
+    return loading ? <Loading /> : <QueryClientProvider client={queryClient}>
+        {children}
+    </QueryClientProvider>
 }
 
 const CheckUser = async (

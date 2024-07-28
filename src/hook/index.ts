@@ -14,7 +14,7 @@ export const useFnCall = (fn: (...args: any[]) => Promise<any>) => {
 
         try {
             const response = await fn(...args);
-            setData(response.data);
+            setData(response);
         } catch (error: any) {
             setError(error.message || 'An error occurred');
             setIsError(true);

@@ -21,3 +21,27 @@ export const Encrypt = (token: State['accessToken' | 'refreshToken']) => {
     }
     return encryptedToken;
 }
+
+export const FormatDate = (isoString: string) => {
+    const date = new Date(isoString);
+
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    const month = monthNames[date.getMonth()];
+    const day = date.getDate();
+    const year = date.getFullYear();
+
+    return `${month} ${day}, ${year}`;
+}
+
+export const HMSToSeconds = (hours: number, minutes: number, seconds: number) => {
+    return hours * 3600 + minutes * 60 + seconds;
+}
+
+export const SecondsToHMS = (time: number) => {
+    const hours = Math.floor(time / 3600);
+    const minutes = Math.floor((time % 3600) / 60);
+    const seconds = time % 60;
+
+    return { hours, minutes, seconds };
+}

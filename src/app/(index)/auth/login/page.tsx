@@ -33,7 +33,10 @@ const LoginPage: React.FC = () => {
     const router = useRouter();
 
     const { isLoading, isError, error, data, call } = useFnCall(
-        async (values: InitialLoginValuesType) => await axios.post(`${process.env.BASE_API_URL}/auth/users/jwt/create/`, values)
+        async (values: InitialLoginValuesType) => {
+            const response = await axios.post(`${process.env.BASE_API_URL}/auth/users/jwt/create/`, values)
+            return response.data;
+        }
     );
 
     const initialValues: InitialLoginValuesType = {
@@ -44,7 +47,7 @@ const LoginPage: React.FC = () => {
     React.useEffect(() => {
         const handler = async () => {
             if (data) {
-                toast.success(data.success);
+                toast.success(data.message);
                 await loggedInUser(data.access, data.refresh);
                 await FetchUserData(data.access, updateUser)
                 sessionStorage.setItem('access', Encrypt(data.access));
@@ -69,7 +72,7 @@ const LoginPage: React.FC = () => {
             <CardContent>
                 <Formik
                     initialValues={initialValues} onSubmit={async (values, actions) => {
-                        call(values);
+                        await call(values);
                         actions.resetForm();
                     }}>
                     {({ values, handleChange, handleSubmit }) => (
@@ -121,7 +124,7 @@ const LoginPage: React.FC = () => {
                                     <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
                                     Please wait
                                 </Button> :
-                                    <Button type="submit" onClick={() => handleSubmit()} className="gap-2">
+                                    <Button type="submit" onClick={() => handleSubmit} className="gap-2">
                                         <SendHorizonal className="h-4 w-4" />
                                         <span>Log In</span>
                                     </Button>
