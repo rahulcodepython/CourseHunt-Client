@@ -10,7 +10,7 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion"
-import { Field, FieldArray, Form, Formik, FormikErrors } from "formik"
+import { FieldArray, Form, Formik, FormikErrors } from "formik"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import axios from "axios"
@@ -84,13 +84,7 @@ const CourseEditPage = ({ params }: { params: { courseid: string } }) => {
                     Previous
                 </Button>
                 {
-                    pageIndex === tabsList.length - 1 ? <Button onClick={() => {
-                        // console.log({
-                        //     faq: courseFAQData
-                        // })
-                    }}>
-                        Create Course
-                    </Button> : <Button onClick={() => (pageIndex < tabsList.length - 1) ? setPageIndex(pageIndex + 1) : null} disabled={pageIndex === tabsList.length - 1} className="pr-2.5 items-center">
+                    !(pageIndex === tabsList.length - 1) && <Button onClick={() => (pageIndex < tabsList.length - 1) ? setPageIndex(pageIndex + 1) : null} disabled={pageIndex === tabsList.length - 1} className="pr-2.5 items-center">
                         Next
                         <ChevronRight className="h-4 w-4" />
                     </Button>

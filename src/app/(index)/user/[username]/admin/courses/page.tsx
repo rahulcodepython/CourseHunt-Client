@@ -54,18 +54,18 @@ import axios from "axios"
 import { useFnCall } from "@/hook"
 import { toast } from "react-toastify"
 import { FormatDate } from "@/utils"
+import { useQuery } from "@tanstack/react-query"
 
 type RecordType = {
     id: string
     name: string
-    date: string
+    created_at: string
     duration: number
     chapter: string
     price: number
     offer: number
     status: 'published' | 'draft'
     cuponCode: string
-    instructor: string
 }
 
 const CoursesPage = () => {
@@ -73,71 +73,20 @@ const CoursesPage = () => {
     const accessToken = useAuthStore((state) => state.accessToken)
 
     const ROWS_PER_PAGE = 2
-    const [data, setData] = React.useState<RecordType[]>([
-        {
-            id: "1",
-            name: "Course 1",
-            date: "2021-10-01",
-            duration: 10,
-            chapter: "Chapter 1",
-            price: 100,
-            offer: 0,
-            status: 'published',
-            cuponCode: "Cupon Code 1",
-            instructor: "Instructor 1",
-        },
-        {
-            id: "2",
-            name: "Course 2",
-            date: "2021-10-02",
-            duration: 20,
-            chapter: "Chapter 2",
-            price: 200,
-            offer: 0,
-            status: 'published',
-            cuponCode: "Cupon Code 2",
-            instructor: "Instructor 2",
-        },
-        {
-            id: "3",
-            name: "Course 3",
-            date: "2021-10-03",
-            duration: 30,
-            chapter: "Chapter 3",
-            price: 300,
-            offer: 0,
-            status: 'published',
-            cuponCode: "Cupon Code 3",
-            instructor: "Instructor 3",
-        },
-        {
-            id: "4",
-            name: "Course 4",
-            date: "2021-10-04",
-            duration: 40,
-            chapter: "Chapter 4",
-            price: 400,
-            offer: 0,
-            status: 'draft',
-            cuponCode: "Cupon Code 4",
-            instructor: "Instructor 4",
-        },
-    ])
+
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [filters, setFilters] = React.useState<string>('')
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
     const [rowSelection, setRowSelection] = React.useState({})
     const [rowsPerPage, setRowsPerPage] = React.useState<number>(ROWS_PER_PAGE)
     const [rowsPerPageDropDown, setRowsPerPageDropDown] = React.useState<number>(ROWS_PER_PAGE)
-    const [totalRecords, setTotalRecords] = React.useState<number>(0)
-    const [hasNext, setHasNext] = React.useState(false)
+    const [hasNext, setHasNext] = React.useState<boolean>(false)
+    const [hasPrevious, setHasPrevious] = React.useState<boolean>(false)
     const [page, setPage] = React.useState(1)
-    const [isFetching, setIsFetching] = React.useState(false)
-    const [hasMore, setHasMore] = React.useState(true)
 
     const router = useRouter()
 
-    const { isLoading, isError, error, data: createCourseResponse, call } = useFnCall(
+    const { isLoading: createCourseFnIsLoading, isError: createCourseFnIsError, error: createCourseFnError, data: createCourseFnResponse, call: createCourseFnCall } = useFnCall(
         async () => {
             const response = await axios.post(`${process.env.BASE_API_URL}/course/create-course/`, {
                 "created_at": FormatDate(new Date().toISOString())
@@ -150,18 +99,32 @@ const CoursesPage = () => {
         }
     )
 
+    const { error: queryError, data: queryData, isRefetching: isQueryRefetching, isLoading: isQueryLoading } = useQuery({
+        queryKey: ['admin-courses', { 'page': page, 'limit': rowsPerPage }],
+        queryFn: async () => {
+            const response = await axios.get(`${process.env.BASE_API_URL}/course/admin-courses/`, {
+                headers: {
+                    Authorization: 'Bearer ' + accessToken
+                }
+            })
+            return response.data
+        },
+        refetchOnWindowFocus: false,
+        refetchOnReconnect: false,
+    })
+
     const rowsOption: (number)[] = [2, 4, 6]
 
     const columnsList = [
+        { key: 'id', label: 'ID' },
         { key: 'name', label: 'Course Name' },
-        { key: 'date', label: 'Published Date' },
+        { key: 'created_at', label: 'Published Date' },
         { key: 'duration', label: 'Duration' },
         { key: 'chapter', label: 'Chapter' },
         { key: 'price', label: 'Price' },
         { key: 'offer', label: 'Offer' },
         { key: 'status', label: 'Status' },
         { key: 'cuponCode', label: 'Cupon Code' },
-        { key: 'instructor', label: 'Instructor' },
     ]
 
     const columns: ColumnDef<RecordType>[] = [
@@ -190,7 +153,7 @@ const CoursesPage = () => {
         },
     ];
     columnsList.forEach((columnValue) => {
-        columns.push({
+        !(columnValue.key === 'id') && columns.push({
             id: columnValue.key,
             accessorKey: columnValue.key,
             header: ({ column }) => {
@@ -203,10 +166,7 @@ const CoursesPage = () => {
             cell: ({ row }) => (
                 <div className="capitalize">
                     {
-                        columnValue.key === 'status' ? <span
-                            className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${row.getValue(columnValue.key) === 'published' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                            {row.getValue(columnValue.key)}
-                        </span> : row.getValue(columnValue.key)
+                        columnValue.key === 'status' ? <UpdateCourseStatus id={row.original.id} value={row.getValue(columnValue.key)} /> : (row.getValue(columnValue.key) === undefined || row.getValue(columnValue.key) === null) ? 'N/A' : row.getValue(columnValue.key)
                     }
                 </div>
             ),
@@ -219,15 +179,19 @@ const CoursesPage = () => {
         cell: ({ row }) => {
             const info = row.original;
             return <DropdownMenu>
-                <DropdownMenuTrigger>Action</DropdownMenuTrigger>
+                <DropdownMenuTrigger className="outline-none">
+                    <Button>
+                        Actions <ChevronDown className="ml-2 h-4 w-4" />
+                    </Button>
+                </DropdownMenuTrigger>
                 <DropdownMenuContent>
                     <DropdownMenuItem>
-                        <Link href={`/user/${user?.username}/admin/courses/edit-chapter/${'web'}/?chapter=1&lesson=2`} className="w-full">
+                        <Link href={`/user/${user?.username}/admin/courses/edit-chapter/${info.id}/`} className="w-full">
                             Edit Chapter
                         </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem>
-                        <Link href={`/user/${user?.username}/admin/courses/edit-course/?action=update`} className="w-full">
+                        <Link href={`/user/${user?.username}/admin/courses/edit-course/${info.id}/`} className="w-full">
                             Edit Course
                         </Link>
                     </DropdownMenuItem>
@@ -241,7 +205,7 @@ const CoursesPage = () => {
     });
 
     const table = useReactTable({
-        data,
+        data: queryData?.results ?? [],
         columns,
         onSortingChange: setSorting,
         onGlobalFilterChange: setFilters,
@@ -260,35 +224,28 @@ const CoursesPage = () => {
     })
 
     React.useEffect(() => {
-        const handler = async () => {
-            table.setPageSize(ROWS_PER_PAGE)
-            setRowsPerPageDropDown(ROWS_PER_PAGE)
-        }
-        handler()
-    }, [table])
+        table.setPageSize(ROWS_PER_PAGE)
+        setRowsPerPageDropDown(ROWS_PER_PAGE)
+    }, [])
 
     React.useEffect(() => {
-        const handler = async () => {
+        if (!isQueryLoading) {
+            if (queryError) {
+                toast.error(queryError?.message)
+            }
+            setHasNext(queryData?.results?.next)
+            setHasPrevious(queryData?.results?.previous)
         }
-        handler()
-    }, [page])
+    }, [queryError, isQueryLoading, queryData])
 
     React.useEffect(() => {
-        if (data.length < totalRecords) {
-            setHasMore(true)
-        } else {
-            setHasMore(false)
-        }
-    }, [data, totalRecords])
-
-    React.useEffect(() => {
-        isError && toast.error(error)
-        if (createCourseResponse) {
+        createCourseFnIsError && toast.error(createCourseFnError)
+        if (createCourseFnResponse) {
             toast.success('Course created successfully')
-            router.push(`/user/${user?.username}/admin/courses/edit-course/${createCourseResponse.id}`)
+            router.push(`/user/${user?.username}/admin/courses/edit-course/${createCourseFnResponse.id}`)
         }
 
-    }, [isError, createCourseResponse])
+    }, [createCourseFnIsError, createCourseFnResponse])
 
     return <div className="w-full p-4">
         <Card>
@@ -304,12 +261,11 @@ const CoursesPage = () => {
                     </div>
                     <div className="flex items-center justify-end gap-4">
                         {
-                            isLoading ? <Button disabled className="gap-2">
+                            createCourseFnIsLoading ? <Button disabled className="gap-2">
                                 <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
                                 Please wait
                             </Button> : <Button className="w-full" onClick={async () => {
-                                await call()
-                                // !isLoading && data && router.push(`/user/${user?.username}/admin/courses/edit-course/${createCourseResponse.id}`)
+                                await createCourseFnCall()
                             }}>
                                 Create Course
                             </Button>
@@ -372,7 +328,7 @@ const CoursesPage = () => {
                         </TableHeader>
                         <TableBody>
                             {
-                                isFetching ? <TableRow>
+                                (isQueryLoading || isQueryRefetching) ? <TableRow>
                                     <TableCell colSpan={columns.length} className="h-24 text-center">
                                         Fetching...
                                     </TableCell>
@@ -419,40 +375,30 @@ const CoursesPage = () => {
                         <PaginationContent>
                             <PaginationItem>
                                 {
-                                    table.getCanPreviousPage() ? <PaginationPrevious onClick={() => {
-                                        if (table.getCanPreviousPage()) {
-                                            setPage(page - 1)
-                                            table.previousPage()
-                                        }
-                                    }} className="cursor-pointer" /> : <span className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 gap-1 pl-2.5 cursor-not-allowed opacity-50">
+                                    hasPrevious ? <PaginationPrevious onClick={() => setPage(page - 1)} className="cursor-pointer" /> : <span className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 gap-1 pl-2.5 cursor-not-allowed opacity-50">
                                         <ChevronLeft className="h-4 w-4" />
                                         Previous
                                     </span>
                                 }
                             </PaginationItem>
                             {
-                                Array.from({ length: ((totalRecords / rowsPerPage) + (totalRecords % rowsPerPage === 0 ? 0 : 1)) }, (_, i) => {
-                                    return (
-                                        <PaginationItem key={i} onClick={() => {
-                                            setPage(i + 1)
-                                            table.setPageIndex(i)
-                                        }} className="cursor-pointer">
-                                            <PaginationLink className={
-                                                page === i + 1 ?
-                                                    `bg-secondary-foreground text-white hover:bg-secondary-foreground hover:text-white`
-                                                    : ''}>{i + 1}</PaginationLink>
-                                        </PaginationItem>
-                                    )
-                                })
+                                // Array.from({ length: ((totalRecords / rowsPerPage) + (totalRecords % rowsPerPage === 0 ? 0 : 1)) }, (_, i) => {
+                                //     return (
+                                //         <PaginationItem key={i} onClick={() => {
+                                //             setPage(i + 1)
+                                //             table.setPageIndex(i)
+                                //         }} className="cursor-pointer">
+                                //             <PaginationLink className={
+                                //                 page === i + 1 ?
+                                //                     `bg-secondary-foreground text-white hover:bg-secondary-foreground hover:text-white`
+                                //                     : ''}>{i + 1}</PaginationLink>
+                                //         </PaginationItem>
+                                //     )
+                                // })
                             }
                             <PaginationItem>
                                 {
-                                    table.getCanNextPage() ? <PaginationNext onClick={() => {
-                                        if (table.getCanNextPage() || hasNext) {
-                                            setPage(page + 1)
-                                            table.nextPage()
-                                        }
-                                    }} className="cursor-pointer" /> :
+                                    hasNext ? <PaginationNext onClick={() => setPage(page + 1)} className="cursor-pointer" /> :
                                         <span className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 gap-1 pr-2.5 cursor-not-allowed opacity-50">
                                             Next
                                             <ChevronRight className="h-4 w-4" />
@@ -492,6 +438,46 @@ const CoursesPage = () => {
             </CardFooter>
         </Card>
     </div>
+}
+
+const UpdateCourseStatus = ({ id, value }: {
+    id: string
+    value: 'published' | 'draft'
+}) => {
+    const accessToken = useAuthStore((state) => state.accessToken)
+
+    const [status, setStatus] = React.useState<'published' | 'draft'>(value)
+
+    const { isLoading: publishCourseFnIsLoading, isError: publishCourseFnIsError, error: publishCourseFnError, data: publishCourseFnResponse, call: publishCourseFnCall } = useFnCall(
+        async (id) => {
+            const response = await axios.post(`${process.env.BASE_API_URL}/course/publish-course/${id}/`, {}, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                }
+            })
+            return response.data
+        }
+    )
+
+    React.useEffect(() => {
+        if (!publishCourseFnIsLoading) {
+            if (publishCourseFnError) {
+                toast.error(publishCourseFnError)
+            }
+            if (publishCourseFnResponse) {
+                toast.success(publishCourseFnResponse?.message ?? 'Course updated successfully')
+                setStatus(publishCourseFnResponse?.status)
+            }
+        }
+    }, [publishCourseFnIsError, publishCourseFnError, publishCourseFnResponse, publishCourseFnIsLoading])
+
+    return publishCourseFnIsLoading ? <Button>
+        <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+        Please wait
+    </Button> : <Button onClick={() => publishCourseFnCall(id)}
+        className={status === 'published' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
+        {status === 'published' ? 'Published' : 'Draft'}
+    </Button>
 }
 
 export default CoursesPage
