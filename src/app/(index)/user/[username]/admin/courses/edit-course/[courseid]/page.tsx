@@ -137,7 +137,9 @@ const CourseBasic = ({ setPageIndex, courseid }:
                 }
             })
             return response.data
-        }
+        },
+        refetchOnWindowFocus: false,
+        refetchOnReconnect: false,
     })
 
     React.useEffect(() => {
@@ -247,7 +249,9 @@ const CourseChapter = ({ setPageIndex, courseid }:
                 }
             })
             return response.data.data
-        }
+        },
+        refetchOnWindowFocus: false,
+        refetchOnReconnect: false,
     })
 
     const { isLoading: loadingFnCall, isError: isErrorFnCall, error: errorFnCall, data: dataFnCall, call } = useFnCall(async (values) => {
@@ -366,19 +370,19 @@ const DurationField = ({ duration, setFieldValue, fieldName }:
     }, [time])
 
     return <div className="grid grid-cols-3 gap-2">
-        <Input type="number" id="hours" name="hours" placeholder="Hours" className="mt-1" value={time.hours} onChange={e => setTime(pre => {
+        <Input type="number" id="hours" name="hours" placeholder="Hours" value={time.hours} onChange={e => setTime(pre => {
             return {
                 ...pre,
                 hours: parseInt(e.target.value)
             }
         })} />
-        <Input type="number" id="minutes" name="minutes" placeholder="Minutes" className="mt-1" value={time.minutes} onChange={e => setTime(pre => {
+        <Input type="number" id="minutes" name="minutes" placeholder="Minutes" value={time.minutes} onChange={e => setTime(pre => {
             return {
                 ...pre,
                 minutes: parseInt(e.target.value)
             }
         })} />
-        <Input type="number" id="seconds" name="seconds" placeholder="Seconds" className="mt-1" value={time.seconds} onChange={e => setTime(pre => {
+        <Input type="number" id="seconds" name="seconds" placeholder="Seconds" value={time.seconds} onChange={e => setTime(pre => {
             return {
                 ...pre,
                 seconds: parseInt(e.target.value)
@@ -405,7 +409,9 @@ const CourseFAQ = ({ courseid }: { courseid: string }) => {
                 }
             })
             return response.data.data
-        }
+        },
+        refetchOnWindowFocus: false,
+        refetchOnReconnect: false,
     })
 
     const { isLoading: loadingFnCall, isError: isErrorFnCall, error: errorFnCall, data: dataFnCall, call } = useFnCall(async (values) => {
