@@ -16,7 +16,6 @@ import { Link } from 'next-view-transitions';
 import { GitHubLogoIcon, ReloadIcon } from '@radix-ui/react-icons';
 import { useAuthStore } from '@/context/AuthStore';
 import { Chrome, SendHorizonal } from 'lucide-react';
-import { FetchUserData } from '@/axios';
 import { useFnCall } from '@/hook';
 import { toast } from 'react-toastify';
 import { Encrypt } from '@/utils';
@@ -48,10 +47,10 @@ const LoginPage: React.FC = () => {
         const handler = async () => {
             if (data) {
                 toast.success(data.message);
-                await loggedInUser(data.access, data.refresh);
-                await FetchUserData(data.access, updateUser)
+                loggedInUser(data.access, data.refresh, data.user);
                 sessionStorage.setItem('access', Encrypt(data.access));
                 localStorage.setItem('refresh', Encrypt(data.refresh));
+                localStorage.setItem('user', JSON.stringify(data.user));
                 router.push('/');
             } else if (isError) {
                 toast.error(error);

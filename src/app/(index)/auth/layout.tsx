@@ -5,16 +5,15 @@ import { useAuthStore } from "@/context/AuthStore";
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
     const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
+    const user = useAuthStore((state) => state.user)
 
     const router = useRouter();
 
-    React.useEffect(() => {
-        if (isAuthenticated) {
-            router.push("/");
-        }
-    }, [isAuthenticated, router]);
+    if (isAuthenticated) {
+        return router.push(`/user/${user?.username}`);
+    }
 
-    return isAuthenticated ? null : children
+    return children
 }
 
 export default AuthLayout;

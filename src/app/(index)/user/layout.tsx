@@ -8,13 +8,11 @@ const UserLayout = ({ children }: { children: React.ReactNode }) => {
 
     const router = useRouter();
 
-    React.useEffect(() => {
-        if (!isAuthenticated) {
-            router.push("/auth/login");
-        }
-    }, [isAuthenticated, router]);
+    if (!isAuthenticated) {
+        return router.push("/auth/login");
+    }
 
-    return !isAuthenticated ? null : children
+    return children
 }
 
 export default UserLayout;
