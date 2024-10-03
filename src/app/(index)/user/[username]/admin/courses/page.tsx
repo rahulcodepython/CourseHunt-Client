@@ -51,7 +51,7 @@ import { useAuthStore } from "@/context/AuthStore"
 import { useRouter } from "next/navigation"
 import { ReloadIcon } from "@radix-ui/react-icons"
 import axios from "axios"
-import { useFnCall } from "@/hook"
+import { useMutation } from "@/hook"
 import { toast } from "react-toastify"
 import { FormatDate } from "@/utils"
 import { useQuery } from "@tanstack/react-query"
@@ -86,18 +86,7 @@ const CoursesPage = () => {
 
     const router = useRouter()
 
-    const { isLoading: createCourseFnIsLoading, isError: createCourseFnIsError, error: createCourseFnError, data: createCourseFnResponse, call: createCourseFnCall } = useFnCall(
-        async () => {
-            const response = await axios.post(`${process.env.BASE_API_URL}/course/create-course/`, {
-                "created_at": FormatDate(new Date().toISOString())
-            }, {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`
-                }
-            })
-            return response.data
-        }
-    )
+    const { mutate, mutationIsLoading, mutationIsError, mutationError, mutationData, mutationState } = useMutation()
 
     const { error: queryError, data: queryData, isRefetching: isQueryRefetching, isLoading: isQueryLoading } = useQuery({
         queryKey: ['admin-courses', { 'page': page, 'limit': rowsPerPage }],
@@ -239,13 +228,13 @@ const CoursesPage = () => {
     }, [queryError, isQueryLoading, queryData])
 
     React.useEffect(() => {
-        createCourseFnIsError && toast.error(createCourseFnError)
-        if (createCourseFnResponse) {
+        mutationIsError && toast.error(mutationError)
+        if (mutationState === 'done' && mutationData) {
             toast.success('Course created successfully')
-            router.push(`/user/${user?.username}/admin/courses/edit-course/${createCourseFnResponse.id}`)
+            router.push(`/user/${user?.username}/admin/courses/edit-course/${mutationData.id}`)
         }
 
-    }, [createCourseFnIsError, createCourseFnResponse])
+    }, [mutationState])
 
     return <div className="w-full p-4">
         <Card>
@@ -261,11 +250,20 @@ const CoursesPage = () => {
                     </div>
                     <div className="flex items-center justify-end gap-4">
                         {
-                            createCourseFnIsLoading ? <Button disabled className="gap-2">
+                            mutationIsLoading ? <Button disabled className="gap-2">
                                 <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
                                 Please wait
                             </Button> : <Button className="w-full" onClick={async () => {
-                                await createCourseFnCall()
+                                await mutate({
+                                    url: `${process.env.BASE_API_URL}/course/create-course/`,
+                                    method: 'POST',
+                                    headers: {
+                                        Authorization: `Bearer ${accessToken}`
+                                    },
+                                    data: {
+                                        "created_at": FormatDate(new Date().toISOString())
+                                    }
+                                })
                             }}>
                                 Create Course
                             </Button>
@@ -448,33 +446,29 @@ const UpdateCourseStatus = ({ id, value }: {
 
     const [status, setStatus] = React.useState<'published' | 'draft'>(value)
 
-    const { isLoading: publishCourseFnIsLoading, isError: publishCourseFnIsError, error: publishCourseFnError, data: publishCourseFnResponse, call: publishCourseFnCall } = useFnCall(
-        async (id) => {
-            const response = await axios.post(`${process.env.BASE_API_URL}/course/publish-course/${id}/`, {}, {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`
-                }
-            })
-            return response.data
-        }
-    )
+    const { mutate, mutationIsLoading, mutationIsError, mutationError, mutationData, mutationState } = useMutation()
 
     React.useEffect(() => {
-        if (!publishCourseFnIsLoading) {
-            if (publishCourseFnError) {
-                toast.error(publishCourseFnError)
+        if (mutationState === 'done') {
+            if (mutationIsError) {
+                toast.error(mutationError)
+                return;
             }
-            if (publishCourseFnResponse) {
-                toast.success(publishCourseFnResponse?.message ?? 'Course updated successfully')
-                setStatus(publishCourseFnResponse?.status)
-            }
+            toast.success(mutationData?.message ?? 'Course updated successfully')
+            setStatus(mutationData?.status)
         }
-    }, [publishCourseFnIsError, publishCourseFnError, publishCourseFnResponse, publishCourseFnIsLoading])
+    }, [mutationState])
 
-    return publishCourseFnIsLoading ? <Button>
+    return mutationIsLoading ? <Button>
         <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
         Please wait
-    </Button> : <Button onClick={() => publishCourseFnCall(id)}
+    </Button> : <Button onClick={() => mutate({
+        url: `${process.env.BASE_API_URL}/course/publish-course/${id}/`,
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${accessToken}`
+        }
+    })}
         className={status === 'published' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
         {status === 'published' ? 'Published' : 'Draft'}
     </Button>

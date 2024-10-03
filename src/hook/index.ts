@@ -1,27 +1,40 @@
 "use client"
+import axios from 'axios';
 import React from 'react';
 
-export const useFnCall = (fn: (...args: any[]) => Promise<any>) => {
-    const [isLoading, setIsLoading] = React.useState<boolean>(false);
-    const [isError, setIsError] = React.useState<boolean>(false);
-    const [error, setError] = React.useState<string | null>(null);
-    const [data, setData] = React.useState<any>(null);
+interface MutationProps {
+    url: string
+    method: 'POST' | 'PUT' | 'DELETE' | 'PATCH'
+    headers?: {
+        'Authorization'?: string
+    }
+    data?: any
+}
 
-    const call = async (...args: any[]) => {
-        setIsLoading(true);
-        setIsError(false);
-        setError(null);
+export const useMutation = () => {
+    const [mutationIsLoading, setMutationIsLoading] = React.useState<boolean>(false);
+    const [mutationIsError, setMutationIsError] = React.useState<boolean>(false);
+    const [mutationError, setMutationError] = React.useState<string | null>(null);
+    const [mutationData, setMutationData] = React.useState<any>(null);
+    const [mutationState, setMutationState] = React.useState<'stable' | 'fetching' | 'done'>('stable');
+
+    const mutate = async (props: MutationProps) => {
+        setMutationIsLoading(true);
+        setMutationIsError(false);
+        setMutationError(null);
+        setMutationState('fetching');
 
         try {
-            const response = await fn(...args);
-            setData(response);
+            const response = await axios.request(props);
+            setMutationData(response.data);
         } catch (error: any) {
-            setError(error.message || 'An error occurred');
-            setIsError(true);
+            setMutationError(error.message || 'An error occurred');
+            setMutationIsError(true);
         } finally {
-            setIsLoading(false);
+            setMutationIsLoading(false);
+            setMutationState('done');
         }
     }
 
-    return { isLoading, isError, error, data, call };
+    return { mutate, mutationIsLoading, mutationIsError, mutationError, mutationData, mutationState };
 }

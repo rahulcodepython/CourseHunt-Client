@@ -1,6 +1,5 @@
 "use client"
 import React from 'react';
-import { Formik, Form } from 'formik';
 import { useRouter } from 'next/navigation';
 import {
     Card,
@@ -16,48 +15,53 @@ import { Link } from 'next-view-transitions';
 import { GitHubLogoIcon, ReloadIcon } from '@radix-ui/react-icons';
 import { useAuthStore } from '@/context/AuthStore';
 import { Chrome, SendHorizonal } from 'lucide-react';
-import { useFnCall } from '@/hook';
+import { useMutation } from '@/hook';
 import { toast } from 'react-toastify';
 import { Encrypt } from '@/utils';
-import axios from 'axios';
-
-export interface InitialLoginValuesType {
-    email: string
-    password: string
-}
+import { InitialLoginValuesType } from '@/types';
+import { useForm, Controller } from 'react-hook-form';
 
 const LoginPage: React.FC = () => {
-    const updateUser = useAuthStore((state) => state.UpdateUser)
     const loggedInUser = useAuthStore((state) => state.LoggedInUser)
     const router = useRouter();
 
-    const { isLoading, isError, error, data, call } = useFnCall(
-        async (values: InitialLoginValuesType) => {
-            const response = await axios.post(`${process.env.BASE_API_URL}/auth/users/jwt/create/`, values)
-            return response.data;
-        }
-    );
+    const { mutate, mutationIsLoading, mutationIsError, mutationError, mutationData, mutationState } = useMutation();
 
-    const initialValues: InitialLoginValuesType = {
-        email: '',
-        password: ''
-    }
+    const { control, handleSubmit, reset } = useForm<InitialLoginValuesType>({
+        defaultValues: {
+            email: '',
+            password: ''
+        }
+    });
+
+    const onSubmit = async (data: InitialLoginValuesType) => {
+        try {
+            await mutate({
+                url: `${process.env.BASE_API_URL}/auth/users/jwt/create/`,
+                method: 'POST',
+                data: data
+            });
+            reset();
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     React.useEffect(() => {
         const handler = async () => {
-            if (data) {
-                toast.success(data.message);
-                loggedInUser(data.access, data.refresh, data.user);
-                sessionStorage.setItem('access', Encrypt(data.access));
-                localStorage.setItem('refresh', Encrypt(data.refresh));
-                localStorage.setItem('user', JSON.stringify(data.user));
+            if (mutationState === 'done' && mutationData) {
+                toast.success(mutationData.message);
+                loggedInUser(mutationData.access, mutationData.refresh, mutationData.user);
+                sessionStorage.setItem('access', Encrypt(mutationData.access));
+                localStorage.setItem('refresh', Encrypt(mutationData.refresh));
+                localStorage.setItem('user', JSON.stringify(mutationData.user));
                 router.push('/');
-            } else if (isError) {
-                toast.error(error);
+            } else if (mutationIsError) {
+                toast.error(mutationError);
             }
         }
         handler();
-    }, [data])
+    }, [mutationState])
 
     return <main className="flex items-center justify-center w-screen h-screen">
         <Card className="max-w-xl w-full">
@@ -69,24 +73,19 @@ const LoginPage: React.FC = () => {
                 </CardDescription>
             </CardHeader>
             <CardContent>
-                <Formik
-                    initialValues={initialValues} onSubmit={async (values, actions) => {
-                        await call(values);
-                        actions.resetForm();
-                    }}>
-                    {({ values, handleChange, handleSubmit }) => (
-                        <Form className="flex flex-col gap-6">
-                            <div className="flex flex-col gap-4">
-                                {data && <p>Data: {JSON.stringify(data)}</p>}
-                                <div className="flex flex-col gap-2">
-                                    <Label htmlFor="email" className="uppercase text-gray-600 text-xs">
-                                        Email
-                                    </Label>
+                <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
+                    <div className="flex flex-col gap-4">
+                        <div className="flex flex-col gap-2">
+                            <Label htmlFor="email" className="uppercase text-gray-600 text-xs">
+                                Email
+                            </Label>
+                            <Controller
+                                name="email"
+                                control={control}
+                                render={({ field }) => (
                                     <Input
                                         type="email"
-                                        name="email"
-                                        value={values.email}
-                                        onChange={handleChange}
+                                        {...field}
                                         placeholder="Enter your email"
                                         id="email"
                                         className="w-full"
@@ -94,16 +93,20 @@ const LoginPage: React.FC = () => {
                                         autoComplete="email"
                                         required
                                     />
-                                </div>
-                                <div className="flex flex-col gap-2">
-                                    <Label htmlFor="password" className="uppercase text-gray-600 text-xs">
-                                        Password
-                                    </Label>
+                                )}
+                            />
+                        </div>
+                        <div className="flex flex-col gap-2">
+                            <Label htmlFor="password" className="uppercase text-gray-600 text-xs">
+                                Password
+                            </Label>
+                            <Controller
+                                name="password"
+                                control={control}
+                                render={({ field }) => (
                                     <Input
                                         type="password"
-                                        name="password"
-                                        value={values.password}
-                                        onChange={handleChange}
+                                        {...field}
                                         placeholder="Enter your password"
                                         id="password"
                                         className="w-full"
@@ -111,26 +114,25 @@ const LoginPage: React.FC = () => {
                                         autoComplete="password"
                                         required
                                     />
-                                </div>
-                                <div className="text-right">
-                                    <span className="text-sm font-semibold text-gray-700 hover:text-gray-500 focus:text-gray-500 hover:underline cursor-pointer">
-                                        Forgot Password?
-                                    </span>
-                                </div>
-                            </div>
-                            {
-                                isLoading ? <Button disabled className="gap-2">
-                                    <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-                                    Please wait
-                                </Button> :
-                                    <Button type="submit" onClick={() => handleSubmit} className="gap-2">
-                                        <SendHorizonal className="h-4 w-4" />
-                                        <span>Log In</span>
-                                    </Button>
-                            }
-                        </Form>
-                    )}
-                </Formik>
+                                )}
+                            />
+                        </div>
+                        <div className="text-right">
+                            <span className="text-sm font-semibold text-gray-700 hover:text-gray-500 focus:text-gray-500 hover:underline cursor-pointer">
+                                Forgot Password?
+                            </span>
+                        </div>
+                    </div>
+                    {
+                        mutationIsLoading ? <Button disabled className="gap-2">
+                            <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                            Please wait
+                        </Button> : <Button type="submit" className="gap-2">
+                            <SendHorizonal className="h-4 w-4" />
+                            <span>Log In</span>
+                        </Button>
+                    }
+                </form>
             </CardContent>
             <CardFooter className="flex flex-col w-full gap-4">
                 <div className="grid grid-cols-3 items-center text-gray-500 w-full">

@@ -45,3 +45,8 @@ export const SecondsToHMS = (time: number) => {
 
     return { hours, minutes, seconds };
 }
+
+export const FormatTime = (time: number) => {
+    const { hours, minutes, seconds } = SecondsToHMS(time);
+    return `${hours}h ${minutes}m ${seconds}s`
+}

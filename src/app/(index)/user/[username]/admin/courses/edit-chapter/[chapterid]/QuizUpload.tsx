@@ -1,95 +1,129 @@
-"use client"
+"use client";
 import React from "react";
+import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import { FieldArray, Form, Formik } from "formik";
 import { Input } from "@/components/ui/input";
-
-type initialValuesType = {
-    quiz: {
-        question: string,
-        answers: {
-            text: string,
-            correct: boolean
-        }[],
-    }[]
-}
+import { QuizType } from "@/types";
 
 const QuizUpload = () => {
-    const initialValues: initialValuesType = {
-        quiz: [
-            {
-                question: "",
-                answers: [
-                    { text: "", correct: false },
-                    { text: "", correct: false },
-                    { text: "", correct: false },
-                    { text: "", correct: false }
-                ]
-            }
-        ]
-    }
+    const { control, handleSubmit, register } = useForm<QuizType>({
+        defaultValues: {
+            quiz: [
+                {
+                    question: "",
+                    answers: [
+                        { text: "", correct: false },
+                        { text: "", correct: false },
+                        { text: "", correct: false },
+                        { text: "", correct: false }
+                    ]
+                }
+            ]
+        }
+    });
 
-    return <section className="py-12 md:py-24 bg-muted">
-        <div className="container mx-auto max-w-4xl px-4 md:px-6">
-            <div className="grid gap-8">
-                <div className="flex flex-col gap-8">
-                    <h2 className="text-4xl font-bold">Quiz</h2>
-                    <Formik initialValues={initialValues} onSubmit={values => console.log(values)}>
-                        {
-                            ({ values, handleChange, handleSubmit }) => {
-                                return <Form>
-                                    <FieldArray name="quiz">
-                                        {
-                                            ({ push, remove }) => {
-                                                return <div className="space-y-8 mb-8">
-                                                    {
-                                                        values.quiz.map((item, qIndex) => {
-                                                            return <div key={qIndex}>
-                                                                <Input name={`quiz[${qIndex}].question`} id="question" value={values.quiz[qIndex].question} onChange={handleChange} placeholder="Enter Questions" />
-                                                                <div className="my-4 space-y-1">
-                                                                    {
-                                                                        values.quiz[qIndex].answers.map((answer, aIndex) => {
-                                                                            return <div key={aIndex} className="flex items-center space-x-2">
-                                                                                <Input name={`quiz[${qIndex}].answers[${aIndex}].text`} value={answer.text} onChange={handleChange} placeholder={'Enter Options ' + (aIndex + 1)} />
-                                                                                <input type="radio" name="correct" checked={answer.correct} onChange={handleChange} />
-                                                                                <Button onClick={() => remove(aIndex)}>Remove</Button>
-                                                                            </div>
-                                                                        })
+    const { fields: quizFields, append } = useFieldArray({
+        control,
+        name: "quiz"
+    });
+
+    const handleFormSubmit = (data: QuizType) => {
+        console.log(data);
+    };
+
+    return (
+        <section className="py-12 md:py-24 bg-muted">
+            <div className="container mx-auto max-w-4xl px-4 md:px-6">
+                <div className="grid gap-8">
+                    <div className="flex flex-col gap-8">
+                        <h2 className="text-4xl font-bold">Quiz</h2>
+                        <form onSubmit={handleSubmit(handleFormSubmit)}>
+                            <div className="space-y-8 mb-8">
+                                {quizFields.map((quizItem, qIndex) => (
+                                    <div key={quizItem.id}>
+                                        {/* Question input */}
+                                        <Input
+                                            {...register(`quiz.${qIndex}.question`)}
+                                            placeholder="Enter Question"
+                                        />
+                                        <div className="my-4 space-y-1">
+                                            {/* Answers field array */}
+                                            <Controller
+                                                control={control}
+                                                name={`quiz.${qIndex}.answers`}
+                                                render={({ field }) => (
+                                                    <>
+                                                        {field.value.map((answer, aIndex) => (
+                                                            <div
+                                                                key={aIndex}
+                                                                className="flex items-center space-x-2"
+                                                            >
+                                                                <Input
+                                                                    {...register(
+                                                                        `quiz.${qIndex}.answers.${aIndex}.text`
+                                                                    )}
+                                                                    placeholder={`Enter Option ${aIndex + 1}`}
+                                                                />
+                                                                {/* Radio Button */}
+                                                                <Controller
+                                                                    name={`quiz.${qIndex}.answers.${aIndex}.correct`}
+                                                                    control={control}
+                                                                    render={({ field }) => (
+                                                                        <Input
+                                                                            type="radio"
+                                                                            {...field}
+                                                                            checked={field.value}
+                                                                            value={String(field.value)}
+                                                                        />
+                                                                    )}
+                                                                />
+                                                                {/* Add the ability to remove an answer */}
+                                                                <Button
+                                                                    type="button"
+                                                                    onClick={() =>
+                                                                        field.value.splice(aIndex, 1)
                                                                     }
-                                                                </div>
-                                                                <div className="flex justify-end w-full">
-                                                                    <Button onClick={() => push({
-                                                                        question: "",
-                                                                        answers: [
-                                                                            { text: "", correct: false },
-                                                                            { text: "", correct: false },
-                                                                            { text: "", correct: false },
-                                                                            { text: "", correct: false }
-                                                                        ]
-                                                                    })}>
-                                                                        Add Answer
-                                                                    </Button>
-                                                                </div>
+                                                                >
+                                                                    Remove
+                                                                </Button>
                                                             </div>
-                                                        })
-                                                    }
-                                                </div>
-                                            }
-                                        }
-                                    </FieldArray>
-                                    <div className="flex justify-end">
-                                        <Button onSubmit={() => handleSubmit}>
-                                            Add Question
-                                        </Button>
+                                                        ))}
+                                                    </>
+                                                )}
+                                            />
+                                        </div>
+
+                                        {/* Button to append more answers */}
+                                        <div className="flex justify-end w-full">
+                                            <Button
+                                                type="button"
+                                                onClick={() =>
+                                                    append({
+                                                        question: "",
+                                                        answers: [
+                                                            { text: "", correct: false },
+                                                            { text: "", correct: false },
+                                                            { text: "", correct: false },
+                                                            { text: "", correct: false }
+                                                        ]
+                                                    })
+                                                }
+                                            >
+                                                Add Answer
+                                            </Button>
+                                        </div>
                                     </div>
-                                </Form>
-                            }
-                        }
-                    </Formik>
+                                ))}
+                            </div>
+                            <div className="flex justify-end">
+                                <Button type="submit">Submit Quiz</Button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
-}
+        </section>
+    );
+};
 
 export default QuizUpload;
