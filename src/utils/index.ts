@@ -1,8 +1,8 @@
-import { State } from "@/context/AuthStore";
+import { AuthStoreState } from "@/types";
 
 const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY;
 
-export const Decrypt = (token: State['accessToken' | 'refreshToken']) => {
+export const Decrypt = (token: AuthStoreState['accessToken' | 'refreshToken']) => {
     let decryptedToken = '';
     if (token && ENCRYPTION_KEY) {
         for (let i = 0; i < token?.length; i++) {
@@ -12,7 +12,7 @@ export const Decrypt = (token: State['accessToken' | 'refreshToken']) => {
     return decryptedToken;
 }
 
-export const Encrypt = (token: State['accessToken' | 'refreshToken']) => {
+export const Encrypt = (token: AuthStoreState['accessToken' | 'refreshToken']) => {
     let encryptedToken = '';
     if (token && ENCRYPTION_KEY) {
         for (let i = 0; i < token?.length; i++) {

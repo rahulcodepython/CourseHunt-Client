@@ -1,14 +1,13 @@
-"use client"
-import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import React from "react"
 import ModeToggle from "@/components/ModeToggle"
-import { useAuthStore } from "@/context/AuthStore"
-import { MountainIcon, UserIcon } from "lucide-react"
+import { MountainIcon } from "lucide-react"
+import { getAuthCookies } from "@/server/action"
+import AuthNavSection from "@/components/AuthNavSection"
 
-const Navbar = () => {
-    const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
-    const user = useAuthStore((state) => state.user)
+
+const Navbar = async () => {
+    const { access, refresh, user } = await getAuthCookies();
 
     const NavItems = [
         {
@@ -51,29 +50,7 @@ const Navbar = () => {
                 </div>
                 <div className="flex items-center gap-4">
                     <ModeToggle />
-                    {
-                        !isAuthenticated ? <div className="flex items-center gap-4">
-                            <Link href={'/auth/login'} prefetch={false}>
-                                <Button variant="outline" size="sm">
-                                    Sign in
-                                </Button>
-                            </Link>
-                            <Link href={'/auth/register'} prefetch={false}>
-                                <Button size="sm">Sign up</Button>
-                            </Link>
-                        </div> : <div className="flex items-center gap-4">
-                            {
-                                user?.is_superuser ? <Link href={`/user/${user.username}/admin`} prefetch={false}>
-                                    <Button variant="outline" size="sm">
-                                        Admin
-                                    </Button>
-                                </Link> : null
-                            }
-                            <Link href={`/user/${user?.username}`} className="border rounded-full p-2 cursor-pointer">
-                                <UserIcon />
-                            </Link>
-                        </div>
-                    }
+                    <AuthNavSection accessToken={access} refreshToken={refresh} userData={user} />
                 </div>
             </div>
         </div>

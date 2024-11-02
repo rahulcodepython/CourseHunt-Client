@@ -1,18 +1,14 @@
-"use client"
-import React, { use } from "react";
-import { useRouter } from "next/navigation";
-import { useAuthStore } from "@/context/AuthStore";
+import Loading from "@/components/Loading";
+import RevalidateUser from "@/layout/RevalidateUser";
+import { getAuthCookies } from "@/server/action";
+import React from "react";
 
-const UserLayout = ({ children }: { children: React.ReactNode }) => {
-    const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+const UserLayout = async ({ children }: { children: React.ReactNode }) => {
+    const { access, refresh, user } = await getAuthCookies();
 
-    const router = useRouter();
-
-    if (!isAuthenticated) {
-        return router.push("/auth/login");
-    }
-
-    return children
+    return <RevalidateUser accessToken={access} refreshToken={refresh} user={user} loader={<Loading />}>
+        {children}
+    </RevalidateUser>
 }
 
 export default UserLayout;
