@@ -1,7 +1,7 @@
 import { RequestCookie } from 'next/dist/compiled/@edge-runtime/cookies';
 import { NextRequest, NextResponse } from 'next/server';
 
-const PROTECTED_ROUTES = '/user';
+const PROTECTED_ROUTES = '/dashboard';
 const AUTH_ROUTES = '/auth';
 
 export async function middleware(req: NextRequest) {
@@ -25,5 +25,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-    matcher: ['/auth/:path*', '/user/:path*'],
+    matcher: ['/auth/:path*', '/dashboard/:path*'],
 };

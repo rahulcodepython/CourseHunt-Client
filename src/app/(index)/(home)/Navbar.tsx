@@ -2,12 +2,12 @@ import Link from "next/link"
 import React from "react"
 import ModeToggle from "@/components/ModeToggle"
 import { MountainIcon } from "lucide-react"
-import { getAuthCookies } from "@/server/action"
+import { getCookies } from "@/server/action"
 import AuthNavSection from "@/components/AuthNavSection"
 
 
 const Navbar = async () => {
-    const { access, refresh, user } = await getAuthCookies();
+    const { access_token, refresh_token, user } = await getCookies(['access_token', 'refresh_token', 'user']);
 
     const NavItems = [
         {
@@ -50,7 +50,7 @@ const Navbar = async () => {
                 </div>
                 <div className="flex items-center gap-4">
                     <ModeToggle />
-                    <AuthNavSection accessToken={access} refreshToken={refresh} userData={user} />
+                    <AuthNavSection accessToken={access_token} refreshToken={refresh_token} userData={user} />
                 </div>
             </div>
         </div>

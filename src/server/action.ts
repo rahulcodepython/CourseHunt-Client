@@ -1,11 +1,16 @@
 'use server'
-import { InitialLoginValuesType } from "@/types";
+import { AllCourseType, InitialLoginValuesType, UserType } from "@/types";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { cookies } from "next/headers";
 
 
-export const refreshAccessToken = async (token: string) => {
+export const refreshAccessToken = async (token: string): Promise<{
+    data: string,
+    access?: string;
+    refresh?: string;
+    user?: UserType;
+}> => {
     const options = {
         url: `${process.env.BASE_API_URL}/auth/users/jwt/refresh/`,
         method: 'POST',
@@ -13,15 +18,41 @@ export const refreshAccessToken = async (token: string) => {
             refresh: token
         }
     };
-    return await axios.request(options);
+
+    try {
+        const response = await axios.request(options);
+        (await cookies()).set('access_token', response.data.access, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'strict',
+            path: '/',
+            maxAge: response.data.access ? (jwtDecode(response.data.access)?.exp ?? 0) - Math.floor(Date.now() / 1000) : 0  // Access token expiry
+        });
+        (await cookies()).set('refresh_token', response.data.refresh, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'strict',
+            path: '/',
+            maxAge: response.data.refresh ? (jwtDecode(response.data.refresh)?.exp ?? 0) - Math.floor(Date.now() / 1000) : 0  // Access token expiry
+        });
+        (await cookies()).set('user', JSON.stringify(response.data.user), {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'strict',
+            path: '/',  // Access token expiry
+        });
+        return { 'data': 'Login successful', access: response.data.access, refresh: response.data.refresh, user: response.data.user };
+    } catch (error) {
+        return { 'data': 'An error occurred' };
+    }
 };
 
-export const verifyToken = async (access: string, refresh: string): Promise<boolean> => {
+export const verifyToken = async (token: string): Promise<boolean> => {
     try {
         const options = {
             url: `${process.env.BASE_API_URL}/auth/users/jwt/verify/`,
             method: 'POST',
-            data: { access, refresh }
+            data: { token }
         };
 
         await axios.request(options);
@@ -43,7 +74,12 @@ export const fetchUserData = async (token: string) => {
     return await axios.request(options);
 }
 
-export const loginUser = async (data: InitialLoginValuesType) => {
+export const loginUser = async (data: InitialLoginValuesType): Promise<{
+    data: string,
+    access?: string;
+    refresh?: string;
+    user?: string;
+}> => {
     const options = {
         url: `${process.env.BASE_API_URL}/auth/users/jwt/create/`,
         method: 'POST',
@@ -52,21 +88,21 @@ export const loginUser = async (data: InitialLoginValuesType) => {
 
     try {
         const response = await axios.request(options);
-        cookies().set('access_token', response.data.access, {
+        (await cookies()).set('access_token', response.data.access, {
             httpOnly: true,
             secure: true,
             sameSite: 'strict',
             path: '/',
             maxAge: response.data.access ? (jwtDecode(response.data.access)?.exp ?? 0) - Math.floor(Date.now() / 1000) : 0  // Access token expiry
         });
-        cookies().set('refresh_token', response.data.refresh, {
+        (await cookies()).set('refresh_token', response.data.refresh, {
             httpOnly: true,
             secure: true,
             sameSite: 'strict',
             path: '/',
             maxAge: response.data.refresh ? (jwtDecode(response.data.refresh)?.exp ?? 0) - Math.floor(Date.now() / 1000) : 0  // Access token expiry
         });
-        cookies().set('user', JSON.stringify(response.data.user), {
+        (await cookies()).set('user', JSON.stringify(response.data.user), {
             httpOnly: true,
             secure: true,
             sameSite: 'strict',
@@ -78,15 +114,93 @@ export const loginUser = async (data: InitialLoginValuesType) => {
     }
 }
 
-export const getAuthCookies = async (): Promise<{
-    access: string | undefined,
-    refresh: string | undefined,
-    user: string | undefined
-}> => {
-    const cookieStore = cookies();
-    return {
-        access: cookieStore.get('access_token')?.value,
-        refresh: cookieStore.get('refresh_token')?.value,
-        user: cookieStore.get('user')?.value
+export const getCookies = async (cookies_list: Array<string>): Promise<{ [key: string]: string | undefined }> => {
+    const cookieStore = await cookies();
+    const required_cookies: { [key: string]: string | undefined } = {};
+    cookies_list.map(cookie => required_cookies[cookie] = cookieStore.get(cookie)?.value);
+    return required_cookies;
+}
+
+export const setCookie = async (cookie_name: string, cookie_value: string, maxAge?: number) => {
+    (await cookies()).set(cookie_name, cookie_value, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+        path: '/',
+        maxAge: maxAge
+    });
+}
+
+export const removeCookie = async (cookies_list: Array<string>) => {
+    const cookieStore = await cookies();
+    cookies_list.forEach(cookie => {
+        cookieStore.delete(cookie);
+    });
+    return;
+}
+
+export const createCourse = async (data: AllCourseType, access_token: string | undefined) => {
+    const options = {
+        url: `${process.env.BASE_API_URL}/course/create-course/`,
+        headers: {
+            Authorization: `Bearer ${access_token}`,
+        },
+        method: "POST",
+        data: data,
+    }
+    try {
+        await axios.request(options)
+        return { 'data': 'Course created successfully' };
+    } catch (error) {
+        return { 'data': 'An error occurred' };
+    }
+}
+
+export const editCourse = async (courseid: string | undefined, data: AllCourseType, access_token: string | undefined) => {
+    const options = {
+        url: `${process.env.BASE_API_URL}/course/edit-course/${courseid}/`,
+        headers: {
+            Authorization: `Bearer ${access_token}`,
+        },
+        method: "PATCH",
+        data: data,
+    }
+    try {
+        await axios.request(options)
+        return { 'data': 'Course updated successfully' };
+    } catch (error) {
+        return { 'data': 'An error occurred' };
+    }
+}
+
+export const enrollCourse = async (courseid: string | undefined, access_token: string | undefined) => {
+    const options = {
+        url: `${process.env.BASE_API_URL}/course/purchase-course/${courseid}/`,
+        headers: {
+            Authorization: `Bearer ${access_token}`,
+        },
+        method: "POST",
+    }
+    try {
+        await axios.request(options)
+        return { 'data': 'Course enrolled successfully' };
+    } catch (error) {
+        return { 'data': 'An error occurred' };
+    }
+}
+
+export const deleteCourse = async (courseid: string | undefined, access_token: string | undefined) => {
+    const options = {
+        url: `${process.env.BASE_API_URL}/course/delete-course/${courseid}/`,
+        headers: {
+            Authorization: `Bearer ${access_token}`,
+        },
+        method: "DELETE",
+    }
+    try {
+        await axios.request(options)
+        return { 'data': 'Course deleted successfully' };
+    } catch (error) {
+        return { 'data': 'An error occurred' };
     }
 }

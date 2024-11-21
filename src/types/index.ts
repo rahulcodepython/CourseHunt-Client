@@ -72,3 +72,42 @@ export interface QuizType {
         }[];
     }[];
 };
+
+export interface ReferralType {
+    id: string;
+    user: string;
+    email: string;
+    date: string;
+    status: "Active" | "Inactive" | "Purchased";
+    reward: number;
+}
+
+export interface AllCourseType {
+    id: string
+    name: string
+    short_description: string
+    long_description?: string
+    created_at: string
+    duration: string
+    price: number
+    offer: number
+    status: 'published' | 'draft'
+    thumbnail: string
+    videoURL?: string
+    notesURL?: string
+    presentationURL?: string
+    codeURL?: string
+    content?: string
+}
+
+export interface DetailSingleCourseType {
+    id: string
+    name: string
+    short_description: string
+    long_description: string
+    created_at: string
+    duration: string
+    price: number
+    offer: number
+    thumbnail: string
+}

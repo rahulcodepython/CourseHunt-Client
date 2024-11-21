@@ -11,7 +11,7 @@ import { InitialLoginValuesType } from '@/types';
 import { useForm, Controller } from 'react-hook-form';
 import { loginUser } from '@/server/action';
 import { useAuthStore } from '@/context/AuthStore';
-import useMutation from '@/hook/useMutation';
+import useMutation from '@/hooks/useMutation';
 
 const LoginPage: React.FC = () => {
     const loggedInUser = useAuthStore((state) => state.LoggedInUser);
@@ -36,13 +36,16 @@ const LoginPage: React.FC = () => {
 
     React.useEffect(() => {
         const handler = async () => {
-            if (mutationState === 'done' && mutationData) {
-                toast.success(mutationData.data);
-                loggedInUser(mutationData.access, mutationData.refresh, mutationData.user);
-                reset();
-                router.push('/');
-            } else if (mutationIsError) {
-                toast.error(mutationError);
+            if (mutationState === 'done') {
+                if (mutationIsError) {
+                    toast.error(mutationError);
+                }
+                else {
+                    toast.success(mutationData.data);
+                    loggedInUser(mutationData.access, mutationData.refresh, mutationData.user);
+                    reset();
+                    router.push('/');
+                }
             }
         }
         handler();
