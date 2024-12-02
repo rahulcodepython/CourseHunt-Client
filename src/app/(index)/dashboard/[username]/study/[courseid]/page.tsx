@@ -1,24 +1,23 @@
 // "use client"
 import { Button } from "@/components/ui/button";
 import { getCookies } from "@/server/action";
-import { AllCourseType } from "@/types";
+import { StudyCourseType } from "@/types";
 import axios from "axios";
 import Link from "next/link";
 import React from "react";
-// import CourseQuiz from "./course-quiz";
 
 const StudyPage = async ({ params }: { params: Promise<{ courseid: string | undefined }> }) => {
     const { courseid } = await params;
     const { access_token } = await getCookies(['access_token']);
 
     const response = await axios.request({
-        url: `${process.env.BASE_API_URL}/course/single-course/${courseid}/`,
+        url: `${process.env.BASE_API_URL}/course/study-single-course/${courseid}/`,
         method: 'GET',
         headers: {
             authorization: `Bearer ${access_token}`
         }
     });
-    const data: AllCourseType = response.data;
+    const data: StudyCourseType = response.data;
 
 
     return <div className="flex flex-col min-h-dvh bg-background">
@@ -26,9 +25,9 @@ const StudyPage = async ({ params }: { params: Promise<{ courseid: string | unde
             <h1 className="text-4xl font-bold">{data.name}</h1>
         </header>
         <main className="flex-1 grid gap-8 px-4 lg:px-6 py-12">
-            <section>
-                <div className="aspect-video rounded-lg overflow-hidden">
-                    <video controls className="w-full h-full object-cover" poster="/placeholder.svg">
+            <section className="flex items-center justify-center">
+                <div className="aspect-video rounded-lg overflow-hidden w-[1024px] h-[500px]">
+                    <video controls className="w-full h-full object-cover" poster="/placeholder.svg" width={1024} height={500}>
                         <source src="/video.mp4" type="video/mp4" />
                     </video>
                 </div>

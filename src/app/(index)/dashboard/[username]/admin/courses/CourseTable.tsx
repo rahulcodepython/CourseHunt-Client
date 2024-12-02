@@ -2,10 +2,10 @@
 import { TableBody, TableCell, TableRow } from '@/components/ui/table'
 import React from 'react'
 import CourseAction from './CourseAction'
-import { AllCourseType } from '@/types'
+import { ListCourseDashboardType } from '@/types'
 
 const CourseTable = ({ fetchedData }: {
-    fetchedData: AllCourseType[]
+    fetchedData: ListCourseDashboardType[]
 }) => {
     const [data, setData] = React.useState(fetchedData)
 
@@ -18,10 +18,8 @@ const CourseTable = ({ fetchedData }: {
             {
                 data.map((course, index) => (
                     <TableRow key={course.id}>
-                        <TableCell>{course.id}</TableCell>
                         <TableCell>{course.name}</TableCell>
                         <TableCell>{course.created_at}</TableCell>
-                        <TableCell>{course.duration}</TableCell>
                         <TableCell>{course.price}</TableCell>
                         <TableCell>{course.offer}</TableCell>
                         <TableCell>{course.status}</TableCell>

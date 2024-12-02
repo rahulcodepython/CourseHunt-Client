@@ -1,28 +1,29 @@
 import { getCookies } from "@/server/action"
 import * as React from "react"
-import { AllCourseType } from "@/types"
+import { ListCourseDashboardType } from "@/types"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import PurchasedCourseAction from "./PurchasedCourseAction";
-// import CourseAction from "./CourseAction";
+import { Link } from "next-view-transitions";
+import { Button } from "@/components/ui/button";
+import axios from "axios";
 
 const PurchasedCoursesPage = async () => {
-    const cookie = await getCookies(['access_token'])
-    const response = await fetch(`${process.env.BASE_API_URL}/course/purchased-courses/`, {
+    const { access_token, user } = await getCookies(['access_token', 'user'])
+    const response = await axios(`${process.env.BASE_API_URL}/course/purchased-courses/`, {
         headers: {
-            Authorization: 'Bearer ' + cookie.access_token
+            Authorization: 'Bearer ' + access_token
         }
     })
-    const data: AllCourseType[] = await response.json()
+    const data: ListCourseDashboardType[] = await response.data
     const columnsList = [
-        "ID",
         "Course Name",
         "Published Date",
-        "Duration",
         "Price",
         "Offer",
         "Status",
     ];
+
+    const username = user ? JSON.parse(user).username : undefined
 
     return <div className="w-full p-4">
         <Card>
@@ -56,15 +57,19 @@ const PurchasedCoursesPage = async () => {
                         {
                             data.map((course) => (
                                 <TableRow key={course.id}>
-                                    <TableCell>{course.id}</TableCell>
                                     <TableCell>{course.name}</TableCell>
                                     <TableCell>{course.created_at}</TableCell>
-                                    <TableCell>{course.duration}</TableCell>
                                     <TableCell>{course.price}</TableCell>
                                     <TableCell>{course.offer}</TableCell>
                                     <TableCell>{course.status}</TableCell>
                                     <TableCell>
-                                        <PurchasedCourseAction courseid={course.id} />
+                                        {
+                                            username && <Link href={`/dashboard/${username}/study/${course.id}/`}>
+                                                <Button>
+                                                    Study
+                                                </Button>
+                                            </Link>
+                                        }
                                     </TableCell>
                                 </TableRow>
                             ))

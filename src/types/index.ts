@@ -39,40 +39,6 @@ export interface DurationTimeState {
     seconds: number;
 }
 
-export interface CourseDataType {
-    basic: {
-        id: string
-        name: string
-        description: string
-        overview: string
-        duration: number
-        chapter: number
-        price: number
-        offer: number
-        cupon_code: string | null
-    }
-    chapters: {
-        id?: string,
-        name: string,
-        duration: number,
-        lessons: {
-            id?: string,
-            name: string
-        }[]
-    }
-    faq: { id: string | null, question: string, answer: string }
-}
-
-export interface QuizType {
-    quiz: {
-        question: string;
-        answers: {
-            text: string;
-            correct: boolean;
-        }[];
-    }[];
-};
-
 export interface ReferralType {
     id: string;
     user: string;
@@ -82,22 +48,35 @@ export interface ReferralType {
     reward: number;
 }
 
-export interface AllCourseType {
+export interface StudyCourseType {
+    id: string
+    name: string
+    thumbnail: string
+    videoURL: string
+    notesURL: string
+    presentationURL: string
+    codeURL: string
+    content: string
+}
+
+export interface ListCourseType {
     id: string
     name: string
     short_description: string
-    long_description?: string
     created_at: string
     duration: string
     price: number
     offer: number
-    status: 'published' | 'draft'
     thumbnail: string
-    videoURL?: string
-    notesURL?: string
-    presentationURL?: string
-    codeURL?: string
-    content?: string
+}
+
+export interface ListCourseDashboardType {
+    id: string
+    name: string
+    created_at: string
+    price: number
+    offer: number
+    status: 'published' | 'draft'
 }
 
 export interface DetailSingleCourseType {

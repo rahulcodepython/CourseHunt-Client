@@ -6,23 +6,22 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Slider } from "@/components/ui/slider"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectItem } from "@/components/ui/select"
 import { Card, CardContent } from "@/components/ui/card"
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import { FilterIcon } from "lucide-react";
-import { enrollCourse, getCookies } from "@/server/action";
-import { AllCourseType } from "@/types";
+import { getCookies } from "@/server/action";
+import { ListCourseType } from "@/types";
 import EnrollButton from "./EnrollButton";
+import axios from "axios";
 
 const Courses = async () => {
     const { access_token } = await getCookies(['access_token'])
-    const response = await fetch(`${process.env.BASE_API_URL}/course/list-course/`, {
+    const response = await axios(`${process.env.BASE_API_URL}/course/list-course/`, {
         headers: {
             Authorization: 'Bearer ' + access_token
         }
     })
-    const data: AllCourseType[] = await response.json()
+    const data: ListCourseType[] = await response.data
 
     return <div className="flex flex-col min-h-[100dvh]">
         <section className="container w-full pt-12 md:pt-24 lg:pt-32 px-4 md:px-6 flex items-center gap-4 bg-background p-4 rounded-lg shadow-lg">

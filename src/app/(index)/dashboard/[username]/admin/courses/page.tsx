@@ -1,25 +1,24 @@
 import { getCookies } from "@/server/action"
 import * as React from "react"
-import { AllCourseType } from "@/types"
+import { ListCourseDashboardType } from "@/types"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import CourseTable from "./CourseTable";
 import { Link } from "next-view-transitions";
 import { Button } from "@/components/ui/button";
+import axios from "axios";
 
 const CoursesPage = async () => {
     const { access_token, user } = await getCookies(['access_token', 'user'])
-    const response = await fetch(`${process.env.BASE_API_URL}/course/admin-list-course/`, {
+    const response = await axios.get(`${process.env.BASE_API_URL}/course/admin-list-course/`, {
         headers: {
             Authorization: 'Bearer ' + access_token
         }
     })
-    const data: AllCourseType[] = await response.json()
+    const data: ListCourseDashboardType[] = await response.data
     const columnsList = [
-        "ID",
         "Course Name",
         "Published Date",
-        "Duration",
         "Price",
         "Offer",
         "Status",
