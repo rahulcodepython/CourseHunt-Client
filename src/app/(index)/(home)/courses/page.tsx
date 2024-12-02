@@ -104,8 +104,8 @@ const Courses = async () => {
                                             <p>{item.duration}</p>
                                         </div>
                                     </div>
-                                    <div className="flex items-center justify-between">
-                                        <EnrollButton id={item.id} access_token={access_token} />
+                                    <div className="flex items-center justify-between w-full">
+                                        <EnrollButton id={item.id} />
                                     </div>
                                 </CardContent>
                             </Card>
