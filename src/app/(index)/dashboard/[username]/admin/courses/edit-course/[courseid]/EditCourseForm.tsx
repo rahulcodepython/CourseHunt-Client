@@ -9,7 +9,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { AllCourseType } from "@/types";
-import axios from "axios";
 import { createCourse, editCourse } from "@/server/action";
 import useMutation from "@/hooks/useMutation";
 import { toast } from "react-toastify";
@@ -216,7 +215,7 @@ const EditCourseForm = ({
                     {/* Content URL */}
                     <FormField control={methods.control} name="content" render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Content URL</FormLabel>
+                            <FormLabel>Content</FormLabel>
                             <FormControl>
                                 <Textarea placeholder="Enter course content" {...field} />
                             </FormControl>

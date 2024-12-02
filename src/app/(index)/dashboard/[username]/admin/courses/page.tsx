@@ -4,13 +4,14 @@ import { AllCourseType } from "@/types"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import CourseTable from "./CourseTable";
-import CreateCourse from "./CreateCourse";
+import { Link } from "next-view-transitions";
+import { Button } from "@/components/ui/button";
 
 const CoursesPage = async () => {
-    const cookie = await getCookies(['access_token'])
+    const { access_token, user } = await getCookies(['access_token', 'user'])
     const response = await fetch(`${process.env.BASE_API_URL}/course/admin-list-course/`, {
         headers: {
-            Authorization: 'Bearer ' + cookie.access_token
+            Authorization: 'Bearer ' + access_token
         }
     })
     const data: AllCourseType[] = await response.json()
@@ -24,6 +25,8 @@ const CoursesPage = async () => {
         "Status",
     ];
 
+    const username = user ? JSON.parse(user).username : undefined
+
     return <div className="w-full p-4">
         <Card>
             <CardHeader className="flex-row justify-between">
@@ -36,7 +39,13 @@ const CoursesPage = async () => {
                             List of all courses.
                         </CardDescription>
                     </div>
-                    <CreateCourse />
+                    {
+                        <Link href={`/dashboard/${username}/admin/courses/create-course/`}>
+                            <Button>
+                                Create Course
+                            </Button>
+                        </Link>
+                    }
                 </div>
             </CardHeader>
             <CardContent>

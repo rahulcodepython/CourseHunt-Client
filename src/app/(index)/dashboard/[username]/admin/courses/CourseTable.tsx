@@ -26,7 +26,7 @@ const CourseTable = ({ fetchedData }: {
                         <TableCell>{course.offer}</TableCell>
                         <TableCell>{course.status}</TableCell>
                         <TableCell>
-                            <CourseAction courseid={course.id} index={index} removeCourse={removeCourse} />
+                            <CourseAction courseid={course.id} removeCourse={removeCourse} />
                         </TableCell>
                     </TableRow>
                 ))

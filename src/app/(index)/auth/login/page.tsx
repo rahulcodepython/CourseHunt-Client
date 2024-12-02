@@ -38,7 +38,7 @@ const LoginPage: React.FC = () => {
         const handler = async () => {
             if (mutationState === 'done') {
                 if (mutationIsError) {
-                    toast.error(mutationError);
+                    toast.error(mutationData.data);
                 }
                 else {
                     toast.success(mutationData.data);
