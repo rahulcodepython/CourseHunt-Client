@@ -15,15 +15,15 @@ import EnrollButton from "../EnrollButton"
 // import { CircleCheckIcon } from "lucide-react"
 
 const CoursePage = async ({ params }: { params: Promise<{ courseid: string | undefined }> }) => {
-    const { access_token } = await getCookies(['access_token']);
+    // const { access_token } = await getCookies(['access_token']);
     const { courseid } = await params;
 
     const response = await axios.request({
         url: `${process.env.BASE_API_URL}/course/detail-single-course/${courseid}/`,
         method: 'GET',
-        headers: {
-            authorization: `Bearer ${access_token}`
-        }
+        // headers: {
+        //     authorization: `Bearer ${access_token}`
+        // }
     });
     const data: DetailSingleCourseType = response.data;
 
@@ -77,7 +77,7 @@ const CoursePage = async ({ params }: { params: Promise<{ courseid: string | und
                         </CardHeader>
                     </Card>
                 </div>
-                <EnrollButton id={data.id} access_token={access_token} />
+                <EnrollButton id={data.id} />
             </div>
         </section>
         {/* <section className="w-full py-12 md:py-24 lg:py-32 bg-muted flex flex-col items-center justify-center">

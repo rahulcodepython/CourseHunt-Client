@@ -11,7 +11,7 @@ const EnrollButton = ({ id }: { id: string }) => {
     return isAuthenticated ? <Button className="w-full">
         <Link href={`/dashboard/${user?.username}/checkout/${id}`}>Enroll Now</Link>
     </Button> : <Button variant={'destructive'} className='w-full'>
-        <Link href="/login">Login to enroll</Link>
+        <Link href="/auth/login">Login to enroll</Link>
     </Button>
 }
 

@@ -15,11 +15,11 @@ import EnrollButton from "./EnrollButton";
 import axios from "axios";
 
 const Courses = async () => {
-    const { access_token } = await getCookies(['access_token'])
+    // const { access_token } = await getCookies(['access_token'])
     const response = await axios(`${process.env.BASE_API_URL}/course/list-course/`, {
-        headers: {
-            Authorization: 'Bearer ' + access_token
-        }
+        // headers: {
+        //     Authorization: 'Bearer ' + access_token
+        // }
     })
     const data: ListCourseType[] = await response.data
 
