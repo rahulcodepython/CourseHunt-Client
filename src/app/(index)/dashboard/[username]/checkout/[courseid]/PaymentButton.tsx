@@ -11,10 +11,12 @@ const PaymentButton = ({
     courseid,
     access_token,
     username,
+    amount,
 }: {
     courseid: string | undefined,
     access_token: string | undefined,
     username: string | undefined,
+    amount: number | undefined
 }) => {
     const [loading, setLoading] = React.useState(false);
     const router = useRouter();
@@ -70,10 +72,11 @@ const PaymentButton = ({
         setLoading(true);
         try {
             const response = await axios(`${process.env.BASE_API_URL}/course/payment/initiate/${courseid}/`, {
-                method: 'GET',
+                method: 'POST',
                 headers: {
                     Authorization: `Bearer ${access_token}`
-                }
+                },
+                data: { amount }
             })
             const data = await response.data;
             makePayment(data);

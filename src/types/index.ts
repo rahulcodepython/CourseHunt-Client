@@ -108,3 +108,16 @@ export interface DetailSingleCourseType {
     offer: number
     thumbnail: string
 }
+
+export interface ListCuponeCodeType {
+    map(arg0: (coupne: any, index: any) => import("react").JSX.Element): import("react").ReactNode
+    id: number,
+    code: string,
+    discount: number,
+    expiry: string,
+    create_at: string,
+    used: number,
+    quantity: null | number,
+    is_unlimited: boolean,
+    is_active: boolean
+}

@@ -92,7 +92,7 @@ const CoursePayment = async ({ params }: { params: Promise<{ courseid: string | 
                                 </dd>
                             </dl>
                         </div>
-                        <PaymentButton courseid={courseid} username={username} access_token={access_token} />
+                        <PaymentButton courseid={courseid} username={username} access_token={access_token} amount={data.total} />
                     </div>
                 </div>
             </CardContent>

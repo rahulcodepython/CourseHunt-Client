@@ -1,4 +1,5 @@
 'use server'
+import { CuponCodeFormDataType } from "@/app/(index)/dashboard/[username]/admin/cupone-codes/CreateCuponeCodeForm";
 import { AllCourseType, InitialLoginValuesType, UserType } from "@/types";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
@@ -200,6 +201,56 @@ export const deleteCourse = async (courseid: string | undefined, access_token: s
     try {
         await axios.request(options)
         return { 'data': 'Course deleted successfully' };
+    } catch (error) {
+        return { 'data': 'An error occurred' };
+    }
+}
+
+export const createCouponCode = async (data: CuponCodeFormDataType, access_token: string | null) => {
+    const options = {
+        url: `${process.env.BASE_API_URL}/course/create-coupon-code/`,
+        headers: {
+            Authorization: `Bearer ${access_token}`,
+        },
+        method: "POST",
+        data: data,
+    }
+    try {
+        await axios.request(options)
+        return { 'data': 'Coupon code created successfully' };
+    } catch (error) {
+        return { 'data': 'An error occurred' };
+    }
+}
+
+export const editCouponCode = async (data: CuponCodeFormDataType, access_token: string | null, id: number) => {
+    const options = {
+        url: `${process.env.BASE_API_URL}/course/edit-coupon-code/${id}/`,
+        headers: {
+            Authorization: `Bearer ${access_token}`,
+        },
+        method: "POST",
+        data: data,
+    }
+    try {
+        await axios.request(options)
+        return { 'data': 'Coupon code edited successfully' };
+    } catch (error) {
+        return { 'data': 'An error occurred' };
+    }
+}
+
+export const deleteCouponCode = async (access_token: string | undefined, id: number) => {
+    const options = {
+        url: `${process.env.BASE_API_URL}/course/edit-coupon-code/${id}/`,
+        headers: {
+            Authorization: `Bearer ${access_token}`,
+        },
+        method: "DELETE",
+    }
+    try {
+        await axios.request(options)
+        return { 'data': 'Coupon code deleted successfully' };
     } catch (error) {
         return { 'data': 'An error occurred' };
     }
