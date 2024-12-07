@@ -192,7 +192,7 @@ export const enrollCourse = async (courseid: string | undefined, access_token: s
 
 export const deleteCourse = async (courseid: string | undefined, access_token: string | undefined) => {
     const options = {
-        url: `${process.env.BASE_API_URL}/course/delete-course/${courseid}/`,
+        url: `${process.env.BASE_API_URL}/course/edit-course/${courseid}/`,
         headers: {
             Authorization: `Bearer ${access_token}`,
         },
@@ -251,6 +251,22 @@ export const deleteCouponCode = async (access_token: string | undefined, id: num
     try {
         await axios.request(options)
         return { 'data': 'Coupon code deleted successfully' };
+    } catch (error) {
+        return { 'data': 'An error occurred' };
+    }
+}
+
+export const toggleCourseStatus = async (courseid: string | undefined, access_token: string | undefined) => {
+    const options = {
+        url: `${process.env.BASE_API_URL}/course/toggle-course-status/${courseid}/`,
+        headers: {
+            Authorization: `Bearer ${access_token}`,
+        },
+        method: "POST",
+    }
+    try {
+        await axios.request(options)
+        return { 'data': 'Course status toggled successfully' };
     } catch (error) {
         return { 'data': 'An error occurred' };
     }

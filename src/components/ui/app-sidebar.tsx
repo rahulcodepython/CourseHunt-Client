@@ -44,7 +44,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 [
                     {
                         title: "Dashboard",
-                        url: `/dashboard/${user?.username}`,
+                        url: `/dashboard/${user?.username}/admin`,
                         icon: House,
                         isActive: true,
                     },

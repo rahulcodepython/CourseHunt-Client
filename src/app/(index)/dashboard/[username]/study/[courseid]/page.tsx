@@ -7,7 +7,9 @@ import React from "react";
 
 const StudyPage = async ({ params }: { params: Promise<{ courseid: string | undefined }> }) => {
     const { courseid } = await params;
-    const { access_token } = await getCookies(['access_token']);
+    const { access_token, user } = await getCookies(['access_token', 'user']);
+
+    const username = user ? JSON.parse(user).username : undefined;
 
     try {
         const response = await axios.request({
@@ -62,51 +64,19 @@ const StudyPage = async ({ params }: { params: Promise<{ courseid: string | unde
                             <p>
                                 {data.content}
                             </p>
-                            {/* <h3>Topics Covered:</h3>
-                        <ul>
-                            <li>Introduction to HTML and CSS</li>
-                            <li>JavaScript Basics</li>
-                            <li>Responsive Design Principles</li>
-                            <li>Accessibility Best Practices</li>
-                            <li>Introduction to Web Frameworks</li>
-                        </ul> */}
                         </div>
                     </div>
                 </section>
-                {/* <section className="py-12 md:py-24 bg-muted">
-                <div className="container mx-auto max-w-4xl px-4 md:px-6">
-                    <div className="grid gap-8">
-                        <div>
-                            <h2 className="text-4xl font-bold">Quiz</h2>
-                            <CourseQuiz />
-                        </div>
-                    </div>
-                </div>
-            </section> */}
             </main>
-            {/* <footer className="flex items-center justify-between px-4 lg:px-6 py-6 border-t">
-            <Link
-                href="#"
-                className="inline-flex h-9 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-0 disabled:pointer-events-none disabled:opacity-50"
-                prefetch={false}
-            >
-                Previous
-            </Link>
-            <Link
-                href="#"
-                className="inline-flex h-9 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-0 disabled:pointer-events-none disabled:opacity-50"
-                prefetch={false}
-            >
-                Next
-            </Link>
-        </footer> */}
         </div>
     } catch (error) {
         return <div className="flex flex-col items-center justify-center mt-24 gap-4 container mx-auto">
             You haven't enrolled in this course yet.
-            <Link href={`/courses/${courseid}`}>
-                <Button>Go back to dashboard</Button>
-            </Link>
+            {
+                username && <Link href={`/dashboard/${username}/checkout/${courseid}`}>
+                    <Button>Go back to dashboard</Button>
+                </Link>
+            }
         </div>
     }
 }

@@ -92,6 +92,11 @@ export interface ListCourseType {
 export interface ListCourseDashboardType {
     id: string
     name: string
+}
+
+export interface ListCourseAdminDashboardType {
+    id: string
+    name: string
     created_at: string
     price: number
     offer: number

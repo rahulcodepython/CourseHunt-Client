@@ -9,19 +9,19 @@ import { Card, CardContent } from "@/components/ui/card"
 import Link from "next/link";
 import Image from "next/image";
 import { FilterIcon } from "lucide-react";
-import { getCookies } from "@/server/action";
 import { ListCourseType } from "@/types";
 import EnrollButton from "./EnrollButton";
 import axios from "axios";
+import { getCookies } from "@/server/action";
 
 const Courses = async () => {
     const { access_token } = await getCookies(['access_token']);
-    const response = await axios(`${process.env.BASE_API_URL}/course/list-course/`, {
-        method: 'GET',
+
+    const response = await axios(`${process.env.BASE_API_URL}/course/list-course/`, access_token ? {
         headers: {
-            Authorization: `Bearer ${access_token}`
+            'Authorization': `Bearer ${access_token}`
         }
-    })
+    } : {})
     const data: ListCourseType[] = await response.data
 
     return <div className="flex flex-col min-h-[100dvh]">

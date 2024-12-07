@@ -1,7 +1,7 @@
 "use client"
 import { Link } from "next-view-transitions";
 import { useAuthStore } from "@/context/AuthStore";
-import { deleteCourse } from "@/server/action";
+import { deleteCourse, toggleCourseStatus } from "@/server/action";
 import { Button } from "@/components/ui/button";
 
 const CourseAction = ({ courseid, removeCourse }:
@@ -15,10 +15,13 @@ const CourseAction = ({ courseid, removeCourse }:
     return (
         <div className="flex items-center gap-2">
             <Link href={`/dashboard/${user?.username}/admin/courses/edit-course/${courseid}/`}>
-                <Button>
-                    Edit
-                </Button>
+                <Button>Edit</Button>
             </Link>
+            <Button onClick={() => {
+                accessToken && toggleCourseStatus(courseid, accessToken)
+            }}>
+                Toggle Status
+            </Button>
             <Button variant={'destructive'} onClick={() => {
                 accessToken && deleteCourse(courseid, accessToken)
                     .then(() => removeCourse(courseid))

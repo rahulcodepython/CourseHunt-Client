@@ -9,7 +9,7 @@ const EditCourse = async ({ params }: { params: Promise<{ courseid: string | und
     const { courseid } = await params;
 
     const response = await axios.request({
-        url: `${process.env.BASE_API_URL}/course/single-course/${courseid}/`,
+        url: `${process.env.BASE_API_URL}/course/edit-course/${courseid}/`,
         method: 'GET',
         headers: {
             authorization: `Bearer ${access_token}`

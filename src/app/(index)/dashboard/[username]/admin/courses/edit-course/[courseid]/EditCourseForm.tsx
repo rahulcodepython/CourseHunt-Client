@@ -2,7 +2,7 @@
 
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { number, z } from "zod";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -25,12 +25,12 @@ const courseSchema = z.object({
     price: z.number().min(1, "Price should be a positive number"),
     offer: z.number().min(0).max(100, "Offer should be between 0 and 100"),
     status: z.enum(["published", "draft"]),
-    thumbnail: z.string().min(1, "Thumbnail URL is required"),
-    videoURL: z.string().min(1, "Video URL is required"),
-    notesURL: z.string().min(1, "Notes URL is required"),
-    presentationURL: z.string().min(1, "Presentation URL is required"),
-    codeURL: z.string().min(1, "Code URL is required"),
-    content: z.string().min(1, "Content URL is required"),
+    thumbnail: z.string().optional(),
+    videoURL: z.string().optional(),
+    notesURL: z.string().optional(),
+    presentationURL: z.string().optional(),
+    codeURL: z.string().optional(),
+    content: z.string().optional(),
 });
 
 const EditCourseForm = ({
@@ -42,7 +42,7 @@ const EditCourseForm = ({
     courseid: string | undefined;
     access_token: string | undefined;
 }) => {
-    const methods = useForm<AllCourseType>({
+    const form = useForm<AllCourseType>({
         resolver: zodResolver(courseSchema),
         defaultValues: defaultValues,
     });
@@ -65,77 +65,77 @@ const EditCourseForm = ({
     }, [mutationData]);
 
     return (
-        <FormProvider {...methods}>
-            <form onSubmit={methods.handleSubmit(onSubmit)}>
+        <FormProvider {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
                 <div className="space-y-4">
                     {/* Course Name */}
-                    <FormField control={methods.control} name="short_description" render={({ field }) => (
+                    <FormField control={form.control} name="short_description" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Course Name</FormLabel>
                             <FormControl>
-                                <Input {...methods.register("name")} placeholder="Enter course name" />
+                                <Input {...form.register("name")} placeholder="Enter course name" />
                             </FormControl>
-                            <FormMessage>{methods.formState.errors.name?.message}</FormMessage>
+                            <FormMessage>{form.formState.errors.name?.message}</FormMessage>
                         </FormItem>
                     )} />
 
                     {/* Short Description */}
-                    <FormField control={methods.control} name="short_description" render={({ field }) => (
+                    <FormField control={form.control} name="short_description" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Short Description</FormLabel>
                             <FormControl>
                                 <Input placeholder="Enter a short description" {...field} />
                             </FormControl>
-                            <FormMessage>{methods.formState.errors.short_description?.message}</FormMessage>
+                            <FormMessage>{form.formState.errors.short_description?.message}</FormMessage>
                         </FormItem>
                     )} />
 
                     {/* Long Description */}
-                    <FormField control={methods.control} name="long_description" render={({ field }) => (
+                    <FormField control={form.control} name="long_description" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Long Description</FormLabel>
                             <FormControl>
                                 <Textarea placeholder="Enter a long description" {...field} />
                             </FormControl>
-                            <FormMessage>{methods.formState.errors.long_description?.message}</FormMessage>
+                            <FormMessage>{form.formState.errors.long_description?.message}</FormMessage>
                         </FormItem>
                     )} />
 
                     {/* Duration */}
-                    <FormField control={methods.control} name="duration" render={({ field }) => (
+                    <FormField control={form.control} name="duration" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Duration</FormLabel>
                             <FormControl>
                                 <Input placeholder="Enter duration" {...field} />
                             </FormControl>
-                            <FormMessage>{methods.formState.errors.duration?.message}</FormMessage>
+                            <FormMessage>{form.formState.errors.duration?.message}</FormMessage>
                         </FormItem>
                     )} />
 
                     {/* Price */}
-                    <FormField control={methods.control} name="price" render={({ field }) => (
+                    <FormField control={form.control} name="price" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Price</FormLabel>
                             <FormControl>
-                                <Input type="number" placeholder="Enter price" {...field} />
+                                <Input type="number" placeholder="Enter price" {...field} onChange={e => field.onChange(parseInt(e.target.value))} />
                             </FormControl>
-                            <FormMessage>{methods.formState.errors.price?.message}</FormMessage>
+                            <FormMessage>{form.formState.errors.price?.message}</FormMessage>
                         </FormItem>
                     )} />
 
                     {/* Offer */}
-                    <FormField control={methods.control} name="offer" render={({ field }) => (
+                    <FormField control={form.control} name="offer" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Offer (%)</FormLabel>
                             <FormControl>
-                                <Input type="number" placeholder="Enter offer" {...field} />
+                                <Input type="number" placeholder="Enter offer" {...field} onChange={e => field.onChange(parseInt(e.target.value))} />
                             </FormControl>
-                            <FormMessage>{methods.formState.errors.offer?.message}</FormMessage>
+                            <FormMessage>{form.formState.errors.offer?.message}</FormMessage>
                         </FormItem>
                     )} />
 
                     {/* Status */}
-                    <FormField control={methods.control} name="status" render={({ field }) => (
+                    <FormField control={form.control} name="status" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Status</FormLabel>
                             <FormControl>
@@ -152,74 +152,74 @@ const EditCourseForm = ({
                                     </SelectContent>
                                 </Select>
                             </FormControl>
-                            <FormMessage>{methods.formState.errors.status?.message}</FormMessage>
+                            <FormMessage>{form.formState.errors.status?.message}</FormMessage>
                         </FormItem>
                     )} />
 
                     {/* Thumbnail */}
-                    <FormField control={methods.control} name="thumbnail" render={({ field }) => (
+                    <FormField control={form.control} name="thumbnail" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Thumbnail URL</FormLabel>
                             <FormControl>
                                 <Input placeholder="Enter thumbnail URL" {...field} />
                             </FormControl>
-                            <FormMessage>{methods.formState.errors.thumbnail?.message}</FormMessage>
+                            <FormMessage>{form.formState.errors.thumbnail?.message}</FormMessage>
                         </FormItem>
                     )}
                     />
 
                     {/* Video URL */}
-                    <FormField control={methods.control} name="videoURL" render={({ field }) => (
+                    <FormField control={form.control} name="videoURL" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Video URL</FormLabel>
                             <FormControl>
                                 <Input placeholder="Enter video URL" {...field} />
                             </FormControl>
-                            <FormMessage>{methods.formState.errors.videoURL?.message}</FormMessage>
+                            <FormMessage>{form.formState.errors.videoURL?.message}</FormMessage>
                         </FormItem>
                     )} />
 
                     {/* Notes URL */}
-                    <FormField control={methods.control} name="notesURL" render={({ field }) => (
+                    <FormField control={form.control} name="notesURL" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Notes URL</FormLabel>
                             <FormControl>
                                 <Input placeholder="Enter notes URL" {...field} />
                             </FormControl>
-                            <FormMessage>{methods.formState.errors.notesURL?.message}</FormMessage>
+                            <FormMessage>{form.formState.errors.notesURL?.message}</FormMessage>
                         </FormItem>
                     )} />
 
                     {/* Presentation URL */}
-                    <FormField control={methods.control} name="presentationURL" render={({ field }) => (
+                    <FormField control={form.control} name="presentationURL" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Presentation URL</FormLabel>
                             <FormControl>
                                 <Input placeholder="Enter presentation URL" {...field} />
                             </FormControl>
-                            <FormMessage>{methods.formState.errors.presentationURL?.message}</FormMessage>
+                            <FormMessage>{form.formState.errors.presentationURL?.message}</FormMessage>
                         </FormItem>
                     )} />
 
                     {/* Code URL */}
-                    <FormField control={methods.control} name="codeURL" render={({ field }) => (
+                    <FormField control={form.control} name="codeURL" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Code URL</FormLabel>
                             <FormControl>
                                 <Input placeholder="Enter code URL" {...field} />
                             </FormControl>
-                            <FormMessage>{methods.formState.errors.codeURL?.message}</FormMessage>
+                            <FormMessage>{form.formState.errors.codeURL?.message}</FormMessage>
                         </FormItem>
                     )} />
 
                     {/* Content URL */}
-                    <FormField control={methods.control} name="content" render={({ field }) => (
+                    <FormField control={form.control} name="content" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Content</FormLabel>
                             <FormControl>
                                 <Textarea placeholder="Enter course content" {...field} />
                             </FormControl>
-                            <FormMessage>{methods.formState.errors.content?.message}</FormMessage>
+                            <FormMessage>{form.formState.errors.content?.message}</FormMessage>
                         </FormItem>
                     )} />
 

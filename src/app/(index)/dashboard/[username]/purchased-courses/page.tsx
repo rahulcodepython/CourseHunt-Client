@@ -17,10 +17,6 @@ const PurchasedCoursesPage = async () => {
     const data: ListCourseDashboardType[] = await response.data
     const columnsList = [
         "Course Name",
-        "Published Date",
-        "Price",
-        "Offer",
-        "Status",
     ];
 
     const username = user ? JSON.parse(user).username : undefined
@@ -58,10 +54,6 @@ const PurchasedCoursesPage = async () => {
                             data.map((course) => (
                                 <TableRow key={course.id}>
                                     <TableCell>{course.name}</TableCell>
-                                    <TableCell>{course.created_at}</TableCell>
-                                    <TableCell>{course.price}</TableCell>
-                                    <TableCell>{course.offer}</TableCell>
-                                    <TableCell>{course.status}</TableCell>
                                     <TableCell>
                                         {
                                             username && <Link href={`/dashboard/${username}/study/${course.id}/`}>

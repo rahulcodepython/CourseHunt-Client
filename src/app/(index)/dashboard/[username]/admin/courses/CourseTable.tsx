@@ -2,10 +2,10 @@
 import { TableBody, TableCell, TableRow } from '@/components/ui/table'
 import React from 'react'
 import CourseAction from './CourseAction'
-import { ListCourseDashboardType } from '@/types'
+import { ListCourseAdminDashboardType } from '@/types'
 
 const CourseTable = ({ fetchedData }: {
-    fetchedData: ListCourseDashboardType[]
+    fetchedData: ListCourseAdminDashboardType[]
 }) => {
     const [data, setData] = React.useState(fetchedData)
 

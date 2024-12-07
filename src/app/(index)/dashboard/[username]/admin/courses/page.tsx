@@ -1,6 +1,6 @@
 import { getCookies } from "@/server/action"
 import * as React from "react"
-import { ListCourseDashboardType } from "@/types"
+import { ListCourseAdminDashboardType } from "@/types"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import CourseTable from "./CourseTable";
@@ -15,7 +15,7 @@ const CoursesPage = async () => {
             Authorization: 'Bearer ' + access_token
         }
     })
-    const data: ListCourseDashboardType[] = await response.data
+    const data: ListCourseAdminDashboardType[] = await response.data
     const columnsList = [
         "Course Name",
         "Published Date",
