@@ -86,6 +86,7 @@ export interface ListCourseType {
     price: number
     offer: number
     thumbnail: string
+    enrolled: boolean
 }
 
 export interface ListCourseDashboardType {
@@ -107,6 +108,7 @@ export interface DetailSingleCourseType {
     price: number
     offer: number
     thumbnail: string
+    enrolled: boolean
 }
 
 export interface ListCuponeCodeType {
@@ -120,4 +122,17 @@ export interface ListCuponeCodeType {
     quantity: null | number,
     is_unlimited: boolean,
     is_active: boolean
+}
+
+export interface CoursePriceResponseType {
+    price: number,
+    tax: number,
+    offer: number,
+    total: number,
+    name: string,
+    email: string,
+    country: string
+    city: string
+    phone: string
+    address: string
 }

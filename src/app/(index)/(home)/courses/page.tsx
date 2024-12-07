@@ -15,11 +15,12 @@ import EnrollButton from "./EnrollButton";
 import axios from "axios";
 
 const Courses = async () => {
-    // const { access_token } = await getCookies(['access_token'])
+    const { access_token } = await getCookies(['access_token']);
     const response = await axios(`${process.env.BASE_API_URL}/course/list-course/`, {
-        // headers: {
-        //     Authorization: 'Bearer ' + access_token
-        // }
+        method: 'GET',
+        headers: {
+            Authorization: `Bearer ${access_token}`
+        }
     })
     const data: ListCourseType[] = await response.data
 
@@ -105,7 +106,7 @@ const Courses = async () => {
                                         </div>
                                     </div>
                                     <div className="flex items-center justify-between w-full">
-                                        <EnrollButton id={item.id} />
+                                        <EnrollButton id={item.id} enrolled={item.enrolled} />
                                     </div>
                                 </CardContent>
                             </Card>

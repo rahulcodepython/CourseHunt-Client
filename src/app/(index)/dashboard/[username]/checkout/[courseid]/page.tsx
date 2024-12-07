@@ -1,10 +1,10 @@
 import { getCookies } from '@/server/action';
 import axios from 'axios';
 import React from 'react'
-import PaymentButton from './PaymentButton';
-import { Button } from '@/components/ui/button';
-import CheckoutForm from './CheckoutForm';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { CoursePriceResponseType } from '@/types';
+import CheckoutForm from './CheckoutForm';
+import PaymentButton from './PaymentButton';
 
 const CoursePayment = async ({ params }: { params: Promise<{ courseid: string | undefined, username: string | undefined }> }) => {
     const { courseid, username } = await params;
@@ -17,18 +17,7 @@ const CoursePayment = async ({ params }: { params: Promise<{ courseid: string | 
             Authorization: `Bearer ${access_token}`
         }
     })
-    const data: {
-        price: number,
-        tax: number,
-        offer: number,
-        total: number,
-        name: string,
-        email: string,
-        country: string
-        city: string
-        phone: string
-        address: string
-    } = response.data;
+    const data: CoursePriceResponseType = response.data;
 
     return (
         <Card className='my-12 mx-24'>
@@ -37,7 +26,6 @@ const CoursePayment = async ({ params }: { params: Promise<{ courseid: string | 
                     Delivery Details
                 </CardTitle>
             </CardHeader>
-
             <CardContent className="px-16 grid grid-cols-3 items-center gap-12">
                 <div className="space-y-4 col-span-2">
                     <CheckoutForm defaultData={{

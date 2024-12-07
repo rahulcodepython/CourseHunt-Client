@@ -35,6 +35,11 @@ const PaymentButton = ({
                 data: { ...data, course_id: courseid }
             })
             toast.success('Payment successful');
+            setLoading(false);
+            await new Promise(resolve => setTimeout(() => {
+                router.push(`/dashboard/${username}/study/${courseid}`);
+                resolve(undefined);
+            }, 2000));
         } catch (error: any) {
             toast.error(error?.response?.data?.message);
         }
@@ -76,15 +81,9 @@ const PaymentButton = ({
                 headers: {
                     Authorization: `Bearer ${access_token}`
                 },
-                data: { amount }
             })
             const data = await response.data;
             makePayment(data);
-            setLoading(false);
-            await new Promise(resolve => setTimeout(() => {
-                router.push(`/dashboard/${username}/study/${courseid}`);
-                resolve(undefined);
-            }, 2000));
             return;
         } catch (error: any) {
             setLoading(false);

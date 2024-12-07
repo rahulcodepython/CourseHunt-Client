@@ -90,7 +90,7 @@ const CuponeCodesPage = async () => {
                                                 {item.code}
                                             </TableCell>
                                             <TableCell>
-                                                {item.discount}%
+                                                {item.discount}
                                             </TableCell>
                                             <TableCell>
                                                 {item.expiry}
