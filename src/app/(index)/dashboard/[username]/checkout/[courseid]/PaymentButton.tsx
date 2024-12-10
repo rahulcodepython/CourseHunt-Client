@@ -11,12 +11,14 @@ const PaymentButton = ({
     courseid,
     access_token,
     username,
-    amount,
+    is_discount,
+    coupon_code
 }: {
     courseid: string | undefined,
     access_token: string | undefined,
     username: string | undefined,
-    amount: number | undefined
+    is_discount: boolean | undefined,
+    coupon_code: string | undefined
 }) => {
     const [loading, setLoading] = React.useState(false);
     const router = useRouter();
@@ -32,7 +34,7 @@ const PaymentButton = ({
                 headers: {
                     Authorization: `Bearer ${access_token}`
                 },
-                data: { ...data, course_id: courseid }
+                data: { ...data, course_id: courseid, coupon_code, is_discount }
             })
             toast.success('Payment successful');
             setLoading(false);
@@ -41,8 +43,25 @@ const PaymentButton = ({
                 resolve(undefined);
             }, 2000));
         } catch (error: any) {
+            setLoading(false);
             toast.error(error?.response?.data?.message);
         }
+    }
+
+    const handlePaymentCancel = async (razorpay_order_id: string) => {
+        try {
+            await axios(`${process.env.BASE_API_URL}/course/payment/cancel/`, {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${access_token}`
+                },
+                data: { razorpay_order_id }
+            })
+            toast.error('Payment cancelled');
+        } catch (error) {
+            console.log(error);
+        }
+        setLoading(false);
     }
 
     const makePayment = (data: { amount: number, order_id: string, currency: string }) => {
@@ -64,6 +83,11 @@ const PaymentButton = ({
                     "email": "Rahul.kumar@example.com",
                     "contact": "9000090000"
                 },
+                modal: {
+                    ondismiss: function () {
+                        handlePaymentCancel(data.order_id); // Call a custom function to handle cancellation
+                    },
+                },
             };
 
             const razorpay = new (window as any).Razorpay(options);
@@ -81,6 +105,7 @@ const PaymentButton = ({
                 headers: {
                     Authorization: `Bearer ${access_token}`
                 },
+                data: { is_discount, coupon_code }
             })
             const data = await response.data;
             makePayment(data);
@@ -91,11 +116,12 @@ const PaymentButton = ({
 
         }
     }
+
     return (
         <>
             <Script src="https://checkout.razorpay.com/v1/checkout.js" type='text/javascript' />
             {
-                loading ? <Button disabled className="gap-2 w-full">
+                loading ? <Button disabled className="gap-2 w-full mt-4">
                     <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
                     Please wait
                 </Button> :

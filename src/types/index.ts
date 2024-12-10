@@ -33,6 +33,23 @@ export interface AuthStoreActions {
     UpdateUser: (user: UserType | null) => void;
 }
 
+export interface CheckoutStoreState {
+    price: number,
+    tax: number,
+    offer: number,
+    discount: number,
+    is_discount: boolean,
+    total: number,
+    coupon_code: string
+}
+
+export interface CheckoutStoreActions {
+    setValue: (price: number, tax: number, offer: number) => void;
+    updateDiscount: (discount: number, is_discount: boolean) => void;
+    updateTotal: (total: number) => void;
+    setCouponCode: (coupon_code: string) => void;
+}
+
 export interface DurationTimeState {
     hours: number;
     minutes: number;
