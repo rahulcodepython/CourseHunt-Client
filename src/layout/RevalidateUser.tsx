@@ -1,6 +1,7 @@
 "use client"
 import { useAuthStore } from '@/context/AuthStore';
-import { fetchUserData, refreshAccessToken, removeCookie, setCookie, verifyToken } from '@/server/action';
+import { refreshAccessToken, removeCookie, setCookie, verifyToken, } from '@/server/action';
+import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
@@ -43,21 +44,28 @@ const RevalidateUser = ({
                     }
                     if (refreshToken) {
                         const response = await refreshAccessToken(refreshToken);
+
                         if (response?.access && response?.refresh && response?.user) {
                             accessToken && refreshToken && loggedInUser(response.access, refreshToken, response.user)
                             return;
                         }
                         else {
-                            throw new Error('Invialid');
+                            throw new Error('Invialid Refresh Token');
                         }
                     }
                 }
 
-                if (!user && accessToken) {
-                    const response = await fetchUserData(accessToken);
-                    accessToken && refreshToken && loggedInUser(accessToken, refreshToken, response.data)
-                    setCookie('user', JSON.stringify(response.data));
-                    return;
+                if (user === undefined && accessToken) {
+                    const response = await getUser(accessToken);
+
+                    if (response) {
+                        accessToken && refreshToken && loggedInUser(accessToken, refreshToken, response.data)
+                        setCookie('user', JSON.stringify(response.data));
+                        return;
+                    }
+                    else {
+                        throw new Error('Invalid User');
+                    }
                 }
                 accessToken && refreshToken && user && loggedInUser(accessToken, refreshToken, JSON.parse(user));
             } catch (error) {
@@ -70,6 +78,21 @@ const RevalidateUser = ({
     }, []);
 
     return loading ? loader : children;
+}
+
+const getUser = async (token: string) => {
+    try {
+        const options = {
+            url: `${process.env.BASE_API_URL}/auth/users/me/`,
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
+            method: 'GET'
+        }
+        return await axios.request(options);
+    } catch (error) {
+        return { 'data': 'An error occurred' };
+    }
 }
 
 export default RevalidateUser;

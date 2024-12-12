@@ -55,24 +55,11 @@ export const verifyToken = async (token: string): Promise<boolean> => {
             method: 'POST',
             data: { token }
         };
-
         await axios.request(options);
         return true;
     } catch (error) {
         return false;
     }
-}
-
-export const fetchUserData = async (token: string) => {
-    const options = {
-        url: `${process.env.BASE_API_URL}/users/user/`,
-        headers: {
-            Authorization: `Bearer ${token}`
-        },
-        method: 'GET'
-    }
-
-    return await axios.request(options);
 }
 
 export const loginUser = async (data: InitialLoginValuesType): Promise<{
@@ -267,6 +254,23 @@ export const toggleCourseStatus = async (courseid: string | undefined, access_to
     try {
         await axios.request(options)
         return { 'data': 'Course status toggled successfully' };
+    } catch (error) {
+        return { 'data': 'An error occurred' };
+    }
+}
+
+export const createFeedback = async (data: { feedback: string, rating: number }, access_token: string | undefined | null) => {
+    const options = {
+        url: `${process.env.BASE_API_URL}/feedback/create/`,
+        headers: {
+            Authorization: `Bearer ${access_token}`,
+        },
+        method: "POST",
+        data: data,
+    }
+    try {
+        await axios.request(options)
+        return { 'data': 'Feedback created successfully' };
     } catch (error) {
         return { 'data': 'An error occurred' };
     }

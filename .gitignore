@@ -13,6 +13,8 @@
 /.next/
 /out/
 
+/demo/
+
 # production
 /build
 
