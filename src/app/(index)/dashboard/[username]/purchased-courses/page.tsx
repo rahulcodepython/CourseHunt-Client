@@ -2,7 +2,6 @@ import { getCookies } from "@/server/action"
 import * as React from "react"
 import { ListCourseDashboardType } from "@/types"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Link } from "next-view-transitions";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
@@ -14,10 +13,29 @@ const PurchasedCoursesPage = async () => {
             Authorization: 'Bearer ' + access_token
         }
     })
-    const data: ListCourseDashboardType[] = await response.data
-    const columnsList = [
-        "Course Name",
-    ];
+    // const data: ListCourseDashboardType[] = response.data
+    const data: ListCourseDashboardType[] = [
+        {
+            id: '1',
+            name: 'Course 1'
+        },
+        {
+            id: '1',
+            name: 'Course 1'
+        },
+        {
+            id: '1',
+            name: 'Course 1'
+        },
+        {
+            id: '1',
+            name: 'Course 1'
+        },
+        {
+            id: '1',
+            name: 'Course 1'
+        },
+    ]
 
     const username = user ? JSON.parse(user).username : undefined
 
@@ -35,39 +53,25 @@ const PurchasedCoursesPage = async () => {
                     </div>
                 </div>
             </CardHeader>
-            <CardContent>
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            {
-                                columnsList.map((col) => (
-                                    <TableHead key={col}>
-                                        {col}
-                                    </TableHead>
-                                ))
-                            }
-                            <TableHead>Actions</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {
-                            data.map((course) => (
-                                <TableRow key={course.id}>
-                                    <TableCell>{course.name}</TableCell>
-                                    <TableCell>
-                                        {
-                                            username && <Link href={`/dashboard/${username}/study/${course.id}/`}>
-                                                <Button>
-                                                    Study
-                                                </Button>
-                                            </Link>
-                                        }
-                                    </TableCell>
-                                </TableRow>
-                            ))
-                        }
-                    </TableBody>
-                </Table>
+            <CardContent className="flex items-center justify-center gap-4 flex-wrap">
+                {/* <div className="grid grid-cols-6 gap-4 w-full"> */}
+                {
+                    data.map((course, index) => {
+                        return <Card key={index} className="w-full max-w-xs">
+                            <CardHeader className="space-y-2">
+                                <p>
+                                    {course.name}
+                                </p>
+                                <Link href={`/dashboard/${username}/study/${course.id}`} className="w-full">
+                                    <Button className="w-full">
+                                        Study
+                                    </Button>
+                                </Link>
+                            </CardHeader>
+                        </Card>
+                    })
+                }
+                {/* </div> */}
             </CardContent>
         </Card>
     </div>

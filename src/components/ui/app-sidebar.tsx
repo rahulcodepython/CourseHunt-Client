@@ -54,16 +54,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         icon: CircleDollarSign,
                     },
                     {
-                        title: "Add Notification",
-                        url: `/dashboard/${user?.username}/admin/add-notification`,
-                        icon: Bell,
-                    },
-                    {
-                        title: "Add Report",
-                        url: `/dashboard/${user?.username}/admin/add-report`,
-                        icon: FlagTriangleRightIcon,
-                    },
-                    {
                         title: "Feedback",
                         url: `/dashboard/${user?.username}/admin/feedback`,
                         icon: MessageCircleMore,
@@ -106,11 +96,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         title: "Feedback",
                         url: `/dashboard/${user?.username}/feedback`,
                         icon: FlagTriangleRightIcon,
-                    },
-                    {
-                        title: "Referrals",
-                        url: `/dashboard/${user?.username}/referrals`,
-                        icon: Tag,
                     },
                 ],
         }]

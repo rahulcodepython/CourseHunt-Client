@@ -6,7 +6,6 @@ import useMutation from '@/hooks/useMutation';
 import { ReloadIcon } from '@radix-ui/react-icons';
 import axios from 'axios';
 import React from 'react'
-import { toast } from 'react-toastify';
 
 const CoupnCodeForm = ({
     access_token,
@@ -20,6 +19,7 @@ const CoupnCodeForm = ({
     const updateDiscount = useCheckoutStore(state => state.updateDiscount);
     const updateTotal = useCheckoutStore(state => state.updateTotal);
     const setCouponCodeValue = useCheckoutStore(state => state.setCouponCode);
+    const [isError, setIsError] = React.useState<boolean>(false);
 
     const { mutate, mutationIsLoading, mutationIsError, mutationError, mutationData, mutationState } = useMutation();
 
@@ -27,7 +27,6 @@ const CoupnCodeForm = ({
         const handler = async () => {
             if (mutationState === 'done') {
                 if (mutationIsError) {
-                    return;
                 }
                 else {
                     if (mutationData) {
@@ -52,7 +51,7 @@ const CoupnCodeForm = ({
             });
             return response;
         } catch (error) {
-            return;
+            setIsError(true);
         }
     }
 
@@ -72,6 +71,9 @@ const CoupnCodeForm = ({
                 onChange={(e) => setCouponCode(e.target.value)}
                 disabled={mutationIsLoading || is_discount}
             />
+            {
+                isError ? <span className='text-red-500 text-sm'>Invalid Coupon Code</span> : null
+            }
             {
                 mutationIsLoading ? <Button disabled className="gap-2">
                     <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />

@@ -27,10 +27,12 @@ const CheckoutSection = ({
     const is_discount = useCheckoutStore(state => state.is_discount);
     const discount = useCheckoutStore(state => state.discount);
     const coupon_code = useCheckoutStore(state => state.coupon_code);
+
     React.useEffect(() => {
         setValue(data.price, data.tax, data.offer);
         updateTotal(data.total);
     }, [])
+
     return (
         <CardContent className="px-16 grid grid-cols-3 items-center gap-12">
             <div className="space-y-4 col-span-2">
