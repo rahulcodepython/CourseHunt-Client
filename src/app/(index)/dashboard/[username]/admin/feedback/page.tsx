@@ -11,6 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { getCookies } from "@/server/action"
 import axios from "axios"
 import { StarIcon } from "lucide-react"
+import DeleteFeedback from "./DeleteFeedback"
 
 type RecordType = {
     id: string
@@ -80,6 +81,9 @@ const FeedbackPage = async () => {
                                         </TableHead>
                                     ))
                                 }
+                                <TableHead>
+                                    Actions
+                                </TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -97,6 +101,9 @@ const FeedbackPage = async () => {
                                         </TableCell>
                                         <TableCell>
                                             {ratingStart(item.rating)}
+                                        </TableCell>
+                                        <TableCell>
+                                            <DeleteFeedback feedbackId={item.id} />
                                         </TableCell>
                                     </TableRow>
                                 })

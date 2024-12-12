@@ -11,7 +11,7 @@ const CoursePayment = async ({ params }: { params: Promise<{ courseid: string | 
 
     const response = await axios.request({
         method: 'GET',
-        url: `${process.env.BASE_API_URL}/course/checkout/${courseid}/`,
+        url: `${process.env.BASE_API_URL}/transactions/checkout/${courseid}/`,
         headers: {
             Authorization: `Bearer ${access_token}`
         }

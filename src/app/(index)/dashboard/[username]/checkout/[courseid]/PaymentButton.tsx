@@ -29,7 +29,7 @@ const PaymentButton = ({
         razorpay_signature: string,
     }) => {
         try {
-            await axios(`${process.env.BASE_API_URL}/course/payment/verify/`, {
+            await axios(`${process.env.BASE_API_URL}/transactions/payment/verify/`, {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${access_token}`
@@ -50,7 +50,7 @@ const PaymentButton = ({
 
     const handlePaymentCancel = async (razorpay_order_id: string) => {
         try {
-            await axios(`${process.env.BASE_API_URL}/course/payment/cancel/`, {
+            await axios(`${process.env.BASE_API_URL}/transactions/payment/cancel/`, {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${access_token}`
@@ -100,7 +100,7 @@ const PaymentButton = ({
     const initiatePayment = async () => {
         setLoading(true);
         try {
-            const response = await axios(`${process.env.BASE_API_URL}/course/payment/initiate/${courseid}/`, {
+            const response = await axios(`${process.env.BASE_API_URL}/transactions/payment/initiate/${courseid}/`, {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${access_token}`

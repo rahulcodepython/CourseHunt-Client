@@ -43,7 +43,7 @@ const CoupnCodeForm = ({
 
     const applyCouponCode = async (course_id: string | undefined, access_token: string | undefined, couponCode: string) => {
         try {
-            const response = await axios.post(`${process.env.BASE_API_URL}/course/apply-coupon-code/${course_id}/`, {
+            const response = await axios.post(`${process.env.BASE_API_URL}/transactions/apply-coupon-code/${course_id}/`, {
                 coupon_code: couponCode
             }, {
                 headers: {

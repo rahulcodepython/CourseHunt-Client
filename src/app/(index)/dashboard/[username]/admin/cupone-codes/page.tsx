@@ -22,7 +22,7 @@ const CuponeCodesPage = async () => {
 
     const response = await axios.request({
         method: 'GET',
-        url: `${process.env.BASE_API_URL}/course/list-coupon-code/`,
+        url: `${process.env.BASE_API_URL}/transactions/list-coupon-code/`,
         headers: {
             Authorization: `Bearer ${access_token}`
         }

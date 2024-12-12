@@ -195,7 +195,7 @@ export const deleteCourse = async (courseid: string | undefined, access_token: s
 
 export const createCouponCode = async (data: CuponCodeFormDataType, access_token: string | null) => {
     const options = {
-        url: `${process.env.BASE_API_URL}/course/create-coupon-code/`,
+        url: `${process.env.BASE_API_URL}/transactions/create-coupon-code/`,
         headers: {
             Authorization: `Bearer ${access_token}`,
         },
@@ -212,7 +212,7 @@ export const createCouponCode = async (data: CuponCodeFormDataType, access_token
 
 export const editCouponCode = async (data: CuponCodeFormDataType, access_token: string | null, id: number) => {
     const options = {
-        url: `${process.env.BASE_API_URL}/course/edit-coupon-code/${id}/`,
+        url: `${process.env.BASE_API_URL}/transactions/edit-coupon-code/${id}/`,
         headers: {
             Authorization: `Bearer ${access_token}`,
         },
@@ -229,7 +229,7 @@ export const editCouponCode = async (data: CuponCodeFormDataType, access_token: 
 
 export const deleteCouponCode = async (access_token: string | undefined, id: number) => {
     const options = {
-        url: `${process.env.BASE_API_URL}/course/edit-coupon-code/${id}/`,
+        url: `${process.env.BASE_API_URL}/transactions/edit-coupon-code/${id}/`,
         headers: {
             Authorization: `Bearer ${access_token}`,
         },
@@ -271,6 +271,22 @@ export const createFeedback = async (data: { feedback: string, rating: number },
     try {
         await axios.request(options)
         return { 'data': 'Feedback created successfully' };
+    } catch (error) {
+        return { 'data': 'An error occurred' };
+    }
+}
+
+export const deleteFeedback = async (feedbackId: string, access_token: string | undefined | null) => {
+    const options = {
+        url: `${process.env.BASE_API_URL}/feedback/delete/${feedbackId}/`,
+        headers: {
+            Authorization: `Bearer ${access_token}`,
+        },
+        method: "DELETE",
+    }
+    try {
+        await axios.request(options)
+        return { 'data': 'Feedback deleted successfully' };
     } catch (error) {
         return { 'data': 'An error occurred' };
     }
