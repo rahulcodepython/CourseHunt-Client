@@ -15,16 +15,16 @@ const useMutation = () => {
         setMutationState('fetching');
 
         try {
-            setMutationData(await actionFunc());
+            const response = await actionFunc();
+            setMutationData(response.data);
         } catch (error: any) {
-            setMutationError(error.message || 'An error occurred');
+            setMutationError(error.response?.data?.error);
             setMutationIsError(true);
         } finally {
             setMutationIsLoading(false);
             setMutationState('done');
         }
     }
-
     return { mutate, mutationIsLoading, mutationIsError, mutationError, mutationData, mutationState };
 }
 

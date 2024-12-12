@@ -2,8 +2,8 @@
 import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/context/AuthStore';
 import useMutation from '@/hooks/useMutation';
-import { deleteFeedback } from '@/server/action';
 import { ReloadIcon } from '@radix-ui/react-icons';
+import axios from 'axios';
 import React from 'react'
 import { toast } from 'react-toastify';
 
@@ -24,7 +24,7 @@ const DeleteFeedback = ({ feedbackId }: { feedbackId: string }) => {
                     toast.error(mutationError);
                 }
                 else {
-                    toast.success(mutationData.data);
+                    toast.success(mutationData.success);
                 }
             }
         }
@@ -37,6 +37,17 @@ const DeleteFeedback = ({ feedbackId }: { feedbackId: string }) => {
             Please wait
         </Button> : <Button variant="destructive" onClick={() => handleDeleteFeedback()}>Delete</Button>
     )
+}
+
+const deleteFeedback = async (feedbackId: string, access_token: string | undefined | null) => {
+    const options = {
+        url: `${process.env.BASE_API_URL}/feedback/delete/${feedbackId}/`,
+        headers: {
+            Authorization: `Bearer ${access_token}`,
+        },
+        method: "DELETE",
+    }
+    return await axios.request(options)
 }
 
 export default DeleteFeedback

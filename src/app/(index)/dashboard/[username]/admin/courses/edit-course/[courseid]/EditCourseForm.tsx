@@ -9,12 +9,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { AllCourseType } from "@/types";
-import { createCourse, editCourse } from "@/server/action";
 import useMutation from "@/hooks/useMutation";
 import { toast } from "react-toastify";
 import React from "react";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { SendHorizonal } from "lucide-react";
+import axios from "axios";
 
 // Define Zod schema for validation
 const courseSchema = z.object({
@@ -47,7 +47,7 @@ const EditCourseForm = ({
         defaultValues: defaultValues,
     });
 
-    const { mutationIsLoading, mutate, mutationData, mutationIsError, mutationState } = useMutation();
+    const { mutationIsLoading, mutate, mutationData, mutationIsError, mutationState, mutationError } = useMutation();
 
     const onSubmit = async (data: AllCourseType) => {
         await mutate(() => courseid ? editCourse(courseid, data, access_token) : createCourse(data, access_token));
@@ -56,10 +56,10 @@ const EditCourseForm = ({
     React.useEffect(() => {
         if (mutationState === "done") {
             if (mutationIsError) {
-                toast.error(mutationData.data);
+                toast.error(mutationError);
             }
             else {
-                toast.success(mutationData.data);
+                toast.success(mutationData.success);
             }
         }
     }, [mutationData]);
@@ -239,6 +239,30 @@ const EditCourseForm = ({
             </form>
         </FormProvider>
     );
+}
+
+const createCourse = async (data: AllCourseType, access_token: string | undefined) => {
+    const options = {
+        url: `${process.env.BASE_API_URL}/course/create-course/`,
+        headers: {
+            Authorization: `Bearer ${access_token}`,
+        },
+        method: "POST",
+        data: data,
+    }
+    return await axios.request(options)
+}
+
+const editCourse = async (courseid: string | undefined, data: AllCourseType, access_token: string | undefined) => {
+    const options = {
+        url: `${process.env.BASE_API_URL}/course/edit-course/${courseid}/`,
+        headers: {
+            Authorization: `Bearer ${access_token}`,
+        },
+        method: "PATCH",
+        data: data,
+    }
+    return await axios.request(options)
 }
 
 export default EditCourseForm;

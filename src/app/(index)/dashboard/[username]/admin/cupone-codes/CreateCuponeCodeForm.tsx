@@ -9,10 +9,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import useMutation from "@/hooks/useMutation";
 import { toast } from "react-toastify";
-import { createCouponCode, editCouponCode } from "@/server/action";
 import { useAuthStore } from "@/context/AuthStore";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { ListCuponeCodeType } from "@/types";
+import axios from "axios";
 
 // Define the Zod schema
 const formSchema = z.object({
@@ -82,10 +82,10 @@ const CreateCouponCodeForm = ({ defaultData, edit }: {
         const handler = async () => {
             if (mutationState === 'done') {
                 if (mutationIsError) {
-                    toast.error(mutationData.data);
+                    toast.error(mutationError);
                 }
                 else {
-                    toast.success(mutationData.data);
+                    toast.success(mutationData.success);
                 }
             }
         }
@@ -234,6 +234,30 @@ const CreateCouponCodeForm = ({ defaultData, edit }: {
             </form>
         </FormProvider>
     );
+}
+
+const createCouponCode = async (data: CuponCodeFormDataType, access_token: string | null) => {
+    const options = {
+        url: `${process.env.BASE_API_URL}/transactions/create-coupon-code/`,
+        headers: {
+            Authorization: `Bearer ${access_token}`,
+        },
+        method: "POST",
+        data: data,
+    }
+    return await axios.request(options)
+}
+
+const editCouponCode = async (data: CuponCodeFormDataType, access_token: string | null, id: number) => {
+    const options = {
+        url: `${process.env.BASE_API_URL}/transactions/edit-coupon-code/${id}/`,
+        headers: {
+            Authorization: `Bearer ${access_token}`,
+        },
+        method: "POST",
+        data: data,
+    }
+    return await axios.request(options)
 }
 
 export default CreateCouponCodeForm;

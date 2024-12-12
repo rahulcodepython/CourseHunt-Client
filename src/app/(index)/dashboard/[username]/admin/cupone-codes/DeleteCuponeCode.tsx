@@ -1,7 +1,8 @@
 "use client"
 import { Button } from '@/components/ui/button'
 import useMutation from '@/hooks/useMutation'
-import { deleteCouponCode } from '@/server/action'
+import { ReloadIcon } from '@radix-ui/react-icons'
+import axios from 'axios'
 import React from 'react'
 import { toast } from 'react-toastify'
 
@@ -15,10 +16,10 @@ const DeleteCuponeCode = ({ access_token, id }: {
         const handler = async () => {
             if (mutationState === 'done') {
                 if (mutationIsError) {
-                    toast.error(mutationData.data);
+                    toast.error(mutationError);
                 }
                 else {
-                    toast.success(mutationData.data);
+                    toast.success(mutationData.success);
                 }
             }
         }
@@ -26,8 +27,23 @@ const DeleteCuponeCode = ({ access_token, id }: {
     }, [mutationState])
 
     return (
-        <Button onClick={async () => await mutate(() => deleteCouponCode(access_token, id))}>Delete</Button>
+        mutationIsLoading ? <Button disabled className="gap-2">
+            <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+            Please wait
+        </Button> : <Button onClick={async () => await mutate(() => deleteCouponCode(access_token, id))}>Delete</Button>
     )
+}
+
+
+const deleteCouponCode = async (access_token: string | undefined, id: number) => {
+    const options = {
+        url: `${process.env.BASE_API_URL}/transactions/edit-coupon-code/${id}/`,
+        headers: {
+            Authorization: `Bearer ${access_token}`,
+        },
+        method: "DELETE",
+    }
+    return await axios.request(options)
 }
 
 export default DeleteCuponeCode

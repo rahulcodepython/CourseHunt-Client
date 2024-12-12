@@ -29,19 +29,15 @@ const PaymentButton = ({
         razorpay_signature: string,
     }) => {
         try {
-            await axios(`${process.env.BASE_API_URL}/transactions/payment/verify/`, {
+            const response = await axios(`${process.env.BASE_API_URL}/transactions/payment/verify/`, {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${access_token}`
                 },
                 data: { ...data, course_id: courseid, coupon_code, is_discount }
             })
-            toast.success('Payment successful');
-            setLoading(false);
-            await new Promise(resolve => setTimeout(() => {
-                router.push(`/dashboard/${username}/study/${courseid}`);
-                resolve(undefined);
-            }, 2000));
+            toast.success(response.data.success);
+            router.push(`/dashboard/${username}/study/${courseid}`);
         } catch (error: any) {
             setLoading(false);
             toast.error(error?.response?.data?.message);
@@ -50,18 +46,19 @@ const PaymentButton = ({
 
     const handlePaymentCancel = async (razorpay_order_id: string) => {
         try {
-            await axios(`${process.env.BASE_API_URL}/transactions/payment/cancel/`, {
+            const response = await axios(`${process.env.BASE_API_URL}/transactions/payment/cancel/`, {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${access_token}`
                 },
                 data: { razorpay_order_id }
             })
-            toast.error('Payment cancelled');
-        } catch (error) {
-            console.log(error);
+            toast.error(response.data.success);
+        } catch (error: any) {
+            toast.error(error?.response?.data?.message);
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     }
 
     const makePayment = (data: { amount: number, order_id: string, currency: string }) => {
@@ -93,6 +90,7 @@ const PaymentButton = ({
             const razorpay = new (window as any).Razorpay(options);
             razorpay.open();
         } catch (error: any) {
+            setLoading(false);
             toast.error(error?.response?.data?.message);
         }
     }

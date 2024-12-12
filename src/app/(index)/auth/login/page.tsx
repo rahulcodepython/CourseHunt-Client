@@ -9,9 +9,11 @@ import { SendHorizonal } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { InitialLoginValuesType } from '@/types';
 import { useForm, Controller } from 'react-hook-form';
-import { loginUser } from '@/server/action';
 import { useAuthStore } from '@/context/AuthStore';
 import useMutation from '@/hooks/useMutation';
+import axios from 'axios';
+import { setCookie } from '@/server/action';
+import { jwtDecode } from 'jwt-decode';
 
 const LoginPage: React.FC = () => {
     const loggedInUser = useAuthStore((state) => state.LoggedInUser);
@@ -27,21 +29,17 @@ const LoginPage: React.FC = () => {
     });
 
     const onSubmit = async (data: InitialLoginValuesType) => {
-        try {
-            await mutate(() => loginUser(data));
-        } catch (error) {
-            console.error(error);
-        }
+        await mutate(async () => loginUser(data));
     };
 
     React.useEffect(() => {
         const handler = async () => {
             if (mutationState === 'done') {
                 if (mutationIsError) {
-                    toast.error(mutationData.data);
+                    toast.error(mutationError);
                 }
                 else {
-                    toast.success(mutationData.data);
+                    toast.success(mutationData.success);
                     loggedInUser(mutationData.access, mutationData.refresh, mutationData.user);
                     reset();
                     router.push('/');
@@ -113,5 +111,18 @@ const LoginPage: React.FC = () => {
     </form>
 };
 
+const loginUser = async (data: InitialLoginValuesType) => {
+    const options = {
+        url: `${process.env.BASE_API_URL}/auth/users/jwt/create/`,
+        method: 'POST',
+        data: data
+    };
+
+    const response = await axios.request(options);
+    setCookie('access_token', response.data.access, response.data.access ? (jwtDecode(response.data.access)?.exp ?? 0) - Math.floor(Date.now() / 1000) : 0);
+    setCookie('refresh_token', response.data.refresh, response.data.refresh ? (jwtDecode(response.data.refresh)?.exp ?? 0) - Math.floor(Date.now() / 1000) : 0);
+    setCookie('user', JSON.stringify(response.data.user));
+    return response;
+}
 
 export default LoginPage;

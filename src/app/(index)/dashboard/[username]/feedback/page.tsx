@@ -6,10 +6,10 @@ import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { SendHorizonal, StarIcon } from "lucide-react";
 import { toast } from "react-toastify";
-import { createFeedback } from "@/server/action";
 import { useAuthStore } from "@/context/AuthStore";
 import useMutation from "@/hooks/useMutation";
 import { ReloadIcon } from "@radix-ui/react-icons";
+import axios from "axios";
 
 const FeedbackPage = () => {
     const [rating, setRating] = React.useState(0);
@@ -23,11 +23,7 @@ const FeedbackPage = () => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        try {
-            isAuthenticated && await mutate(() => createFeedback({ feedback, rating }, accessToken));
-        } catch (error) {
-            console.error(error);
-        }
+        isAuthenticated && await mutate(() => createFeedback({ feedback, rating }, accessToken));
     }
 
     React.useEffect(() => {
@@ -37,7 +33,7 @@ const FeedbackPage = () => {
                     toast.error(mutationError);
                 }
                 else {
-                    toast.success(mutationData.data);
+                    toast.success(mutationData.success);
                 }
             }
         }
@@ -81,6 +77,18 @@ const FeedbackPage = () => {
             </form>
         </CardContent>
     )
+}
+
+const createFeedback = async (data: { feedback: string, rating: number }, access_token: string | undefined | null) => {
+    const options = {
+        url: `${process.env.BASE_API_URL}/feedback/create/`,
+        headers: {
+            Authorization: `Bearer ${access_token}`,
+        },
+        method: "POST",
+        data: data,
+    }
+    return await axios.request(options)
 }
 
 export default FeedbackPage;

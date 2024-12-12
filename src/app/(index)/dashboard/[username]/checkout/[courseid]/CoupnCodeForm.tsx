@@ -6,6 +6,7 @@ import useMutation from '@/hooks/useMutation';
 import { ReloadIcon } from '@radix-ui/react-icons';
 import axios from 'axios';
 import React from 'react'
+import { toast } from 'react-toastify';
 
 const CoupnCodeForm = ({
     access_token,
@@ -19,7 +20,6 @@ const CoupnCodeForm = ({
     const updateDiscount = useCheckoutStore(state => state.updateDiscount);
     const updateTotal = useCheckoutStore(state => state.updateTotal);
     const setCouponCodeValue = useCheckoutStore(state => state.setCouponCode);
-    const [isError, setIsError] = React.useState<boolean>(false);
 
     const { mutate, mutationIsLoading, mutationIsError, mutationError, mutationData, mutationState } = useMutation();
 
@@ -27,12 +27,13 @@ const CoupnCodeForm = ({
         const handler = async () => {
             if (mutationState === 'done') {
                 if (mutationIsError) {
+                    toast.error(mutationError);
                 }
                 else {
                     if (mutationData) {
-                        updateDiscount(mutationData.data.discount, true);
-                        updateTotal(mutationData.data.total);
-                        setCouponCodeValue(mutationData.data.coupon_code_id);
+                        updateDiscount(mutationData.discount, true);
+                        updateTotal(mutationData.total);
+                        setCouponCodeValue(mutationData.coupon_code_id);
                     }
                 }
             }
@@ -41,18 +42,13 @@ const CoupnCodeForm = ({
     }, [mutationState])
 
     const applyCouponCode = async (course_id: string | undefined, access_token: string | undefined, couponCode: string) => {
-        try {
-            const response = await axios.post(`${process.env.BASE_API_URL}/transactions/apply-coupon-code/${course_id}/`, {
-                coupon_code: couponCode
-            }, {
-                headers: {
-                    Authorization: `Bearer ${access_token}`
-                }
-            });
-            return response;
-        } catch (error) {
-            setIsError(true);
-        }
+        return await axios.post(`${process.env.BASE_API_URL}/transactions/apply-coupon-code/${course_id}/`, {
+            coupon_code: couponCode
+        }, {
+            headers: {
+                Authorization: `Bearer ${access_token}`
+            }
+        });
     }
 
     const handleSubmit = async () => {
@@ -72,7 +68,7 @@ const CoupnCodeForm = ({
                 disabled={mutationIsLoading || is_discount}
             />
             {
-                isError ? <span className='text-red-500 text-sm'>Invalid Coupon Code</span> : null
+                mutationIsError ? <span className='text-red-500 text-sm'>Invalid Coupon Code</span> : null
             }
             {
                 mutationIsLoading ? <Button disabled className="gap-2">

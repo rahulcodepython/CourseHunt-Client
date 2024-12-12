@@ -1,7 +1,8 @@
 "use client"
 import { useAuthStore } from '@/context/AuthStore';
-import { refreshAccessToken, removeCookie, setCookie, verifyToken, } from '@/server/action';
+import { removeCookie, setCookie, } from '@/server/action';
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
@@ -59,8 +60,8 @@ const RevalidateUser = ({
                     const response = await getUser(accessToken);
 
                     if (response) {
-                        accessToken && refreshToken && loggedInUser(accessToken, refreshToken, response.data)
-                        setCookie('user', JSON.stringify(response.data));
+                        accessToken && refreshToken && loggedInUser(accessToken, refreshToken, response)
+                        setCookie('user', JSON.stringify(response));
                         return;
                     }
                     else {
@@ -89,9 +90,43 @@ const getUser = async (token: string) => {
             },
             method: 'GET'
         }
-        return await axios.request(options);
+        const response = await axios.request(options);
+        return response.data;
     } catch (error) {
-        return { 'data': 'An error occurred' };
+        return;
+    }
+}
+
+const refreshAccessToken = async (token: string) => {
+    const options = {
+        url: `${process.env.BASE_API_URL}/auth/users/jwt/refresh/`,
+        method: 'POST',
+        data: {
+            refresh: token
+        }
+    };
+
+    try {
+        const response = await axios.request(options);
+        setCookie('access_token', response.data.access, response.data.access ? (jwtDecode(response.data.access)?.exp ?? 0) - Math.floor(Date.now() / 1000) : 0);
+        setCookie('refresh_token', response.data.refresh, response.data.refresh ? (jwtDecode(response.data.refresh)?.exp ?? 0) - Math.floor(Date.now() / 1000) : 0);
+        setCookie('user', JSON.stringify(response.data.user));
+        return response.data;
+    } catch (error) {
+    }
+};
+
+const verifyToken = async (token: string): Promise<boolean> => {
+    try {
+        const options = {
+            url: `${process.env.BASE_API_URL}/auth/users/jwt/verify/`,
+            method: 'POST',
+            data: { token }
+        };
+        await axios.request(options);
+        return true;
+    } catch (error) {
+        return false;
     }
 }
 
