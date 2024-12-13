@@ -13,29 +13,7 @@ const PurchasedCoursesPage = async () => {
             Authorization: 'Bearer ' + access_token
         }
     })
-    // const data: ListCourseDashboardType[] = response.data
-    const data: ListCourseDashboardType[] = [
-        {
-            id: '1',
-            name: 'Course 1'
-        },
-        {
-            id: '1',
-            name: 'Course 1'
-        },
-        {
-            id: '1',
-            name: 'Course 1'
-        },
-        {
-            id: '1',
-            name: 'Course 1'
-        },
-        {
-            id: '1',
-            name: 'Course 1'
-        },
-    ]
+    const data: ListCourseDashboardType[] = response.data
 
     const username = user ? JSON.parse(user).username : undefined
 
@@ -54,7 +32,6 @@ const PurchasedCoursesPage = async () => {
                 </div>
             </CardHeader>
             <CardContent className="flex items-center justify-center gap-4 flex-wrap">
-                {/* <div className="grid grid-cols-6 gap-4 w-full"> */}
                 {
                     data.map((course, index) => {
                         return <Card key={index} className="w-full max-w-xs">
@@ -71,7 +48,6 @@ const PurchasedCoursesPage = async () => {
                         </Card>
                     })
                 }
-                {/* </div> */}
             </CardContent>
         </Card>
     </div>

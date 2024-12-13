@@ -22,15 +22,15 @@ export interface UserType {
 
 export interface AuthStoreState {
     isAuthenticated: boolean;
-    accessToken: string | null;
-    refreshToken: string | null;
-    user: UserType | null;
+    accessToken: string | undefined;
+    refreshToken: string | undefined;
+    user: UserType | undefined;
 }
 
 export interface AuthStoreActions {
     LoggedInUser: (access: string, refresh: string, user: UserType) => void;
     LogoutUser: () => void;
-    UpdateUser: (user: UserType | null) => void;
+    UpdateUser: (user: UserType | undefined) => void;
 }
 
 export interface CheckoutStoreState {

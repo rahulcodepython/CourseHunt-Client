@@ -116,10 +116,10 @@ const CuponeCodesPage = async () => {
                                                         <DialogContent>
                                                             <DialogHeader>
                                                                 <DialogTitle className="text-xl">Edit Cupon Code</DialogTitle>
-                                                                <DialogDescription>
-                                                                    <CreateCuponeCodeForm defaultData={data[index]} edit />
-                                                                </DialogDescription>
                                                             </DialogHeader>
+                                                            <DialogContent>
+                                                                <CreateCuponeCodeForm defaultData={data[index]} edit />
+                                                            </DialogContent>
                                                         </DialogContent>
                                                     </Dialog>
                                                     <DeleteCuponeCode id={item.id} access_token={access_token} />

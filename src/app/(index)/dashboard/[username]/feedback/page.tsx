@@ -79,7 +79,7 @@ const FeedbackPage = () => {
     )
 }
 
-const createFeedback = async (data: { feedback: string, rating: number }, access_token: string | undefined | null) => {
+const createFeedback = async (data: { feedback: string, rating: number }, access_token: string | undefined) => {
     const options = {
         url: `${process.env.BASE_API_URL}/feedback/create/`,
         headers: {

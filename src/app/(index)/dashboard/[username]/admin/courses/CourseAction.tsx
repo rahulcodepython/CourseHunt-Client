@@ -13,13 +13,30 @@ const CourseAction = ({ courseid, removeCourse }:
         courseid: string,
         removeCourse: (courseid: string) => void
     }) => {
-    const { mutate, mutationIsLoading, mutationIsError, mutationError, mutationData, mutationState } = useMutation();
-
     const user = useAuthStore(state => state.user);
     const accessToken = useAuthStore(state => state.accessToken);
 
+    return (
+        <div className="flex items-center gap-2">
+            <Link href={`/dashboard/${user?.username}/admin/courses/edit-course/${courseid}/`}>
+                <Button>Edit</Button>
+            </Link>
+            <ToggleCourseComponent courseid={courseid} accessToken={accessToken} />
+            <DeleteCourseComponent courseid={courseid} removeCourse={removeCourse} accessToken={accessToken} />
+        </div>
+    )
+}
+
+const ToggleCourseComponent = ({ courseid, accessToken }:
+    {
+        courseid: string,
+        accessToken: string | undefined
+    }) => {
+    const { mutate, mutationIsLoading, mutationIsError, mutationError, mutationData, mutationState } = useMutation();
+
     React.useEffect(() => {
         const handler = async () => {
+            console.log(mutationIsLoading);
             if (mutationState === 'done') {
                 if (mutationIsError) {
                     toast.error(mutationError);
@@ -32,34 +49,49 @@ const CourseAction = ({ courseid, removeCourse }:
         handler();
     }, [mutationState])
 
-    return (
-        <div className="flex items-center gap-2">
-            <Link href={`/dashboard/${user?.username}/admin/courses/edit-course/${courseid}/`}>
-                <Button>Edit</Button>
-            </Link>
-            {
-                mutationIsLoading ? <Button disabled className="gap-2">
-                    <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-                    Please wait
-                </Button> : <Button onClick={async () => {
-                    accessToken && await mutate(() => toggleCourseStatus(courseid, accessToken))
-                }}>
-                    Toggle Status
-                </Button>
-            }
-            {
-                mutationIsLoading ? <Button disabled className="gap-2">
-                    <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-                    Please wait
-                </Button> : <Button variant={'destructive'} onClick={async () => {
-                    accessToken && await mutate(() => deleteCourse(courseid, accessToken, removeCourse))
-                }}>Delete</Button>
-            }
-        </div>
-    )
+    return mutationIsLoading ? <Button disabled className="gap-2">
+        <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+        Please wait
+    </Button> : <Button onClick={async () => {
+        accessToken && await mutate(() => toggleCourseStatus(courseid, accessToken))
+    }}>
+        Toggle Status
+    </Button>
 }
 
-const deleteCourse = async (courseid: string | undefined, access_token: string | undefined, removeCourse: (courseid: string) => void) => {
+const DeleteCourseComponent = ({ courseid, removeCourse, accessToken }:
+    {
+        courseid: string,
+        removeCourse: (courseid: string) => void
+        accessToken: string | undefined
+    }) => {
+    const { mutate, mutationIsLoading, mutationIsError, mutationError, mutationData, mutationState } = useMutation();
+
+    React.useEffect(() => {
+        const handler = async () => {
+            console.log(mutationIsLoading);
+            if (mutationState === 'done') {
+                if (mutationIsError) {
+                    toast.error(mutationError);
+                }
+                else {
+                    courseid && removeCourse(courseid)
+                    toast.success(mutationData.success);
+                }
+            }
+        }
+        handler();
+    }, [mutationState])
+
+    return mutationIsLoading ? <Button disabled className="gap-2">
+        <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+        Please wait
+    </Button> : <Button variant={'destructive'} onClick={async () => {
+        accessToken && await mutate(() => deleteCourse(courseid, accessToken))
+    }}>Delete</Button>
+}
+
+const deleteCourse = async (courseid: string | undefined, access_token: string | undefined) => {
     const options = {
         url: `${process.env.BASE_API_URL}/course/edit-course/${courseid}/`,
         headers: {
@@ -67,8 +99,7 @@ const deleteCourse = async (courseid: string | undefined, access_token: string |
         },
         method: "DELETE",
     }
-    await axios.request(options)
-    courseid && removeCourse(courseid)
+    return await axios.request(options)
 }
 
 const toggleCourseStatus = async (courseid: string | undefined, access_token: string | undefined) => {
@@ -79,7 +110,7 @@ const toggleCourseStatus = async (courseid: string | undefined, access_token: st
         },
         method: "POST",
     }
-    await axios.request(options)
+    return await axios.request(options)
 }
 
 export default CourseAction;

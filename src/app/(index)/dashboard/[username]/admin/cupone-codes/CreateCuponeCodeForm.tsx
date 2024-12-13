@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import React from 'react'
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Form, FormProvider, useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -52,7 +52,7 @@ const CreateCouponCodeForm = ({ defaultData, edit }: {
         defaultValues: (edit && defaultData) ? {
             code: defaultData?.code,
             discount: defaultData?.discount,
-            expiry: defaultData?.expiry,
+            expiry: convertDateFormat(defaultData?.expiry),
             is_unlimited: defaultData?.is_unlimited,
             quantity: defaultData?.quantity ?? undefined,
             is_active: defaultData?.is_active ?? false
@@ -64,6 +64,9 @@ const CreateCouponCodeForm = ({ defaultData, edit }: {
             is_active: false,
         },
     });
+
+    console.log(convertDateFormat(defaultData?.expiry));
+
 
     const { watch, setValue } = form;
     const watchedUnLimited = watch("is_unlimited");
@@ -77,20 +80,6 @@ const CreateCouponCodeForm = ({ defaultData, edit }: {
     const onSubmit = async (data: CuponCodeFormDataType) => {
         await mutate(() => edit ? editCouponCode(data, accessToken, defaultData?.id as number) : createCouponCode(data, accessToken));
     };
-
-    React.useEffect(() => {
-        const handler = async () => {
-            if (mutationState === 'done') {
-                if (mutationIsError) {
-                    toast.error(mutationError);
-                }
-                else {
-                    toast.success(mutationData.success);
-                }
-            }
-        }
-        handler();
-    }, [mutationState])
 
     return (
         <FormProvider {...form}>
@@ -236,7 +225,7 @@ const CreateCouponCodeForm = ({ defaultData, edit }: {
     );
 }
 
-const createCouponCode = async (data: CuponCodeFormDataType, access_token: string | null) => {
+const createCouponCode = async (data: CuponCodeFormDataType, access_token: string | undefined) => {
     const options = {
         url: `${process.env.BASE_API_URL}/transactions/create-coupon-code/`,
         headers: {
@@ -248,7 +237,7 @@ const createCouponCode = async (data: CuponCodeFormDataType, access_token: strin
     return await axios.request(options)
 }
 
-const editCouponCode = async (data: CuponCodeFormDataType, access_token: string | null, id: number) => {
+const editCouponCode = async (data: CuponCodeFormDataType, access_token: string | undefined, id: number) => {
     const options = {
         url: `${process.env.BASE_API_URL}/transactions/edit-coupon-code/${id}/`,
         headers: {
@@ -258,6 +247,18 @@ const editCouponCode = async (data: CuponCodeFormDataType, access_token: string 
         data: data,
     }
     return await axios.request(options)
+}
+
+function convertDateFormat(dateString: string | undefined) {
+    if (!dateString) return "";
+    const months = {
+        Jan: "01", Feb: "02", Mar: "03", Apr: "04", May: "05", Jun: "06",
+        Jul: "07", Aug: "08", Sep: "09", Oct: "10", Nov: "11", Dec: "12"
+    };
+    const [month, day, year] = dateString.split(" ");
+    const monthNumber = months[month as keyof typeof months];
+    const dayNumber = day.padStart(2, "0");
+    return `${year}-${monthNumber}-${dayNumber}`;
 }
 
 export default CreateCouponCodeForm;

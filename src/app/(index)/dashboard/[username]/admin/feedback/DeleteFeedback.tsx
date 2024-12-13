@@ -39,7 +39,7 @@ const DeleteFeedback = ({ feedbackId }: { feedbackId: string }) => {
     )
 }
 
-const deleteFeedback = async (feedbackId: string, access_token: string | undefined | null) => {
+const deleteFeedback = async (feedbackId: string, access_token: string | undefined) => {
     const options = {
         url: `${process.env.BASE_API_URL}/feedback/delete/${feedbackId}/`,
         headers: {
