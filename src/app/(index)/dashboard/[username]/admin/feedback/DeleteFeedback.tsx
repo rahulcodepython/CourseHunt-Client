@@ -7,7 +7,10 @@ import axios from 'axios';
 import React from 'react'
 import { toast } from 'react-toastify';
 
-const DeleteFeedback = ({ feedbackId }: { feedbackId: string }) => {
+const DeleteFeedback = ({ feedbackId, removeFeedback }: {
+    feedbackId: string,
+    removeFeedback: (feedbackId: string) => void
+}) => {
     const isAuthenticated = useAuthStore(state => state.isAuthenticated);
     const accessToken = useAuthStore(state => state.accessToken);
 
@@ -24,6 +27,7 @@ const DeleteFeedback = ({ feedbackId }: { feedbackId: string }) => {
                     toast.error(mutationError);
                 }
                 else {
+                    removeFeedback(feedbackId);
                     toast.success(mutationData.success);
                 }
             }

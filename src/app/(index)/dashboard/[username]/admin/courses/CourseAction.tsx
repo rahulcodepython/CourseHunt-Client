@@ -36,7 +36,6 @@ const ToggleCourseComponent = ({ courseid, accessToken }:
 
     React.useEffect(() => {
         const handler = async () => {
-            console.log(mutationIsLoading);
             if (mutationState === 'done') {
                 if (mutationIsError) {
                     toast.error(mutationError);
@@ -69,7 +68,6 @@ const DeleteCourseComponent = ({ courseid, removeCourse, accessToken }:
 
     React.useEffect(() => {
         const handler = async () => {
-            console.log(mutationIsLoading);
             if (mutationState === 'done') {
                 if (mutationIsError) {
                     toast.error(mutationError);

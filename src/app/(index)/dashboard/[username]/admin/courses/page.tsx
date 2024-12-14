@@ -1,8 +1,7 @@
 import { getCookies } from "@/server/action"
 import * as React from "react"
-import { ListCourseAdminDashboardType } from "@/types"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { ListCourseAdminDashboardType, PaginationType } from "@/types"
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import CourseTable from "./CourseTable";
 import { Link } from "next-view-transitions";
 import { Button } from "@/components/ui/button";
@@ -15,8 +14,9 @@ const CoursesPage = async () => {
             Authorization: 'Bearer ' + access_token
         }
     })
-    const data: ListCourseAdminDashboardType[] = await response.data
-    const columnsList = [
+    const data: PaginationType<ListCourseAdminDashboardType> = await response.data
+
+    const columnList = [
         "Course Name",
         "Published Date",
         "Price",
@@ -47,23 +47,7 @@ const CoursesPage = async () => {
                     }
                 </div>
             </CardHeader>
-            <CardContent>
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            {
-                                columnsList.map((col) => (
-                                    <TableHead key={col}>
-                                        {col}
-                                    </TableHead>
-                                ))
-                            }
-                            <TableHead>Actions</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <CourseTable fetchedData={data} />
-                </Table>
-            </CardContent>
+            <CourseTable data={data} columnList={columnList} />
         </Card>
     </div>
 }

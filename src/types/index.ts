@@ -135,7 +135,7 @@ export interface DetailSingleCourseType {
 
 export interface ListCuponeCodeType {
     map(arg0: (coupne: any, index: any) => import("react").JSX.Element): import("react").ReactNode
-    id: number,
+    id: string,
     code: string,
     discount: number,
     expiry: string,
@@ -157,4 +157,40 @@ export interface CoursePriceResponseType {
     city: string
     phone: string
     address: string
+}
+
+export interface PaginationType<T> {
+    count: number,
+    next: string,
+    previous: string,
+    current_page: number,
+    total_pages: number,
+    results: T[]
+}
+
+export interface SelfTransactionType {
+    id: string
+    course: string
+    amount: number
+    razorpay_order_id: string
+    is_paid: boolean
+    created_at: string
+}
+
+export interface TransactionType {
+    id: string
+    course: string
+    user: string
+    amount: number
+    razorpay_order_id: string
+    is_paid: boolean
+    created_at: string
+}
+
+export interface FeedbackType {
+    id: string
+    user: string
+    created_at: string
+    feedback: string
+    rating: number
 }

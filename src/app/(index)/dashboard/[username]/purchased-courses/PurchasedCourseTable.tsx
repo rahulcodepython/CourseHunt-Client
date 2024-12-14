@@ -1,33 +1,20 @@
 "use client"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import React from 'react'
-import CourseAction from './CourseAction'
-import { ListCourseAdminDashboardType, PaginationType } from '@/types'
+import { ListCourseDashboardType, PaginationType } from '@/types'
 import usePagination from '@/hooks/usePagination'
-import {
-    Pagination,
-    PaginationContent,
-    PaginationEllipsis,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious,
-} from "@/components/ui/pagination"
 import { CardContent, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useAuthStore } from '@/context/AuthStore'
+import { Link } from 'next-view-transitions'
 
-const CourseTable = ({ data, columnList }: {
-    data: PaginationType<ListCourseAdminDashboardType>
+const PurchasedCourseTable = ({ data, columnList }: {
+    data: PaginationType<ListCourseDashboardType>
     columnList: string[]
 }) => {
-    const pagination = usePagination<ListCourseAdminDashboardType>(data)
+    const pagination = usePagination<ListCourseDashboardType>(data)
     const accessToken = useAuthStore(state => state.accessToken)
-
-    const removeCourse = (courseid: string) => {
-        pagination.removeData(courseid)
-    }
+    const user = useAuthStore(state => state.user)
 
     return (
         <CardContent>
@@ -41,20 +28,24 @@ const CourseTable = ({ data, columnList }: {
                                 </TableHead>
                             ))
                         }
-                        <TableHead>Actions</TableHead>
+                        <TableHead>
+                            Actions
+                        </TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     {
-                        pagination.results.map((course, index) => (
-                            <TableRow key={course.id}>
-                                <TableCell>{course.name}</TableCell>
-                                <TableCell>{course.created_at}</TableCell>
-                                <TableCell>{course.price}</TableCell>
-                                <TableCell>{course.offer}</TableCell>
-                                <TableCell>{course.status}</TableCell>
+                        pagination.results.map((item, index) => (
+                            <TableRow key={index}>
                                 <TableCell>
-                                    <CourseAction courseid={course.id} removeCourse={removeCourse} />
+                                    {item.name}
+                                </TableCell>
+                                <TableCell>
+                                    <Link href={`/dashboard/${user?.username}/study/${item.id}`}>
+                                        <Button>
+                                            Studey
+                                        </Button>
+                                    </Link>
                                 </TableCell>
                             </TableRow>
                         ))
@@ -82,4 +73,4 @@ const CourseTable = ({ data, columnList }: {
     )
 }
 
-export default CourseTable
+export default PurchasedCourseTable

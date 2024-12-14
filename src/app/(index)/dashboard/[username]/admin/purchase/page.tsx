@@ -1,26 +1,11 @@
 import { getCookies } from "@/server/action"
 import axios from "axios"
 import * as React from "react"
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Check, X } from "lucide-react"
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import PurchaseTable from "./PurchaseTable"
+import { PaginationType, TransactionType } from "@/types"
 
-type RecordType = {
-    id: string
-    course: string
-    user: string
-    amount: number
-    razorpay_order_id: string
-    is_paid: boolean
-    created_at: string
-}
+
 
 const PurchasePage = async () => {
     const { access_token } = await getCookies(['access_token'])
@@ -30,7 +15,7 @@ const PurchasePage = async () => {
             'Authorization': `Bearer ${access_token}`
         }
     })
-    const data: RecordType[] = response.data
+    const data: PaginationType<TransactionType> = response.data
 
     const columnsList = [
         "Course",
@@ -55,49 +40,7 @@ const PurchasePage = async () => {
                     </div>
                 </div>
             </CardHeader>
-            <CardContent>
-                <div className="rounded-md border">
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                {
-                                    columnsList.map(column => {
-                                        return <TableHead key={column}>
-                                            {column}
-                                        </TableHead>
-                                    })
-                                }
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {
-                                data.map((item, index) => {
-                                    return <TableRow key={index}>
-                                        <TableCell>
-                                            {item.course}
-                                        </TableCell>
-                                        <TableCell>
-                                            {item.user}
-                                        </TableCell>
-                                        <TableCell>
-                                            {item.amount}
-                                        </TableCell>
-                                        <TableCell>
-                                            {item.razorpay_order_id}
-                                        </TableCell>
-                                        <TableCell>
-                                            {item.is_paid ? <Check /> : <X />}
-                                        </TableCell>
-                                        <TableCell>
-                                            {item.created_at}
-                                        </TableCell>
-                                    </TableRow>
-                                })
-                            }
-                        </TableBody>
-                    </Table>
-                </div>
-            </CardContent>
+            <PurchaseTable data={data} columnList={columnsList} />
         </Card>
     </div>
 }

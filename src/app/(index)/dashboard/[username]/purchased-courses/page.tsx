@@ -1,10 +1,9 @@
 import { getCookies } from "@/server/action"
 import * as React from "react"
-import { ListCourseDashboardType } from "@/types"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Link } from "next-view-transitions";
-import { Button } from "@/components/ui/button";
+import { ListCourseDashboardType, PaginationType } from "@/types"
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import axios from "axios";
+import PurchasedCourseTable from "./PurchasedCourseTable";
 
 const PurchasedCoursesPage = async () => {
     const { access_token, user } = await getCookies(['access_token', 'user'])
@@ -13,9 +12,7 @@ const PurchasedCoursesPage = async () => {
             Authorization: 'Bearer ' + access_token
         }
     })
-    const data: ListCourseDashboardType[] = response.data
-
-    const username = user ? JSON.parse(user).username : undefined
+    const data: PaginationType<ListCourseDashboardType> = response.data
 
     return <div className="w-full p-4">
         <Card>
@@ -31,24 +28,7 @@ const PurchasedCoursesPage = async () => {
                     </div>
                 </div>
             </CardHeader>
-            <CardContent className="flex items-center justify-center gap-4 flex-wrap">
-                {
-                    data.map((course, index) => {
-                        return <Card key={index} className="w-full max-w-xs">
-                            <CardHeader className="space-y-2">
-                                <p>
-                                    {course.name}
-                                </p>
-                                <Link href={`/dashboard/${username}/study/${course.id}`} className="w-full">
-                                    <Button className="w-full">
-                                        Study
-                                    </Button>
-                                </Link>
-                            </CardHeader>
-                        </Card>
-                    })
-                }
-            </CardContent>
+            <PurchasedCourseTable data={data} columnList={['Course']} />
         </Card>
     </div>
 }

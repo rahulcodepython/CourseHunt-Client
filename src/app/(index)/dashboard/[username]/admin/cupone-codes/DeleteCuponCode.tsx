@@ -6,9 +6,10 @@ import axios from 'axios'
 import React from 'react'
 import { toast } from 'react-toastify'
 
-const DeleteCuponeCode = ({ access_token, id }: {
+const DeleteCuponeCode = ({ access_token, id, removeCuponeCode }: {
     access_token: string | undefined,
-    id: number
+    id: string,
+    removeCuponeCode: (id: string) => void
 }) => {
     const { mutate, mutationIsLoading, mutationIsError, mutationError, mutationData, mutationState } = useMutation();
 
@@ -19,6 +20,7 @@ const DeleteCuponeCode = ({ access_token, id }: {
                     toast.error(mutationError);
                 }
                 else {
+                    removeCuponeCode(id);
                     toast.success(mutationData.success);
                 }
             }
@@ -35,7 +37,7 @@ const DeleteCuponeCode = ({ access_token, id }: {
 }
 
 
-const deleteCouponCode = async (access_token: string | undefined, id: number) => {
+const deleteCouponCode = async (access_token: string | undefined, id: string) => {
     const options = {
         url: `${process.env.BASE_API_URL}/transactions/edit-coupon-code/${id}/`,
         headers: {

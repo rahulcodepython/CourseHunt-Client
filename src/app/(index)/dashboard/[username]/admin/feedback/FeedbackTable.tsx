@@ -1,32 +1,36 @@
 "use client"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import React from 'react'
-import CourseAction from './CourseAction'
-import { ListCourseAdminDashboardType, PaginationType } from '@/types'
+import { FeedbackType, PaginationType } from '@/types'
 import usePagination from '@/hooks/usePagination'
-import {
-    Pagination,
-    PaginationContent,
-    PaginationEllipsis,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious,
-} from "@/components/ui/pagination"
 import { CardContent, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useAuthStore } from '@/context/AuthStore'
+import { Check, StarIcon, X } from 'lucide-react'
+import DeleteFeedback from './DeleteFeedback'
 
-const CourseTable = ({ data, columnList }: {
-    data: PaginationType<ListCourseAdminDashboardType>
+const FeedbackTable = ({ data, columnList }: {
+    data: PaginationType<FeedbackType>
     columnList: string[]
 }) => {
-    const pagination = usePagination<ListCourseAdminDashboardType>(data)
+    const pagination = usePagination<FeedbackType>(data)
     const accessToken = useAuthStore(state => state.accessToken)
 
-    const removeCourse = (courseid: string) => {
-        pagination.removeData(courseid)
+    const truncate = (str: string) => {
+        return str.length > 50 ? str.substring(0, 50) + '...' : str
+    }
+
+    const ratingStart = (rating: number) => {
+        return <div className="flex gap-1">
+            {
+                Array.from({ length: 5 }).map((_, index) => (
+                    <StarIcon
+                        key={index}
+                        className={`w-5 h-5 ${rating > index ? "fill-primary" : "fill-muted stroke-muted-foreground"}`}
+                    />
+                ))
+            }
+        </div>
     }
 
     return (
@@ -41,20 +45,26 @@ const CourseTable = ({ data, columnList }: {
                                 </TableHead>
                             ))
                         }
-                        <TableHead>Actions</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     {
-                        pagination.results.map((course, index) => (
-                            <TableRow key={course.id}>
-                                <TableCell>{course.name}</TableCell>
-                                <TableCell>{course.created_at}</TableCell>
-                                <TableCell>{course.price}</TableCell>
-                                <TableCell>{course.offer}</TableCell>
-                                <TableCell>{course.status}</TableCell>
+                        pagination.results.map((item, index) => (
+                            <TableRow key={index}>
                                 <TableCell>
-                                    <CourseAction courseid={course.id} removeCourse={removeCourse} />
+                                    {item.user}
+                                </TableCell>
+                                <TableCell>
+                                    {item.created_at}
+                                </TableCell>
+                                <TableCell>
+                                    {(item.feedback)}
+                                </TableCell>
+                                <TableCell>
+                                    {ratingStart(item.rating)}
+                                </TableCell>
+                                <TableCell>
+                                    <DeleteFeedback feedbackId={item.id} removeFeedback={pagination.removeData} />
                                 </TableCell>
                             </TableRow>
                         ))
@@ -82,4 +92,4 @@ const CourseTable = ({ data, columnList }: {
     )
 }
 
-export default CourseTable
+export default FeedbackTable
