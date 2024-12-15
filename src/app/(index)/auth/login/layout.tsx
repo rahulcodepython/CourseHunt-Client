@@ -6,9 +6,8 @@ import {
     CardHeader,
 } from '@/components/ui/card';
 import { Link } from 'next-view-transitions';
-import { GitHubLogoIcon } from '@radix-ui/react-icons';
-import { Chrome } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import GithubLogin from '../GithubLogin';
+import GoogleLogin from '../GoogleLogin';
 
 const LoginLayout = ({ children }: { children: React.ReactNode }) => {
     return <main className="flex items-center justify-center w-screen h-screen">
@@ -30,14 +29,8 @@ const LoginLayout = ({ children }: { children: React.ReactNode }) => {
                     <hr className="border-gray-500" />
                 </div>
                 <div className="flex flex-col gap-2 w-full">
-                    <Button variant="outline" className="w-full">
-                        <GitHubLogoIcon className="mr-2 h-4 w-4" />
-                        Sign up with GitHub
-                    </Button>
-                    <Button variant="outline" className="w-full">
-                        <Chrome className="mr-2 h-4 w-4" />
-                        Sign up with Google
-                    </Button>
+                    <GithubLogin />
+                    <GoogleLogin />
                 </div>
                 <div className="text-sm flex justify-between items-center w-full">
                     <p>If you {`don't`} have an account...</p>

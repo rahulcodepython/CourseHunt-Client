@@ -37,16 +37,11 @@ const AuthNavSection = (
 }
 
 const UnAuthenticatedView: React.FC = () => {
-    return <div className="flex items-center gap-4">
-        <Link href={'/auth/login'} prefetch={false}>
-            <Button variant="outline" size="sm">
-                Sign in
-            </Button>
-        </Link>
-        <Link href={'/auth/register'} prefetch={false}>
-            <Button size="sm">Sign up</Button>
-        </Link>
-    </div>
+    return <Link href={'/auth/login'} prefetch={false}>
+        <Button variant="outline" size="sm">
+            Sign in
+        </Button>
+    </Link>
 }
 
 export default AuthNavSection;

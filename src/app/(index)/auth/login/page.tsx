@@ -119,9 +119,9 @@ const loginUser = async (data: InitialLoginValuesType) => {
     };
 
     const response = await axios.request(options);
-    setCookie('access_token', response.data.access, response.data.access ? (jwtDecode(response.data.access)?.exp ?? 0) - Math.floor(Date.now() / 1000) : 0);
-    setCookie('refresh_token', response.data.refresh, response.data.refresh ? (jwtDecode(response.data.refresh)?.exp ?? 0) - Math.floor(Date.now() / 1000) : 0);
-    setCookie('user', JSON.stringify(response.data.user));
+    await setCookie('access_token', response.data.access, response.data.access ? (jwtDecode(response.data.access)?.exp ?? 0) - Math.floor(Date.now() / 1000) : 0);
+    await setCookie('refresh_token', response.data.refresh, response.data.refresh ? (jwtDecode(response.data.refresh)?.exp ?? 0) - Math.floor(Date.now() / 1000) : 0);
+    await setCookie('user', JSON.stringify(response.data.user));
     return response;
 }
 

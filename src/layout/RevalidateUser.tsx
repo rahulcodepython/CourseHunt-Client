@@ -31,7 +31,7 @@ const RevalidateUser = ({
         setLoading(true);
         const handler = async (): Promise<void> => {
             try {
-                if (!accessToken && !refreshToken) {
+                if (!accessToken || !refreshToken) {
                     throw new Error('Invalid Token');
                 }
 
@@ -47,7 +47,7 @@ const RevalidateUser = ({
                         const response = await refreshAccessToken(refreshToken);
 
                         if (response?.access && response?.refresh && response?.user) {
-                            accessToken && refreshToken && loggedInUser(response.access, refreshToken, response.user)
+                            loggedInUser(response.access, refreshToken, response.user)
                             return;
                         }
                         else {
@@ -56,19 +56,20 @@ const RevalidateUser = ({
                     }
                 }
 
-                if (user === undefined && accessToken) {
+                if (user === undefined) {
                     const response = await getUser(accessToken);
 
                     if (response) {
-                        accessToken && refreshToken && loggedInUser(accessToken, refreshToken, response)
-                        setCookie('user', JSON.stringify(response));
+                        loggedInUser(accessToken, refreshToken, response)
+                        await setCookie('user', JSON.stringify(response));
                         return;
                     }
                     else {
                         throw new Error('Invalid User');
                     }
+                } else {
+                    loggedInUser(accessToken, refreshToken, JSON.parse(user));
                 }
-                accessToken && refreshToken && user && loggedInUser(accessToken, refreshToken, JSON.parse(user));
             } catch (error) {
                 removeCookie(['access_token', 'refresh_token', 'user']);
                 redirect && router.push('/auth/login');
@@ -108,9 +109,9 @@ const refreshAccessToken = async (token: string) => {
 
     try {
         const response = await axios.request(options);
-        setCookie('access_token', response.data.access, response.data.access ? (jwtDecode(response.data.access)?.exp ?? 0) - Math.floor(Date.now() / 1000) : 0);
-        setCookie('refresh_token', response.data.refresh, response.data.refresh ? (jwtDecode(response.data.refresh)?.exp ?? 0) - Math.floor(Date.now() / 1000) : 0);
-        setCookie('user', JSON.stringify(response.data.user));
+        await setCookie('access_token', response.data.access, response.data.access ? (jwtDecode(response.data.access)?.exp ?? 0) - Math.floor(Date.now() / 1000) : 0);
+        await setCookie('refresh_token', response.data.refresh, response.data.refresh ? (jwtDecode(response.data.refresh)?.exp ?? 0) - Math.floor(Date.now() / 1000) : 0);
+        await setCookie('user', JSON.stringify(response.data.user));
         return response.data;
     } catch (error) {
     }
