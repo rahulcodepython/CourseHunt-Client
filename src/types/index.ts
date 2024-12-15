@@ -1,8 +1,3 @@
-export interface InitialLoginValuesType {
-    email: string
-    password: string
-}
-
 export interface InitialRegisterValuesType {
     first_name: string
     last_name: string
