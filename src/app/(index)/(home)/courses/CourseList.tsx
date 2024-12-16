@@ -15,6 +15,7 @@ const CourseList = ({
     data: PaginationType<ListCourseType>
 }) => {
     const pagination = usePagination<ListCourseType>(data)
+    const isAuthenticated = useAuthStore(state => state.isAuthenticated)
     const accessToken = useAuthStore(state => state.accessToken)
 
     return (
@@ -66,7 +67,7 @@ const CourseList = ({
             }
             {
                 pagination.is_next && <div className="w-full flex items-center justify-center">
-                    <Button onClick={() => pagination.fetchNext(pagination.nextPageUrl, true, accessToken)}>
+                    <Button onClick={() => pagination.fetchNext(pagination.nextPageUrl, isAuthenticated, accessToken)}>
                         Load More
                     </Button>
                 </div>

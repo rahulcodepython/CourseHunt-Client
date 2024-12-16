@@ -1,15 +1,26 @@
-FROM node:latest
+# Build Stage
+FROM node:latest AS build
 
-WORKDIR /frontend
+WORKDIR /app
 
-COPY package*.json ./
+COPY package.json package-lock.json ./
 
-RUN npm install
+RUN npm install --force
 
 COPY . .
 
 RUN npm run build
 
-EXPOSE 3000
+# Production Stage
+FROM node:23.4.0-alpine AS production
 
-CMD ["npm", "run", "start"]
+WORKDIR /app
+
+# Copy required files from build stage
+COPY --from=build /app/.next ./.next
+COPY --from=build /app/public ./public
+COPY --from=build /app/package.json .
+COPY --from=build /app/package-lock.json .
+
+# Reinstall production dependencies
+RUN npm ci --only=production --force
