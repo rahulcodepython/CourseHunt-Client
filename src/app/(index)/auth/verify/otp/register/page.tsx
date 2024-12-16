@@ -14,7 +14,7 @@ import React from 'react'
 import { toast } from 'react-toastify'
 import Countdown, { zeroPad } from 'react-countdown';
 
-const VerifyOTPLoginPage = () => {
+const VerifyOTPRegisterPage = () => {
     const loggedInUser = useAuthStore((state) => state.LoggedInUser);
     const router = useRouter();
 
@@ -30,7 +30,7 @@ const VerifyOTPLoginPage = () => {
 
         const uid = value.slice(0, 4);
         const token = value.slice(4, 8);
-        await mutate(async () => loginUser(uid, token));
+        await mutate(async () => registerUser(uid, token));
     };
 
     React.useEffect(() => {
@@ -85,7 +85,7 @@ const VerifyOTPLoginPage = () => {
                     </InputOTP>
                 </CardContent>
                 <CardFooter className="flex flex-col gap-2">
-                    <ResendLoginOTPComponent />
+                    <ResendRegisterOTPComponent />
                     {
                         mutationIsLoading ? <Button disabled className="gap-2 w-full">
                             <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
@@ -101,14 +101,14 @@ const VerifyOTPLoginPage = () => {
     )
 }
 
-const ResendLoginOTPComponent = () => {
+const ResendRegisterOTPComponent = () => {
     const { mutate, mutationIsLoading, mutationIsError, mutationError, mutationData, mutationState } = useMutation();
 
     const [allowResend, setAllowResend] = React.useState<boolean>(false);
 
     const handleResendLoginOTP = async () => {
         const email = localStorage.getItem('resend_otp_email_login');
-        email && !mutationIsLoading && await mutate(async () => resendLoginOTP(email));
+        email && !mutationIsLoading && await mutate(async () => resendRegisterOTP(email));
 
     }
 
@@ -163,9 +163,9 @@ const TimerComponent = ({ minutes, seconds, completed }: {
     }
 }
 
-const resendLoginOTP = async (email: string) => {
+const resendRegisterOTP = async (email: string) => {
     const options = {
-        url: `${process.env.BASE_API_URL}/auth/users/login/email/resend/`,
+        url: `${process.env.BASE_API_URL}/auth/users/activate/email/resend/`,
         method: 'POST',
         data: {
             email: email
@@ -175,9 +175,9 @@ const resendLoginOTP = async (email: string) => {
     return await axios.request(options);
 }
 
-const loginUser = async (uid: string, token: string) => {
+const registerUser = async (uid: string, token: string) => {
     const options = {
-        url: `${process.env.BASE_API_URL}/auth/users/jwt/create/`,
+        url: `${process.env.BASE_API_URL}/auth/users/activate/`,
         method: 'POST',
         data: {
             uid: uid,
@@ -193,4 +193,4 @@ const loginUser = async (uid: string, token: string) => {
     return response;
 }
 
-export default VerifyOTPLoginPage;
+export default VerifyOTPRegisterPage;

@@ -9,9 +9,9 @@ const RegisterLayout = ({ children }: { children: React.ReactNode }) => {
         <Card className="max-w-xl w-full">
             <CardHeader>
                 <CardDescription>
-                    <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                    <span className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                         Sign up to your account
-                    </h1>
+                    </span>
                 </CardDescription>
             </CardHeader>
             <CardContent>

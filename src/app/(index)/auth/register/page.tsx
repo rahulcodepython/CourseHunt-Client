@@ -5,8 +5,16 @@ import { Button } from "@/components/ui/button"
 import { SendHorizonal } from "lucide-react"
 import { InitialRegisterValuesType } from "@/types"
 import { useForm } from 'react-hook-form';
+import { useRouter } from "next/navigation"
+import useMutation from "@/hooks/useMutation"
+import React from "react"
+import { toast } from "react-toastify"
+import axios from "axios"
+import { ReloadIcon } from "@radix-ui/react-icons"
 
 const RegisterPage = () => {
+    const [email, setEmail] = React.useState<string>("");
+
     const initialValues: InitialRegisterValuesType = {
         first_name: '',
         last_name: '',
@@ -19,9 +27,30 @@ const RegisterPage = () => {
         defaultValues: initialValues,
     });
 
-    const onSubmit = (values: InitialRegisterValuesType) => {
-        console.log(values);
+    const router = useRouter();
+
+    const { mutate, mutationIsLoading, mutationIsError, mutationError, mutationData, mutationState } = useMutation();
+
+    const onSubmit = async (data: InitialRegisterValuesType) => {
+        setEmail(data.email);
+        await mutate(async () => registerUser(data));
     };
+
+    React.useEffect(() => {
+        const handler = async () => {
+            if (mutationState === 'done') {
+                if (mutationIsError) {
+                    toast.error(mutationError);
+                }
+                else {
+                    toast.success(mutationData.success);
+                    localStorage.setItem('resend_otp_email_login', email);
+                    router.push('/auth/verify/otp/register');
+                }
+            }
+        }
+        handler();
+    }, [mutationState])
 
     return <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
         <div className="flex flex-col gap-4">
@@ -102,11 +131,31 @@ const RegisterPage = () => {
                 </span>
             </div>
         </div>
-        <Button type="submit" className="gap-2">
-            <SendHorizonal className="h-4 w-4" />
-            <span>Register</span>
-        </Button>
+        {
+            mutationIsLoading ? <Button disabled className="gap-2">
+                <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                Please wait
+            </Button> : <Button type="submit" className="gap-2">
+                <SendHorizonal className="h-4 w-4" />
+                <span>Register</span>
+            </Button>
+        }
     </form>
+}
+
+const registerUser = async (data: InitialRegisterValuesType) => {
+    const options = {
+        url: `${process.env.BASE_API_URL}/auth/users/me/`,
+        method: 'POST',
+        data: {
+            first_name: data.first_name,
+            last_name: data.last_name,
+            email: data.email,
+            password: data.password,
+        }
+    };
+
+    return await axios.request(options);
 }
 
 export default RegisterPage
