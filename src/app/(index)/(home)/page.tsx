@@ -1,11 +1,8 @@
 import React from 'react';
 
 const Home = () => {
-    return <section>
+    return <section className='flex flex-col items-center justify-center h-screen w-screen'>
         <h1>Home</h1>
-        <p>
-            This is a demo course selling website.
-        </p>
     </section>
 }
 export default Home;
