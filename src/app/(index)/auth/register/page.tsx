@@ -2,7 +2,7 @@
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Eye, EyeClosed, SendHorizonal } from "lucide-react"
+import { Check, Eye, EyeClosed, SendHorizonal, X } from "lucide-react"
 import { InitialRegisterValuesType } from "@/types"
 import { useForm } from 'react-hook-form';
 import { useRouter } from "next/navigation"
@@ -14,6 +14,7 @@ import { ReloadIcon } from "@radix-ui/react-icons"
 
 const RegisterPage = () => {
     const [email, setEmail] = React.useState<string>("");
+    const [emailIsValid, setEmailIsValid] = React.useState<boolean>(true);
     const [togglePassword, setTogglePassword] = React.useState<boolean>(true);
     const [toggleConfirmPassword, setToggleConfirmPassword] = React.useState<boolean>(true);
 
@@ -25,18 +26,33 @@ const RegisterPage = () => {
         confirmpassword: '',
     }
 
-    const { register, handleSubmit, formState: { errors }, reset } = useForm<InitialRegisterValuesType>({
+    const { register, handleSubmit, formState: { errors }, reset, watch } = useForm<InitialRegisterValuesType>({
         defaultValues: initialValues,
     });
 
     const router = useRouter();
 
+    const emailValue = watch('email');
+
     const { mutate, mutationIsLoading, mutationIsError, mutationError, mutationData, mutationState } = useMutation();
 
     const onSubmit = async (data: InitialRegisterValuesType) => {
+        if (data.password !== data.confirmpassword) {
+            toast.error('Password and confirm password does not match');
+            return;
+        }
         setEmail(data.email);
         await mutate(async () => registerUser(data));
     };
+
+    const checkEmailAvailability = async (email: string) => {
+        try {
+            await axios.post(`${process.env.BASE_API_URL}/auth/users/check-email/`, { email });
+            setEmailIsValid(true);
+        } catch (error) {
+            setEmailIsValid(false);
+        }
+    }
 
     React.useEffect(() => {
         const handler = async () => {
@@ -90,14 +106,25 @@ const RegisterPage = () => {
                 <Label htmlFor="email" className="uppercase text-gray-600 text-xs">
                     Email
                 </Label>
-                <Input
-                    type="email"
-                    {...register('email', { required: 'Email is required' })}
-                    placeholder="Enter your email"
-                    id="email"
-                    className="w-full"
-                    autoComplete="email"
-                />
+                <div className="flex items-center gap-2">
+                    <Input
+                        type="email"
+                        {...register('email', { required: 'Email is required' })}
+                        placeholder="Enter your email"
+                        id="email"
+                        className="w-full"
+                        autoComplete="email"
+                        onBlur={(e) => checkEmailAvailability(e.target.value)}
+                    />
+                    {
+                        emailIsValid ?
+                            <Check className="h-4 w-4 text-green-500" />
+                            : <X className="h-4 w-4 text-red-500" />
+                    }
+                </div>
+                {
+                    !emailIsValid && <span className="text-red-500 text-xs">Email is already taken</span>
+                }
                 {errors.email && <span className="text-red-500">{errors.email.message}</span>}
             </div>
             <div className="flex flex-col gap-2">
