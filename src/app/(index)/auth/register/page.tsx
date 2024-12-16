@@ -2,7 +2,7 @@
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { SendHorizonal } from "lucide-react"
+import { Eye, EyeClosed, SendHorizonal } from "lucide-react"
 import { InitialRegisterValuesType } from "@/types"
 import { useForm } from 'react-hook-form';
 import { useRouter } from "next/navigation"
@@ -14,6 +14,8 @@ import { ReloadIcon } from "@radix-ui/react-icons"
 
 const RegisterPage = () => {
     const [email, setEmail] = React.useState<string>("");
+    const [togglePassword, setTogglePassword] = React.useState<boolean>(true);
+    const [toggleConfirmPassword, setToggleConfirmPassword] = React.useState<boolean>(true);
 
     const initialValues: InitialRegisterValuesType = {
         first_name: '',
@@ -23,7 +25,7 @@ const RegisterPage = () => {
         confirmpassword: '',
     }
 
-    const { register, handleSubmit, formState: { errors } } = useForm<InitialRegisterValuesType>({
+    const { register, handleSubmit, formState: { errors }, reset } = useForm<InitialRegisterValuesType>({
         defaultValues: initialValues,
     });
 
@@ -43,6 +45,7 @@ const RegisterPage = () => {
                     toast.error(mutationError);
                 }
                 else {
+                    reset(initialValues);
                     toast.success(mutationData.success);
                     localStorage.setItem('resend_otp_email_login', email);
                     router.push('/auth/verify/otp/register');
@@ -101,34 +104,43 @@ const RegisterPage = () => {
                 <Label htmlFor="password" className="uppercase text-gray-600 text-xs">
                     Password
                 </Label>
-                <Input
-                    type="password"
-                    {...register('password', { required: 'Password is required' })}
-                    placeholder="Enter your password"
-                    id="password"
-                    className="w-full"
-                    autoComplete="password"
-                />
+                <div className="flex items-center gap-2">
+                    <Input
+                        type={togglePassword ? "password" : "text"}
+                        {...register('password', { required: 'Password is required' })}
+                        placeholder="Enter your password"
+                        id="password"
+                        className="w-full"
+                        autoComplete="password"
+                    />
+                    {
+                        togglePassword ?
+                            <EyeClosed className="h-4 w-4 cursor-pointer" onClick={() => setTogglePassword(pre => !pre)} />
+                            : <Eye className="h-4 w-4 cursor-pointer" onClick={() => setTogglePassword(pre => !pre)} />
+                    }
+                </div>
                 {errors.password && <span className="text-red-500">{errors.password.message}</span>}
             </div>
             <div className="flex flex-col gap-2">
                 <Label htmlFor="confirmpassword" className="uppercase text-gray-600 text-xs">
                     Confirm Password
                 </Label>
-                <Input
-                    type="password"
-                    {...register('confirmpassword', { required: 'Confirm password is required' })}
-                    placeholder="Enter your password again"
-                    id="confirmpassword"
-                    className="w-full"
-                    autoComplete="password"
-                />
+                <div className="flex items-center gap-2">
+                    <Input
+                        type={toggleConfirmPassword ? "password" : "text"}
+                        {...register('confirmpassword', { required: 'Confirm password is required' })}
+                        placeholder="Enter your password again"
+                        id="confirmpassword"
+                        className="w-full"
+                        autoComplete="password"
+                    />
+                    {
+                        toggleConfirmPassword ?
+                            <EyeClosed className="h-4 w-4 cursor-pointer" onClick={() => setToggleConfirmPassword(pre => !pre)} />
+                            : <Eye className="h-4 w-4 cursor-pointer" onClick={() => setToggleConfirmPassword(pre => !pre)} />
+                    }
+                </div>
                 {errors.confirmpassword && <span className="text-red-500">{errors.confirmpassword.message}</span>}
-            </div>
-            <div className="text-right">
-                <span className="text-sm font-semibold text-gray-700 hover:text-gray-500 focus:text-gray-500 hover:underline cursor-pointer">
-                    Forgot Password?
-                </span>
             </div>
         </div>
         {

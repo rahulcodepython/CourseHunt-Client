@@ -28,6 +28,7 @@ const LoginPage: React.FC = () => {
                     toast.error(mutationError);
                 }
                 else {
+                    setEmail("");
                     toast.success(mutationData.success);
                     localStorage.setItem('resend_otp_email_login', email);
                     router.push('/auth/verify/otp/login');
@@ -54,11 +55,6 @@ const LoginPage: React.FC = () => {
                     autoComplete="email"
                     required
                 />
-            </div>
-            <div className="text-right">
-                <span className="text-sm font-semibold text-gray-700 hover:text-gray-500 focus:text-gray-500 hover:underline cursor-pointer">
-                    Forgot Password?
-                </span>
             </div>
         </div>
         {

@@ -7,7 +7,7 @@ import useMutation from '@/hooks/useMutation'
 import { ReloadIcon } from '@radix-ui/react-icons'
 import axios from 'axios'
 import { jwtDecode } from 'jwt-decode'
-import { SendHorizonal } from 'lucide-react'
+import { Eye, EyeClosed, SendHorizonal } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import React from 'react'
 import { toast } from 'react-toastify'
@@ -23,8 +23,11 @@ const ResetPasswordPage = () => {
     const { mutate, mutationIsLoading, mutationIsError, mutationError, mutationData, mutationState } = useMutation();
 
     const [oldPassword, setOldPassword] = React.useState<string>("")
+    const [toggleOldPassword, setToggleOldPassword] = React.useState<boolean>(true)
     const [newPassword, setNewPassword] = React.useState<string>("")
+    const [toggleNewPassword, setToggleNewPassword] = React.useState<boolean>(true)
     const [rewriteNewPassword, setRewriteNewPassword] = React.useState<string>("")
+    const [toggleRewriteNewPassword, setToggleRewriteNewPassword] = React.useState<boolean>(true)
     const [value, setValue] = React.useState<string>("")
 
     const onSubmit = async () => {
@@ -50,6 +53,13 @@ const ResetPasswordPage = () => {
                     toast.error(mutationError);
                 }
                 else {
+                    setOldPassword("");
+                    setNewPassword("");
+                    setRewriteNewPassword("");
+                    setValue("");
+                    setToggleNewPassword(true);
+                    setToggleOldPassword(true);
+                    setToggleRewriteNewPassword(true);
                     toast.success(mutationData.success);
                 }
             }
@@ -68,15 +78,48 @@ const ResetPasswordPage = () => {
                 <CardContent className='flex flex-col gap-4 items-center'>
                     <div className='w-full'>
                         <Label>Old Password</Label>
-                        <Input value={oldPassword} onChange={e => setOldPassword(e.target.value)} placeholder='Enter your old password' />
+                        <div className='flex items-center gap-2'>
+                            <Input
+                                type={toggleOldPassword ? 'password' : 'text'}
+                                value={oldPassword}
+                                onChange={e => setOldPassword(e.target.value)}
+                                placeholder='Enter your old password' />
+                            {
+                                toggleOldPassword ?
+                                    <EyeClosed onClick={() => setToggleOldPassword(pre => !pre)} className='h-4 w-4 cursor-pointer' /> :
+                                    <Eye onClick={() => setToggleOldPassword(pre => !pre)} className='h-4 w-4 cursor-pointer' />
+                            }
+                        </div>
                     </div>
                     <div className='w-full'>
                         <Label>New Password</Label>
-                        <Input value={newPassword} onChange={e => setNewPassword(e.target.value)} placeholder='Enter your new password' />
+                        <div className='flex items-center gap-2'>
+                            <Input
+                                type={toggleNewPassword ? 'password' : 'text'}
+                                value={newPassword}
+                                onChange={e => setNewPassword(e.target.value)}
+                                placeholder='Enter your new password' />
+                            {
+                                toggleNewPassword ?
+                                    <EyeClosed onClick={() => setToggleNewPassword(pre => !pre)} className='h-4 w-4 cursor-pointer' /> :
+                                    <Eye onClick={() => setToggleNewPassword(pre => !pre)} className='h-4 w-4 cursor-pointer' />
+                            }
+                        </div>
                     </div>
                     <div className='w-full'>
                         <Label>Rewrite New Password</Label>
-                        <Input value={rewriteNewPassword} onChange={e => setRewriteNewPassword(e.target.value)} placeholder='Enter your new password again' />
+                        <div className='flex items-center gap-2'>
+                            <Input
+                                type={toggleRewriteNewPassword ? 'password' : 'text'}
+                                value={rewriteNewPassword}
+                                onChange={e => setRewriteNewPassword(e.target.value)}
+                                placeholder='Enter your new password again' />
+                            {
+                                toggleRewriteNewPassword ?
+                                    <EyeClosed onClick={() => setToggleRewriteNewPassword(pre => !pre)} className='h-4 w-4 cursor-pointer' /> :
+                                    <Eye onClick={() => setToggleRewriteNewPassword(pre => !pre)} className='h-4 w-4 cursor-pointer' />
+                            }
+                        </div>
                     </div>
                     <div className='w-full'>
                         <Label>Verification Code</Label>

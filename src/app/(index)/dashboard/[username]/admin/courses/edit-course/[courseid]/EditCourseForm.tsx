@@ -15,6 +15,8 @@ import React from "react";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { SendHorizonal } from "lucide-react";
 import axios from "axios";
+import { useAuthStore } from "@/context/AuthStore";
+import { useRouter } from "next/navigation";
 
 // Define Zod schema for validation
 const courseSchema = z.object({
@@ -46,6 +48,8 @@ const EditCourseForm = ({
         resolver: zodResolver(courseSchema),
         defaultValues: defaultValues,
     });
+    const user = useAuthStore(state => state.user);
+    const router = useRouter();
 
     const { mutationIsLoading, mutate, mutationData, mutationIsError, mutationState, mutationError } = useMutation();
 
@@ -59,6 +63,8 @@ const EditCourseForm = ({
                 toast.error(mutationError);
             }
             else {
+                form.reset();
+                router.push(`/dashboard/${user?.username}/admin/courses`);
                 toast.success(mutationData.success);
             }
         }

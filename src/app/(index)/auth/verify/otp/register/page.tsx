@@ -40,6 +40,7 @@ const VerifyOTPRegisterPage = () => {
                     toast.error(mutationError);
                 }
                 else {
+                    setValue("");
                     loggedInUser(mutationData.access, mutationData.refresh, mutationData.user);
                     router.push('/');
                 }

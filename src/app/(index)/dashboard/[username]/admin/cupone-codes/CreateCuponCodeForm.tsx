@@ -13,6 +13,8 @@ import { useAuthStore } from "@/context/AuthStore";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { ListCuponeCodeType } from "@/types";
 import axios from "axios";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import PButton from "@/components/PButton";
 
 const formSchema = z.object({
     code: z.string().min(1),
@@ -45,14 +47,35 @@ const CreateCouponCodeForm = ({ defaultData, edit, addData, updateData }: {
     updateData?: (id: string, data: ListCuponeCodeType) => void
     addData?: (data: ListCuponeCodeType) => void
 }) => {
+    const [isOpen, setIsOpen] = React.useState(false);
+
     return (
-        edit ? <EditCouponCodeComponent defaultData={defaultData} updateData={updateData} />
-            : <CreateCouponCodeComponent addData={addData} />
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogTrigger>
+                <PButton>
+                    {edit ? 'Edit Cupon' : 'Add New Cupone'}
+                </PButton>
+            </DialogTrigger>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle className="text-xl">
+                        {edit ? 'Edit Cupon Code' : 'Create New Cupon Code'}
+                    </DialogTitle>
+                </DialogHeader>
+                <DialogContent>
+                    {
+                        edit ? <EditCouponCodeComponent defaultData={defaultData} updateData={updateData} setIsOpen={setIsOpen} />
+                            : <CreateCouponCodeComponent addData={addData} setIsOpen={setIsOpen} />
+                    }
+                </DialogContent>
+            </DialogContent>
+        </Dialog>
     );
 }
 
-const CreateCouponCodeComponent = ({ addData }: {
+const CreateCouponCodeComponent = ({ addData, setIsOpen }: {
     addData?: (data: ListCuponeCodeType) => void
+    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
     const accessToken = useAuthStore((state) => state.accessToken);
     const { mutate, mutationIsLoading, mutationIsError, mutationError, mutationData, mutationState } = useMutation();
@@ -68,6 +91,7 @@ const CreateCouponCodeComponent = ({ addData }: {
                     toast.error(mutationError);
                 }
                 else {
+                    setIsOpen(false);
                     addData && addData(mutationData);
                 }
             }
@@ -82,10 +106,12 @@ const CreateCouponCodeComponent = ({ addData }: {
 
 const EditCouponCodeComponent = ({
     defaultData,
-    updateData
+    updateData,
+    setIsOpen
 }: {
     defaultData: ListCuponeCodeType | undefined
     updateData?: (id: string, data: ListCuponeCodeType) => void
+    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
     const accessToken = useAuthStore((state) => state.accessToken);
     const { mutate, mutationIsLoading, mutationIsError, mutationError, mutationData, mutationState } = useMutation();
@@ -101,6 +127,7 @@ const EditCouponCodeComponent = ({
                     toast.error(mutationError);
                 }
                 else {
+                    setIsOpen(false);
                     updateData && updateData(mutationData.id, mutationData);
                 }
             }

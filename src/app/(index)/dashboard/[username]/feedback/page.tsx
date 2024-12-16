@@ -33,6 +33,9 @@ const FeedbackPage = () => {
                     toast.error(mutationError);
                 }
                 else {
+                    setRating(0);
+                    setRatingHover(0);
+                    setFeedback("");
                     toast.success(mutationData.success);
                 }
             }

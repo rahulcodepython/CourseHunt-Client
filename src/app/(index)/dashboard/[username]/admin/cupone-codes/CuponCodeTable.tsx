@@ -34,21 +34,7 @@ const CuponCodeTable = ({ data, columnList }: {
                     <CardDescription>View all Cupone Codes.</CardDescription>
                 </div>
                 <div className="flex items-center justify-end gap-4">
-                    <Dialog>
-                        <DialogTrigger>
-                            <PButton>
-                                Add New Cupone
-                            </PButton>
-                        </DialogTrigger>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle className="text-xl">Create New Cupon Code</DialogTitle>
-                                <DialogDescription>
-                                    <CreateCouponCodeForm addData={pagination.addData} />
-                                </DialogDescription>
-                            </DialogHeader>
-                        </DialogContent>
-                    </Dialog>
+                    <CreateCouponCodeForm addData={pagination.addData} />
                 </div>
             </CardHeader>
             <CardContent>
@@ -91,21 +77,8 @@ const CuponCodeTable = ({ data, columnList }: {
                                     </TableCell>
                                     <TableCell>
                                         <div className="flex items-center gap-4">
-                                            <Dialog>
-                                                <DialogTrigger>
-                                                    <PButton>
-                                                        Edit
-                                                    </PButton>
-                                                </DialogTrigger>
-                                                <DialogContent>
-                                                    <DialogHeader>
-                                                        <DialogTitle className="text-xl">Edit Cupon Code</DialogTitle>
-                                                    </DialogHeader>
-                                                    <DialogContent>
-                                                        <CreateCouponCodeForm defaultData={item} edit updateData={pagination.updateData} />
-                                                    </DialogContent>
-                                                </DialogContent>
-                                            </Dialog>
+                                            <CreateCouponCodeForm defaultData={item} edit updateData={pagination.updateData} />
+
                                             <DeleteCuponeCode id={item.id} access_token={accessToken} removeCuponeCode={pagination.removeData} />
                                         </div>
                                     </TableCell>
