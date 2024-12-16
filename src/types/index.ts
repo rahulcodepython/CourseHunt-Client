@@ -157,9 +157,6 @@ export interface CoursePriceResponseType {
 export interface PaginationType<T> {
     count: number,
     next: string,
-    previous: string,
-    current_page: number,
-    total_pages: number,
     results: T[]
 }
 

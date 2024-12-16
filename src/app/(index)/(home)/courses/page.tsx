@@ -5,14 +5,11 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Slider } from "@/components/ui/slider"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectItem } from "@/components/ui/select"
-import { Card, CardContent } from "@/components/ui/card"
-import Link from "next/link";
-import Image from "next/image";
 import { FilterIcon } from "lucide-react";
-import { ListCourseType } from "@/types";
-import EnrollButton from "./EnrollButton";
+import { ListCourseType, PaginationType } from "@/types";
 import axios from "axios";
 import { getCookies } from "@/server/action";
+import CourseList from "./CourseList";
 
 const Courses = async () => {
     const { access_token } = await getCookies(['access_token']);
@@ -22,7 +19,7 @@ const Courses = async () => {
             'Authorization': `Bearer ${access_token}`
         }
     } : {})
-    const data: ListCourseType[] = await response.data
+    const data: PaginationType<ListCourseType> = await response.data
 
     return <div className="flex flex-col min-h-[100dvh]">
         <section className="container w-full pt-12 md:pt-24 lg:pt-32 px-4 md:px-6 flex items-center gap-4 bg-background p-4 rounded-lg shadow-lg">
@@ -74,46 +71,7 @@ const Courses = async () => {
             </div>
         </section>
         <section className="container w-full py-6 md:py-12 lg:py-16 px-4 md:px-6 flex flex-col items-center justify-center">
-            <div className="grid lg:grid-cols-2 2xl:grid-cols-3 gap-4 w-full">
-                {
-                    data.map((item, i) => {
-                        return <div className="flex items-center justify-center w-full" key={i}>
-                            <Card className="w-full max-w-md">
-                                <Image width={200} height={200} src="/placeholder.svg" alt="Course thumbnail" className="rounded-t-lg object-cover w-full aspect-[2/1]" />
-                                <CardContent className="p-6 grid gap-6">
-                                    <div className="space-y-2">
-                                        <Link href={`/courses/${item.id}`} className="text-xl font-semibold hover:underline">
-                                            {item.name}
-                                        </Link>
-                                        <p className="text-muted-foreground">
-                                            {item.short_description}
-                                        </p>
-                                    </div>
-                                    <div className="grid grid-cols-2 gap-4 text-sm">
-                                        <div className="flex items-center gap-2">
-                                            <p className="font-medium">Price:</p>
-                                            <p className="text-xs">
-                                                {item.price}
-                                            </p>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <p className="font-medium">Published:</p>
-                                            <p className="text-xs">{item.created_at}</p>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <p className="font-medium">Duration:</p>
-                                            <p>{item.duration}</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center justify-between w-full">
-                                        <EnrollButton id={item.id} enrolled={item.enrolled} />
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </div>
-                    })
-                }
-            </div>
+            <CourseList data={data} />
         </section>
     </div>
 }
