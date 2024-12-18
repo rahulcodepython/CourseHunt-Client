@@ -32,8 +32,6 @@ const RegisterPage = () => {
 
     const router = useRouter();
 
-    const emailValue = watch('email');
-
     const { mutate, mutationIsLoading, mutationIsError, mutationError, mutationData, mutationState } = useMutation();
 
     const onSubmit = async (data: InitialRegisterValuesType) => {

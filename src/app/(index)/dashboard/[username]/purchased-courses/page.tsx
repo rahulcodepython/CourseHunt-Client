@@ -7,7 +7,7 @@ import PurchasedCourseTable from "./PurchasedCourseTable";
 
 const PurchasedCoursesPage = async () => {
     const { access_token } = await getCookies(['access_token'])
-    const response = await axios(`${process.env.BASE_API_URL}/course/purchased-courses/`, {
+    const response = await axios(`${process.env.BASE_API_URL_SERVER}/course/purchased-courses/`, {
         headers: {
             Authorization: 'Bearer ' + access_token
         }

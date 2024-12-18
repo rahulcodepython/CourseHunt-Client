@@ -14,7 +14,7 @@ import CourseList from "./CourseList";
 const Courses = async () => {
     const { access_token } = await getCookies(['access_token']);
 
-    const response = await axios(`${process.env.BASE_API_URL}/course/list-course/`, access_token ? {
+    const response = await axios(`${process.env.BASE_API_URL_SERVER}/course/list-course/`, access_token ? {
         headers: {
             'Authorization': `Bearer ${access_token}`
         }

@@ -8,7 +8,7 @@ import FeedbackTable from "./FeedbackTable"
 const FeedbackPage = async () => {
     const { access_token } = await getCookies(["access_token"])
 
-    const response = await axios.get(`${process.env.BASE_API_URL}/feedback/list/`, {
+    const response = await axios.get(`${process.env.BASE_API_URL_SERVER}/feedback/list/`, {
         headers: {
             Authorization: `Bearer ${access_token}`
         }

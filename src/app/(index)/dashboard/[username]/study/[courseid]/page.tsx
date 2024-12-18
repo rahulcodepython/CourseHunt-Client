@@ -13,7 +13,7 @@ const StudyPage = async ({ params }: { params: Promise<{ courseid: string | unde
 
     try {
         const response = await axios.request({
-            url: `${process.env.BASE_API_URL}/course/study-single-course/${courseid}/`,
+            url: `${process.env.BASE_API_URL_SERVER}/course/study-single-course/${courseid}/`,
             method: 'GET',
             headers: {
                 authorization: `Bearer ${access_token}`

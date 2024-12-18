@@ -9,7 +9,7 @@ import axios from "axios";
 
 const CoursesPage = async () => {
     const { access_token, user } = await getCookies(['access_token', 'user'])
-    const response = await axios.get(`${process.env.BASE_API_URL}/course/admin-list-course/`, {
+    const response = await axios.get(`${process.env.BASE_API_URL_SERVER}/course/admin-list-course/`, {
         headers: {
             Authorization: 'Bearer ' + access_token
         }

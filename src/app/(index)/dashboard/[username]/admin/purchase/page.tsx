@@ -5,12 +5,10 @@ import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/ca
 import PurchaseTable from "./PurchaseTable"
 import { PaginationType, TransactionType } from "@/types"
 
-
-
 const PurchasePage = async () => {
     const { access_token } = await getCookies(['access_token'])
 
-    const response = await axios.get(`${process.env.BASE_API_URL}/transactions/list-transactions/`, {
+    const response = await axios.get(`${process.env.BASE_API_URL_SERVER}/transactions/list-transactions/`, {
         headers: {
             'Authorization': `Bearer ${access_token}`
         }

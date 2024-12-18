@@ -24,7 +24,7 @@ const UsersPage = async () => {
 
     const options = {
         method: 'get',
-        url: `${process.env.BASE_API_URL}/auth/users/alluser/`,
+        url: `${process.env.BASE_API_URL_SERVER}/auth/users/alluser/`,
         headers: {
             'Authorization': 'Bearer ' + access_token
         }

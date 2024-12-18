@@ -10,7 +10,7 @@ const CoursePage = async ({ params }: { params: Promise<{ courseid: string | und
     const { access_token } = await getCookies(['access_token']);
     const { courseid } = await params;
 
-    const response = await axios(`${process.env.BASE_API_URL}/course/detail-single-course/${courseid}/`, access_token ? {
+    const response = await axios(`${process.env.BASE_API_URL_SERVER}/course/detail-single-course/${courseid}/`, access_token ? {
         headers: {
             'Authorization': `Bearer ${access_token}`
         }

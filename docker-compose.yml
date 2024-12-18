@@ -7,7 +7,9 @@ services:
             dockerfile: Dockerfile
 
         container_name: coursera-frontend-app
-        image: coursera-frontend-image
+        image: coursera-frontend-
+
+        restart: always
 
         ports:
             - "3000:3000"
@@ -18,4 +20,4 @@ services:
         command: [ "npm", "run", "start" ]
 
         volumes:
-            - .env.local:/app/.env.local
+            - .:/app
