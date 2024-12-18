@@ -34,7 +34,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
     const data = {
         site: {
-            name: "Coursera",
+            name: "CourseHunt",
             logo: GalleryVerticalEnd,
             plan: "Enterprise",
         },

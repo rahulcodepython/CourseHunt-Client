@@ -6,8 +6,8 @@ services:
             context: .
             dockerfile: Dockerfile
 
-        container_name: coursera-frontend-app
-        image: coursera-frontend-
+        container_name: CourseHunt-frontend-app
+        image: CourseHunt-frontend-
 
         restart: always
 

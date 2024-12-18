@@ -68,7 +68,7 @@ const PaymentButton = ({
                 amount: data.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
                 order_id: data.order_id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
                 currency: data.currency,
-                name: "Coursera",
+                name: "CourseHunt",
                 description: "Purchase Course",
                 image: "/logo.png",
                 handler: function (response: any) { verifyPayment(response) },

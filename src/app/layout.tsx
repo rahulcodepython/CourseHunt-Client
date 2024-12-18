@@ -5,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ThemeProvider } from "@/components/theme-provider";
 
 export const metadata: Metadata = {
-    title: "Coursera | Home",
+    title: "CourseHunt | Home",
     description: "This is a demo course selling website.",
 };
 
