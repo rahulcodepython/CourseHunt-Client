@@ -4,6 +4,7 @@ import { StudyCourseType } from "@/types";
 import axios from "axios";
 import Link from "next/link";
 import React from "react";
+import Markdown from "react-markdown";
 
 const StudyPage = async ({ params }: { params: Promise<{ courseid: string | undefined }> }) => {
     const { courseid } = await params;
@@ -60,10 +61,10 @@ const StudyPage = async ({ params }: { params: Promise<{ courseid: string | unde
                 <section className="container px-4 md:px-6 pb-12 md:pb-16 lg:pb-20">
                     <div className="space-y-12">
                         <h2 className="text-4xl font-bold">Course Content</h2>
-                        <div className="prose max-w-none">
-                            <p>
+                        <div className="prose prose-sm max-w-none">
+                            <Markdown>
                                 {data.content}
-                            </p>
+                            </Markdown>
                         </div>
                     </div>
                 </section>

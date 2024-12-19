@@ -14,10 +14,10 @@ export default async function RootLayout({ children }: Readonly<{
 }>) {
     return <html lang="en">
         <body>
-            <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-                <ToastContainer />
-                {children}
-            </ThemeProvider>
+            {/* <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange> */}
+            <ToastContainer />
+            {children}
+            {/* </ThemeProvider> */}
         </body>
     </html>
 }

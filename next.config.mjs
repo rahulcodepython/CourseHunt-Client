@@ -8,6 +8,7 @@ const nextConfig = {
         BASE_API_URL_SERVER: process.env.BASE_API_URL_SERVER,
     },
     output: 'standalone',
+    transpilePackages: ['next-mdx-remote'],
 };
 
 export default nextConfig;

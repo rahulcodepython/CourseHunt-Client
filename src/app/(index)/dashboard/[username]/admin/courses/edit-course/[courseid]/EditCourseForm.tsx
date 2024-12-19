@@ -1,8 +1,7 @@
 "use client";
-
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { number, z } from "zod";
+import { z } from "zod";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -17,6 +16,7 @@ import { SendHorizonal } from "lucide-react";
 import axios from "axios";
 import { useAuthStore } from "@/context/AuthStore";
 import { useRouter } from "next/navigation";
+import Markdown from 'react-markdown'
 
 // Define Zod schema for validation
 const courseSchema = z.object({
@@ -44,6 +44,9 @@ const EditCourseForm = ({
     courseid: string | undefined;
     access_token: string | undefined;
 }) => {
+    const textareaContentRef = React.useRef<HTMLTextAreaElement>(null);
+    const textareaLongDescriptionRef = React.useRef<HTMLTextAreaElement>(null);
+
     const form = useForm<AllCourseType>({
         resolver: zodResolver(courseSchema),
         defaultValues: defaultValues,
@@ -54,7 +57,24 @@ const EditCourseForm = ({
     const { mutationIsLoading, mutate, mutationData, mutationIsError, mutationState, mutationError } = useMutation();
 
     const onSubmit = async (data: AllCourseType) => {
-        await mutate(() => courseid ? editCourse(courseid, data, access_token) : createCourse(data, access_token));
+        if (courseid) {
+            await mutate(() => editCourse(courseid, data, access_token));
+        } else {
+            await mutate(() => createCourse(data, access_token));
+        }
+    };
+
+    const adjustTextareaContentHeight = () => {
+        if (textareaContentRef.current) {
+            textareaContentRef.current.style.height = "auto"; // Reset height
+            textareaContentRef.current.style.height = `${textareaContentRef.current.scrollHeight}px`; // Adjust to content
+        }
+    };
+    const adjustTextareaLongDescriptionHeight = () => {
+        if (textareaLongDescriptionRef.current) {
+            textareaLongDescriptionRef.current.style.height = "auto"; // Reset height
+            textareaLongDescriptionRef.current.style.height = `${textareaLongDescriptionRef.current.scrollHeight}px`; // Adjust to content
+        }
     };
 
     React.useEffect(() => {
@@ -69,6 +89,9 @@ const EditCourseForm = ({
             }
         }
     }, [mutationData]);
+
+    const contentValue = form.watch("content");
+    const longDescriptionValue = form.watch("long_description");
 
     return (
         <FormProvider {...form}>
@@ -97,7 +120,7 @@ const EditCourseForm = ({
                     )} />
 
                     {/* Long Description */}
-                    <FormField control={form.control} name="long_description" render={({ field }) => (
+                    {/* <FormField control={form.control} name="long_description" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Long Description</FormLabel>
                             <FormControl>
@@ -105,7 +128,7 @@ const EditCourseForm = ({
                             </FormControl>
                             <FormMessage>{form.formState.errors.long_description?.message}</FormMessage>
                         </FormItem>
-                    )} />
+                    )} /> */}
 
                     {/* Duration */}
                     <FormField control={form.control} name="duration" render={({ field }) => (
@@ -218,12 +241,60 @@ const EditCourseForm = ({
                         </FormItem>
                     )} />
 
+                    <FormField control={form.control} name="long_description" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Long Description</FormLabel>
+                            <FormControl>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="flex flex-col">
+                                        <Textarea
+                                            placeholder="Enter a long description" {...field}
+                                            ref={textareaLongDescriptionRef}
+                                            onChange={(e) => {
+                                                field.onChange(e.target.value)
+                                                adjustTextareaLongDescriptionHeight()
+                                            }}
+                                            className="flex-grow w-full h-full overflow-hidden resize-none whitespace-pre-wrap break-words"
+                                        />
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <div className="flex-grow w-full h-full p-4 prose prose-sm overflow-hidden break-words">
+                                            <Markdown>
+                                                {longDescriptionValue}
+                                            </Markdown>
+                                        </div>
+                                    </div>
+                                </div>
+                            </FormControl>
+                            <FormMessage>{form.formState.errors.long_description?.message}</FormMessage>
+                        </FormItem>
+                    )} />
+
                     {/* Content URL */}
                     <FormField control={form.control} name="content" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Content</FormLabel>
                             <FormControl>
-                                <Textarea placeholder="Enter course content" {...field} />
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="flex flex-col">
+                                        <Textarea
+                                            placeholder="Enter course content" {...field}
+                                            ref={textareaContentRef}
+                                            onChange={(e) => {
+                                                field.onChange(e.target.value)
+                                                adjustTextareaContentHeight()
+                                            }}
+                                            className="flex-grow w-full h-full overflow-hidden resize-none whitespace-pre-wrap break-words"
+                                        />
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <div className="flex-grow w-full h-full p-4 prose prose-sm overflow-hidden break-words">
+                                            <Markdown>
+                                                {contentValue}
+                                            </Markdown>
+                                        </div>
+                                    </div>
+                                </div>
                             </FormControl>
                             <FormMessage>{form.formState.errors.content?.message}</FormMessage>
                         </FormItem>
