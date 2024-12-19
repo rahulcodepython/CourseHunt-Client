@@ -27,7 +27,7 @@ const BlogsList = ({
                                 <Image width={200} height={200} src="/placeholder.svg" alt="Course thumbnail" className="rounded-t-lg object-cover w-full aspect-[2/1]" />
                                 <CardContent className="p-6 grid gap-6">
                                     <div className="space-y-2">
-                                        <Link href={`/courses/${item.id}`} className="text-xl font-semibold hover:underline">
+                                        <Link href={`/blogs/${item.id}`} className="text-xl font-semibold hover:underline">
                                             {item.title}
                                         </Link>
                                     </div>

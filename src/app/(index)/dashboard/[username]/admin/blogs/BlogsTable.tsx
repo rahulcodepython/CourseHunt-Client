@@ -1,36 +1,22 @@
 "use client"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import React from 'react'
-import { FeedbackType, PaginationType } from '@/types'
+import { AdminListBlogsType, PaginationType } from '@/types'
 import usePagination from '@/hooks/usePagination'
 import { CardContent, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/context/AuthStore'
-import { StarIcon } from 'lucide-react'
-import DeleteFeedback from './DeleteFeedback'
+import BlogsAction from './BlogsAction'
 
-const FeedbackTable = ({ data, columnList }: {
-    data: PaginationType<FeedbackType>
+const BlogsTable = ({ data, columnList }: {
+    data: PaginationType<AdminListBlogsType>
     columnList: string[]
 }) => {
-    const pagination = usePagination<FeedbackType>(data)
+    const pagination = usePagination<AdminListBlogsType>(data)
     const accessToken = useAuthStore(state => state.accessToken)
 
-    const truncate = (str: string) => {
-        return str.length > 50 ? str.substring(0, 50) + '...' : str
-    }
-
-    const ratingStart = (rating: number) => {
-        return <div className="flex gap-1">
-            {
-                Array.from({ length: 5 }).map((_, index) => (
-                    <StarIcon
-                        key={index}
-                        className={`w-5 h-5 ${rating > index ? "fill-primary" : "fill-muted stroke-muted-foreground"}`}
-                    />
-                ))
-            }
-        </div>
+    const deleteBlogItem = async (id: string) => {
+        pagination.removeData(id)
     }
 
     return (
@@ -45,26 +31,21 @@ const FeedbackTable = ({ data, columnList }: {
                                 </TableHead>
                             ))
                         }
+                        <TableHead>Actions</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     {
-                        pagination.results.map((item, index) => (
-                            <TableRow key={index}>
+                        pagination.results.map((blog, index) => (
+                            <TableRow key={blog.id}>
+                                <TableCell>{blog.title}</TableCell>
+                                <TableCell>{blog.created_at}</TableCell>
+                                <TableCell>{blog.updated_at}</TableCell>
+                                <TableCell>{blog.likes}</TableCell>
+                                <TableCell>{blog.read}</TableCell>
+                                <TableCell>{blog.comments}</TableCell>
                                 <TableCell>
-                                    {item.user}
-                                </TableCell>
-                                <TableCell>
-                                    {item.created_at}
-                                </TableCell>
-                                <TableCell>
-                                    {(item.feedback)}
-                                </TableCell>
-                                <TableCell>
-                                    {ratingStart(item.rating)}
-                                </TableCell>
-                                <TableCell>
-                                    <DeleteFeedback feedbackId={item.id} removeFeedback={pagination.removeData} />
+                                    <BlogsAction id={blog.id} deleteBlogItem={deleteBlogItem} />
                                 </TableCell>
                             </TableRow>
                         ))
@@ -92,4 +73,4 @@ const FeedbackTable = ({ data, columnList }: {
     )
 }
 
-export default FeedbackTable
+export default BlogsTable

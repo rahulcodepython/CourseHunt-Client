@@ -193,3 +193,34 @@ export interface ListBlogsType {
     created_at: string
     image: string
 }
+
+export interface DetailBlogsCommentType {
+    id: string
+    user: string
+    content: string
+    created_at: string
+    children: DetailBlogsCommentType[]
+}
+export interface DetailBlogsType {
+    id: string
+    title: string
+    created_at: string
+    updated_at: string
+    image: string
+    content: string
+    likes: number
+    liked: boolean
+    read: number
+    comments: number
+    comment: DetailBlogsCommentType[]
+}
+
+export interface AdminListBlogsType {
+    id: string
+    title: string
+    created_at: string
+    updated_at: string
+    likes: number
+    read: number
+    comments: number
+}

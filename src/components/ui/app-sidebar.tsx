@@ -3,9 +3,9 @@
 import * as React from "react"
 import {
     Asterisk,
-    Bell,
     Book,
     CircleDollarSign,
+    File,
     FlagTriangleRightIcon,
     House,
     MessageCircleMore,
@@ -60,6 +60,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         title: "Courses",
                         url: `/dashboard/${user?.username}/admin/courses`,
                         icon: Book,
+                    },
+                    {
+                        title: "Blogs",
+                        url: `/dashboard/${user?.username}/admin/blogs`,
+                        icon: File,
                     },
                     {
                         title: "Users",

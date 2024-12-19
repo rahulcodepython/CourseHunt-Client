@@ -4,18 +4,8 @@ import React from 'react'
 import CourseAction from './CourseAction'
 import { ListCourseAdminDashboardType, PaginationType } from '@/types'
 import usePagination from '@/hooks/usePagination'
-import {
-    Pagination,
-    PaginationContent,
-    PaginationEllipsis,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious,
-} from "@/components/ui/pagination"
 import { CardContent, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useAuthStore } from '@/context/AuthStore'
 
 const CourseTable = ({ data, columnList }: {
