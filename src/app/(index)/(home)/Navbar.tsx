@@ -19,8 +19,8 @@ const Navbar = async () => {
             href: '/about'
         },
         {
-            label: 'Services',
-            href: '/services'
+            label: 'Blogs',
+            href: '/blogs'
         },
         {
             label: 'Courses',

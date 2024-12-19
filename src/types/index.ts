@@ -186,3 +186,10 @@ export interface FeedbackType {
     feedback: string
     rating: number
 }
+
+export interface ListBlogsType {
+    id: string
+    title: string
+    created_at: string
+    image: string
+}

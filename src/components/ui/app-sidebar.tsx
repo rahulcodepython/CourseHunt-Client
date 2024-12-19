@@ -7,10 +7,9 @@ import {
     Book,
     CircleDollarSign,
     FlagTriangleRightIcon,
-    GalleryVerticalEnd,
     House,
     MessageCircleMore,
-    Tag,
+    MountainIcon,
     UserIcon,
 } from "lucide-react"
 
@@ -35,8 +34,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const data = {
         site: {
             name: "CourseHunt",
-            logo: GalleryVerticalEnd,
-            plan: "Enterprise",
+            logo: MountainIcon,
         },
         navMain: [{
             title: "Admin Panel",
@@ -118,7 +116,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                     <span className="truncate font-semibold">
                                         {data.site.name}
                                     </span>
-                                    <span className="truncate text-xs">{data.site.plan}</span>
                                 </div>
                             </SidebarMenuButton>
                         </Link>
