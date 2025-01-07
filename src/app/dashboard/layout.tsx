@@ -4,11 +4,13 @@ import { getCookies } from "@/server/action";
 import React from "react";
 
 const UserLayout = async ({ children }: { children: React.ReactNode }) => {
-    const { access_token, refresh_token, user } = await getCookies(['access_token', 'refresh_token', 'user']);
+    // const { access_token, refresh_token, user } = await getCookies(['access_token', 'refresh_token', 'user']);
 
-    return <RevalidateUser accessToken={access_token} refreshToken={refresh_token} user={user} loader={<Loading />}>
-        {children}
-    </RevalidateUser>
+    // return <RevalidateUser accessToken={access_token} refreshToken={refresh_token} user={user} loader={<Loading />}>
+    //     {children}
+    // </RevalidateUser>
+
+    return children
 }
 
 export default UserLayout;
