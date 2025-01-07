@@ -74,7 +74,7 @@ const StudyPage = async ({ params }: { params: Promise<{ courseid: string | unde
         return <div className="flex flex-col items-center justify-center mt-24 gap-4 container mx-auto">
             You {`haven't`} enrolled in this course yet.
             {
-                username && <Link href={`/dashboard/${username}/checkout/${courseid}`}>
+                username && <Link href={`/dashboard/checkout/${courseid}`}>
                     <Button>Go back to dashboard</Button>
                 </Link>
             }

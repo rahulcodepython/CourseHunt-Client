@@ -37,7 +37,7 @@ const PaymentButton = ({
                 data: { ...data, course_id: courseid, coupon_code, is_discount }
             })
             toast.success(response.data.success);
-            router.push(`/dashboard/${username}/study/${courseid}`);
+            router.push(`/dashboard/study/${courseid}`);
         } catch (error: any) {
             setLoading(false);
             toast.error(error?.response?.data?.message);

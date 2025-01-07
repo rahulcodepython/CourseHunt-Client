@@ -41,7 +41,7 @@ const PurchasedCourseTable = ({ data, columnList }: {
                                     {item.name}
                                 </TableCell>
                                 <TableCell>
-                                    <Link href={`/dashboard/${user?.username}/study/${item.id}`}>
+                                    <Link href={`/dashboard/study/${item.id}`}>
                                         <Button>
                                             Studey
                                         </Button>

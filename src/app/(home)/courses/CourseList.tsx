@@ -55,10 +55,10 @@ const CourseList = ({
                                     </div>
                                     <div className="flex items-center justify-between w-full">
                                         {
-                                            isAuthenticated ? item.enrolled ? <Link href={`/dashboard/${user?.username}/study/${item.id}/`} className='w-full'>
+                                            isAuthenticated ? item.enrolled ? <Link href={`/dashboard/study/${item.id}/`} className='w-full'>
                                                 <Button className='w-full'>Study</Button>
                                             </Link> : <Button className="w-full">
-                                                <Link href={`/dashboard/${user?.username}/checkout/${item.id}`}>Enroll Now</Link>
+                                                <Link href={`/dashboard/checkout/${item.id}`}>Enroll Now</Link>
                                             </Button> : <Button variant={'destructive'} className='w-full'>
                                                 <Link href="/auth/login">Login to enroll</Link>
                                             </Button>

@@ -84,7 +84,7 @@ const EditCourseForm = ({
             }
             else {
                 form.reset();
-                router.push(`/dashboard/${user?.username}/admin/courses`);
+                router.push(`/dashboard/admin/courses`);
                 toast.success(mutationData.success);
             }
         }

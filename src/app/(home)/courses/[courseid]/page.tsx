@@ -75,10 +75,10 @@ const CoursePage = async ({ params }: { params: Promise<{ courseid: string | und
                 </div>
                 {
 
-                    isAuth ? data.enrolled ? <Link href={`/dashboard/${user?.username}/study/${data.id}/`} className='w-full'>
+                    isAuth ? data.enrolled ? <Link href={`/dashboard/study/${data.id}/`} className='w-full'>
                         <Button className='w-full'>Study</Button>
                     </Link> : <Button className="w-full">
-                        <Link href={`/dashboard/${user?.username}/checkout/${data.id}`}>Enroll Now</Link>
+                        <Link href={`/dashboard/checkout/${data.id}`}>Enroll Now</Link>
                     </Button> : <Button variant={'destructive'} className='w-full'>
                         <Link href="/auth/login">Login to enroll</Link>
                     </Button>

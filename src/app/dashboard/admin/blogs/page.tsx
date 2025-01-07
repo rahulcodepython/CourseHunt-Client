@@ -1,27 +1,29 @@
 import { getCookies } from "@/server/action"
 import * as React from "react"
-import { ListCourseAdminDashboardType, PaginationType } from "@/types"
+import { AdminListBlogsType, PaginationType } from "@/types"
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import CourseTable from "./CourseTable";
+
 import { Link } from "next-view-transitions";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
+import BlogsTable from "./BlogsTable";
 
-const CoursesPage = async () => {
+const BlogsPage = async () => {
     const { access_token, user } = await getCookies(['access_token', 'user'])
-    const response = await axios.get(`${process.env.BASE_API_URL_SERVER}/course/admin-list-course/`, {
+    const response = await axios.get(`${process.env.BASE_API_URL_SERVER}/blogs/list-admin/`, {
         headers: {
             Authorization: 'Bearer ' + access_token
         }
     })
-    const data: PaginationType<ListCourseAdminDashboardType> = await response.data
+    const data: PaginationType<AdminListBlogsType> = await response.data
 
     const columnList = [
-        "Course Name",
-        "Published Date",
-        "Price",
-        "Offer",
-        "Status",
+        "Title",
+        "Created",
+        "Updated",
+        "Likes",
+        "Views",
+        "Comments",
     ];
 
     const username = user ? JSON.parse(user).username : undefined
@@ -32,24 +34,24 @@ const CoursesPage = async () => {
                 <div className="flex items-center justify-between py-4 w-full">
                     <div className="flex flex-col gap-1.5">
                         <CardTitle>
-                            All Courses
+                            All Blogs
                         </CardTitle>
                         <CardDescription>
-                            List of all courses.
+                            List of all blogs.
                         </CardDescription>
                     </div>
                     {
-                        <Link href={`/dashboard/${username}/admin/courses/create-course/`}>
+                        <Link href={`/dashboard/admin/blogs/create-blog/`}>
                             <Button>
-                                Create Course
+                                Create Blog
                             </Button>
                         </Link>
                     }
                 </div>
             </CardHeader>
-            <CourseTable data={data} columnList={columnList} />
+            <BlogsTable data={data} columnList={columnList} />
         </Card>
     </div>
 }
 
-export default CoursesPage
+export default BlogsPage

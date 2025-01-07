@@ -55,13 +55,13 @@ const Navbar = async () => {
                         isAuth ?
                             <div className="flex items-center gap-4">
                                 {
-                                    user?.is_superuser ? <Link href={`/dashboard/${user.username}/admin`} prefetch={false}>
+                                    user?.is_superuser ? <Link href={`/dashboard/admin`} prefetch={false}>
                                         <Button variant="outline" size="sm">
                                             Admin
                                         </Button>
                                     </Link> : null
                                 }
-                                <Link href={`/dashboard/${user?.username}`} className="border rounded-full p-2 cursor-pointer">
+                                <Link href={`/dashboard`} className="border rounded-full p-2 cursor-pointer">
                                     <UserIcon />
                                 </Link>
                             </div>

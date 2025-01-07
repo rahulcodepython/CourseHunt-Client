@@ -14,7 +14,7 @@ export async function middleware(request: NextRequest) {
 
     const redirectAuthenticateUser = () => {
         if (pathname.startsWith(AUTH_ROUTE)) {
-            return NextResponse.redirect(new URL('/dashboard/rahul', request.url));
+            return NextResponse.redirect(new URL('/dashboard', request.url));
         }
         return NextResponse.next();
     }

@@ -30,7 +30,7 @@ const BlogsAction = ({ id, deleteBlogItem }: {
 
     return (
         <div className='flex gap-4'>
-            <Link href={`/dashboard/${user?.username}/admin/blogs/edit-blog/${id}`}>
+            <Link href={`/dashboard/admin/blogs/edit-blog/${id}`}>
                 <Button>Edit</Button>
             </Link>
             {

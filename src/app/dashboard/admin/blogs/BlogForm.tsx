@@ -66,7 +66,7 @@ const BlogForm = ({
             }
             else {
                 reset();
-                router.push(`/dashboard/${user?.username}/admin/blogs`);
+                router.push(`/dashboard/admin/blogs`);
                 toast.success(mutationData.success);
             }
         }

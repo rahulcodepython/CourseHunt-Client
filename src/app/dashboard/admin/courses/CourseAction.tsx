@@ -18,7 +18,7 @@ const CourseAction = ({ courseid, removeCourse }:
 
     return (
         <div className="flex items-center gap-2">
-            <Link href={`/dashboard/${user?.username}/admin/courses/edit-course/${courseid}/`}>
+            <Link href={`/dashboard/admin/courses/edit-course/${courseid}/`}>
                 <Button>Edit</Button>
             </Link>
             <ToggleCourseComponent courseid={courseid} accessToken={accessToken} />

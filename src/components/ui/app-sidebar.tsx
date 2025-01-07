@@ -28,12 +28,10 @@ import { Link } from "next-view-transitions"
 
 export function AppSidebar({
     is_superuser,
-    username,
     ...props
 
 }: {
     is_superuser: boolean,
-    username: string,
 }) {
     const pathname = usePathname();
 
@@ -48,38 +46,38 @@ export function AppSidebar({
                 [
                     {
                         title: "Dashboard",
-                        url: `/dashboard/${username}/admin`,
+                        url: `/dashboard/admin`,
                         icon: House,
                         isActive: true,
                     },
                     {
                         title: "Purchase",
-                        url: `/dashboard/${username}/admin/purchase`,
+                        url: `/dashboard/admin/purchase`,
                         icon: CircleDollarSign,
                     },
                     {
                         title: "Feedback",
-                        url: `/dashboard/${username}/admin/feedback`,
+                        url: `/dashboard/admin/feedback`,
                         icon: MessageCircleMore,
                     },
                     {
                         title: "Courses",
-                        url: `/dashboard/${username}/admin/courses`,
+                        url: `/dashboard/admin/courses`,
                         icon: Book,
                     },
                     {
                         title: "Blogs",
-                        url: `/dashboard/${username}/admin/blogs`,
+                        url: `/dashboard/admin/blogs`,
                         icon: File,
                     },
                     {
                         title: "Users",
-                        url: `/dashboard/${username}/admin/users`,
+                        url: `/dashboard/admin/users`,
                         icon: UserIcon,
                     },
                     {
                         title: "Coupon Codes",
-                        url: `/dashboard/${username}/admin/cupone-codes`,
+                        url: `/dashboard/admin/cupone-codes`,
                         icon: Asterisk,
                     },
                 ]
@@ -87,23 +85,23 @@ export function AppSidebar({
                 [
                     {
                         title: "Dashboard",
-                        url: `/dashboard/${username}`,
+                        url: `/dashboard`,
                         icon: House,
                         isActive: true,
                     },
                     {
                         title: "Purchased Courses",
-                        url: `/dashboard/${username}/purchased-courses`,
+                        url: `/dashboard/purchased-courses`,
                         icon: Book,
                     },
                     {
                         title: "Transactions",
-                        url: `/dashboard/${username}/transactions`,
+                        url: `/dashboard/transactions`,
                         icon: CircleDollarSign,
                     },
                     {
                         title: "Feedback",
-                        url: `/dashboard/${username}/feedback`,
+                        url: `/dashboard/feedback`,
                         icon: FlagTriangleRightIcon,
                     },
                 ],
