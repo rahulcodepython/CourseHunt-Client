@@ -1,3 +1,5 @@
+import GithubLogin from '@/components/github-login';
+import GoogleLogin from '@/components/google-login';
 import {
     Card,
     CardContent,
@@ -6,8 +8,6 @@ import {
     CardHeader,
 } from '@/components/ui/card';
 import { Link } from 'next-view-transitions';
-import GithubLogin from '../GithubLogin';
-import GoogleLogin from '../GoogleLogin';
 
 const LoginLayout = ({ children }: { children: React.ReactNode }) => {
     return <main className="flex items-center justify-center w-screen h-screen">

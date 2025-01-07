@@ -1,5 +1,5 @@
 "use server";
-import { ApiResponseType, SignInFormType } from "@/types";
+import { ApiResponseType, SignInFormType, SignUpFormType } from "@/types";
 import { handleApiError, handleApiResponse, urlGenerator } from "@/utils";
 import { cookies } from "next/headers";
 
@@ -70,3 +70,19 @@ export const signInAction = async (formData: SignInFormType): Promise<ApiRespons
             return await handleApiError(error);
         }) as ApiResponseType;
 };
+
+export const initRegisterUser = async (data: SignUpFormType): Promise<ApiResponseType> => {
+    return await fetch(urlGenerator('/auth/users/me/'), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+    })
+        .then(async (response) => {
+            return await handleApiResponse(response);
+        })
+        .catch(async (error) => {
+            console.log(JSON.stringify(error));
+
+            return await handleApiError(error);
+        }) as ApiResponseType;
+}

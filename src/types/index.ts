@@ -1,11 +1,3 @@
-export interface InitialRegisterValuesType {
-    first_name: string
-    last_name: string
-    email: string
-    password: string
-    confirmpassword: string
-}
-
 export interface AccessTokenUserType {
     "token_type": 'access' | 'refresh'
     "exp": number
@@ -39,6 +31,14 @@ export interface ApiResponseType {
 export interface SignInFormType {
     email: string
     password?: string
+}
+
+export interface SignUpFormType {
+    first_name: string
+    last_name: string
+    email: string
+    password: string
+    confirmpassword: string
 }
 
 export interface AuthStoreState {

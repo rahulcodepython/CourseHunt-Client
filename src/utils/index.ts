@@ -1,4 +1,4 @@
-import { AccessTokenUserType, UserType } from '@/types';
+import { AccessTokenUserType, ApiResponseType, UserType } from '@/types';
 import { fetchNewTokens } from "@/app/action";
 
 export const checkTokenExpiry = (exp: number): boolean => {
@@ -76,7 +76,7 @@ export const revalidateTokens = async (refresh: string | undefined): Promise<boo
     return await fetchNewTokens(refresh as string);
 }
 
-export const handleApiResponse = async (response: Response) => {
+export const handleApiResponse = async (response: Response): Promise<ApiResponseType> => {
     const result = await response.json();
     return {
         status: 200,
@@ -84,7 +84,7 @@ export const handleApiResponse = async (response: Response) => {
     };
 };
 
-export const handleApiError = async (error: any) => {
+export const handleApiError = async (error: any): Promise<ApiResponseType> => {
     if (error instanceof Response) {
         const errorData = await error.json();
         return {

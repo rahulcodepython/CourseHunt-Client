@@ -1,8 +1,8 @@
 import { Card, CardHeader, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import Link from "next/link";
-import { ChromeIcon, GithubIcon } from "lucide-react"
 import React from "react";
+import GithubLogin from "@/components/github-login";
+import GoogleLogin from "@/components/google-login";
 
 const RegisterLayout = ({ children }: { children: React.ReactNode }) => {
     return <main className="flex items-center justify-center w-screen h-screen">
@@ -24,14 +24,8 @@ const RegisterLayout = ({ children }: { children: React.ReactNode }) => {
                     <hr className="border-gray-500" />
                 </div>
                 <div className="flex flex-col gap-2 w-full">
-                    <Button variant="outline" className="w-full">
-                        <GithubIcon className="mr-2 h-4 w-4" />
-                        Sign up with GitHub
-                    </Button>
-                    <Button variant="outline" className="w-full">
-                        <ChromeIcon className="mr-2 h-4 w-4" />
-                        Sign up with Google
-                    </Button>
+                    <GithubLogin />
+                    <GoogleLogin />
                 </div>
                 <div className="text-sm flex justify-between items-center w-full">
                     <p>If you have an account...</p>

@@ -3,71 +3,62 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Check, Eye, EyeClosed, SendHorizonal, X } from "lucide-react"
-import { InitialRegisterValuesType } from "@/types"
 import { useForm } from 'react-hook-form';
 import { useRouter } from "next/navigation"
-import useMutation from "@/hooks/useMutation"
 import React from "react"
-import { toast } from "react-toastify"
-import axios from "axios"
-import { ReloadIcon } from "@radix-ui/react-icons"
+import { SignUpFormType } from "@/types"
+import { urlGenerator } from "@/utils"
+import LoadingButton from "@/components/loading-button"
+import { initRegisterUser } from "@/app/action"
+import { toast } from "sonner"
 
 const RegisterPage = () => {
-    const [email, setEmail] = React.useState<string>("");
+    const [loading, setLoading] = React.useState<boolean>(false);
+    const router = useRouter();
+
+    const { register, handleSubmit, reset } = useForm<SignUpFormType>()
+
     const [emailIsValid, setEmailIsValid] = React.useState<boolean>(true);
     const [togglePassword, setTogglePassword] = React.useState<boolean>(true);
     const [toggleConfirmPassword, setToggleConfirmPassword] = React.useState<boolean>(true);
 
-    const initialValues: InitialRegisterValuesType = {
-        first_name: '',
-        last_name: '',
-        email: '',
-        password: '',
-        confirmpassword: '',
-    }
 
-    const { register, handleSubmit, formState: { errors }, reset, watch } = useForm<InitialRegisterValuesType>({
-        defaultValues: initialValues,
-    });
-
-    const router = useRouter();
-
-    const { mutate, mutationIsLoading, mutationIsError, mutationError, mutationData, mutationState } = useMutation();
-
-    const onSubmit = async (data: InitialRegisterValuesType) => {
+    const onSubmit = async (data: SignUpFormType) => {
         if (data.password !== data.confirmpassword) {
-            toast.error('Password and confirm password does not match');
+            toast('Password and confirm password does not match');
             return;
         }
-        setEmail(data.email);
-        await mutate(async () => registerUser(data));
-    };
 
-    const checkEmailAvailability = async (email: string) => {
-        try {
-            await axios.post(`${process.env.BASE_API_URL}/auth/users/check-email/`, { email });
-            setEmailIsValid(true);
-        } catch (error) {
-            setEmailIsValid(false);
-        }
+        setLoading(true);
+        const response = await initRegisterUser(data);
+        if (response.status === 200) {
+            localStorage.setItem('resend_otp_email_register', data.email);
+            router.push('/auth/verify/otp/register');
+            toast(response.data.success);
+        } else {
+            reset();
+            toast(response.data.error);
+        };
+        setLoading(false);
     }
 
-    React.useEffect(() => {
-        const handler = async () => {
-            if (mutationState === 'done') {
-                if (mutationIsError) {
-                    toast.error(mutationError);
+    const checkEmailAvailability = async (email: string) => {
+        await fetch(urlGenerator('/auth/users/check-email/'), {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email }),
+        })
+            .then((response) => {
+                if (response.status === 200) {
+                    setEmailIsValid(true);
+                } else {
+                    setEmailIsValid(false);
                 }
-                else {
-                    reset(initialValues);
-                    toast.success(mutationData.success);
-                    localStorage.setItem('resend_otp_email_login', email);
-                    router.push('/auth/verify/otp/register');
-                }
-            }
-        }
-        handler();
-    }, [mutationState])
+            })
+            .catch(async (error) => {
+                setEmailIsValid(false);
+            });
+    }
 
     return <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
         <div className="flex flex-col gap-4">
@@ -84,7 +75,6 @@ const RegisterPage = () => {
                     autoFocus
                     autoComplete="first_name"
                 />
-                {errors.first_name && <span className="text-red-500">{errors.first_name.message}</span>}
             </div>
             <div className="flex flex-col gap-2">
                 <Label htmlFor="last_name" className="uppercase text-gray-600 text-xs">
@@ -98,7 +88,6 @@ const RegisterPage = () => {
                     className="w-full"
                     autoComplete="last_name"
                 />
-                {errors.last_name && <span className="text-red-500">{errors.last_name.message}</span>}
             </div>
             <div className="flex flex-col gap-2">
                 <Label htmlFor="email" className="uppercase text-gray-600 text-xs">
@@ -123,7 +112,6 @@ const RegisterPage = () => {
                 {
                     !emailIsValid && <span className="text-red-500 text-xs">Email is already taken</span>
                 }
-                {errors.email && <span className="text-red-500">{errors.email.message}</span>}
             </div>
             <div className="flex flex-col gap-2">
                 <Label htmlFor="password" className="uppercase text-gray-600 text-xs">
@@ -144,7 +132,6 @@ const RegisterPage = () => {
                             : <Eye className="h-4 w-4 cursor-pointer" onClick={() => setTogglePassword(pre => !pre)} />
                     }
                 </div>
-                {errors.password && <span className="text-red-500">{errors.password.message}</span>}
             </div>
             <div className="flex flex-col gap-2">
                 <Label htmlFor="confirmpassword" className="uppercase text-gray-600 text-xs">
@@ -165,34 +152,15 @@ const RegisterPage = () => {
                             : <Eye className="h-4 w-4 cursor-pointer" onClick={() => setToggleConfirmPassword(pre => !pre)} />
                     }
                 </div>
-                {errors.confirmpassword && <span className="text-red-500">{errors.confirmpassword.message}</span>}
             </div>
         </div>
-        {
-            mutationIsLoading ? <Button disabled className="gap-2">
-                <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-                Please wait
-            </Button> : <Button type="submit" className="gap-2">
+        <LoadingButton loading={loading}>
+            <Button type="submit" className="gap-2">
                 <SendHorizonal className="h-4 w-4" />
-                <span>Register</span>
+                Register
             </Button>
-        }
+        </LoadingButton>
     </form>
-}
-
-const registerUser = async (data: InitialRegisterValuesType) => {
-    const options = {
-        url: `${process.env.BASE_API_URL}/auth/users/me/`,
-        method: 'POST',
-        data: {
-            first_name: data.first_name,
-            last_name: data.last_name,
-            email: data.email,
-            password: data.password,
-        }
-    };
-
-    return await axios.request(options);
 }
 
 export default RegisterPage
