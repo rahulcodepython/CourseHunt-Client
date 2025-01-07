@@ -1,4 +1,3 @@
-import { getCookies } from "@/server/action"
 import * as React from "react"
 import { ListCourseAdminDashboardType, PaginationType } from "@/types"
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,9 +5,11 @@ import CourseTable from "./CourseTable";
 import { Link } from "next-view-transitions";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
+import { getAccessToken } from "@/app/action";
 
 const CoursesPage = async () => {
-    const { access_token, user } = await getCookies(['access_token', 'user'])
+    const access_token = await getAccessToken()
+
     const response = await axios.get(`${process.env.BASE_API_URL_SERVER}/course/admin-list-course/`, {
         headers: {
             Authorization: 'Bearer ' + access_token
@@ -23,8 +24,6 @@ const CoursesPage = async () => {
         "Offer",
         "Status",
     ];
-
-    const username = user ? JSON.parse(user).username : undefined
 
     return <div className="w-full p-4">
         <Card>

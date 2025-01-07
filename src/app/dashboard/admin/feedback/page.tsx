@@ -4,9 +4,10 @@ import { getCookies } from "@/server/action"
 import axios from "axios"
 import { FeedbackType, PaginationType } from "@/types"
 import FeedbackTable from "./FeedbackTable"
+import { getAccessToken } from "@/app/action"
 
 const FeedbackPage = async () => {
-    const { access_token } = await getCookies(["access_token"])
+    const access_token = await getAccessToken()
 
     const response = await axios.get(`${process.env.BASE_API_URL_SERVER}/feedback/list/`, {
         headers: {

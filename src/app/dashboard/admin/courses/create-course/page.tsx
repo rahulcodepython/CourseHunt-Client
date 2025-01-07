@@ -1,9 +1,9 @@
-import { getCookies } from "@/server/action";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import EditCourseForm from "../edit-course/[courseid]/EditCourseForm";
+import { getAccessToken } from "@/app/action";
 
 const CreateCourse = async () => {
-    const { access_token } = await getCookies(['access_token'])
+    const access_token = await getAccessToken();
 
     const defaultData = {
         "id": "",

@@ -8,9 +8,9 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { getCookies } from "@/server/action"
 import axios from "axios"
 import { UserType } from "@/types"
+import { getAccessToken } from "@/app/action"
 
 const UsersPage = async () => {
     const columnsList = [
@@ -20,7 +20,7 @@ const UsersPage = async () => {
         "Superuser",
     ];
 
-    const { access_token } = await getCookies(['access_token'])
+    const access_token = await getAccessToken()
 
     const options = {
         method: 'get',

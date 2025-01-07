@@ -1,11 +1,11 @@
 import React from "react";
-import { getCookies } from "@/server/action";
 import axios from "axios";
 import { ListCuponeCodeType, PaginationType } from "@/types";
 import CuponCodeTable from "./CuponCodeTable";
+import { getAccessToken } from "@/app/action";
 
 const CuponCodesPage = async () => {
-    const { access_token } = await getCookies(['access_token']);
+    const access_token = await getAccessToken();
 
     const response = await axios.request({
         method: 'GET',

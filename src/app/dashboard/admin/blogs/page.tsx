@@ -1,4 +1,3 @@
-import { getCookies } from "@/server/action"
 import * as React from "react"
 import { AdminListBlogsType, PaginationType } from "@/types"
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,9 +6,10 @@ import { Link } from "next-view-transitions";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import BlogsTable from "./BlogsTable";
+import { getAccessToken } from "@/app/action";
 
 const BlogsPage = async () => {
-    const { access_token, user } = await getCookies(['access_token', 'user'])
+    const access_token = await getAccessToken()
     const response = await axios.get(`${process.env.BASE_API_URL_SERVER}/blogs/list-admin/`, {
         headers: {
             Authorization: 'Bearer ' + access_token
@@ -25,8 +25,6 @@ const BlogsPage = async () => {
         "Views",
         "Comments",
     ];
-
-    const username = user ? JSON.parse(user).username : undefined
 
     return <div className="w-full p-4">
         <Card>

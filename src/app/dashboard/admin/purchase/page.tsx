@@ -1,16 +1,16 @@
-import { getCookies } from "@/server/action"
 import axios from "axios"
 import * as React from "react"
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import PurchaseTable from "./PurchaseTable"
 import { PaginationType, TransactionType } from "@/types"
+import { getAccessToken } from "@/app/action"
 
 const PurchasePage = async () => {
-    const { access_token } = await getCookies(['access_token'])
+    const access = await getAccessToken()
 
     const response = await axios.get(`${process.env.BASE_API_URL_SERVER}/transactions/list-transactions/`, {
         headers: {
-            'Authorization': `Bearer ${access_token}`
+            'Authorization': `Bearer ${access}`
         }
     })
     const data: PaginationType<TransactionType> = response.data

@@ -1,12 +1,12 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import React from 'react'
 import BlogForm from '../../BlogForm'
-import { getCookies } from '@/server/action'
 import axios from 'axios'
+import { getAccessToken } from '@/app/action'
 
 const BlogEdit = async ({ params }: { params: Promise<{ blogid: string | undefined }> }) => {
     const blogid = (await params).blogid
-    const { access_token } = await getCookies(['access_token'])
+    const access_token = await getAccessToken()
     const response = await axios.get(`${process.env.BASE_API_URL_SERVER}/blogs/update/${blogid}/`, {
         headers: {
             'Authorization': 'Bearer ' + access_token
