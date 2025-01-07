@@ -33,7 +33,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/app/(index)/dashboard/[username]/admin/courses/edit-course"
+    "src/app/dashboard/[username]/admin/courses/edit-course"
   ],
   "exclude": [
     "node_modules"
