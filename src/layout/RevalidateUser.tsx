@@ -2,7 +2,6 @@
 import { useAuthStore } from '@/context/AuthStore';
 import { removeCookie, setCookie, } from '@/server/action';
 import axios from 'axios';
-import { jwtDecode } from 'jwt-decode';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
@@ -109,8 +108,8 @@ const refreshAccessToken = async (token: string) => {
 
     try {
         const response = await axios.request(options);
-        await setCookie('access_token', response.data.access, response.data.access ? (jwtDecode(response.data.access)?.exp ?? 0) - Math.floor(Date.now() / 1000) : 0);
-        await setCookie('refresh_token', response.data.refresh, response.data.refresh ? (jwtDecode(response.data.refresh)?.exp ?? 0) - Math.floor(Date.now() / 1000) : 0);
+        // await setCookie('access_token', response.data.access, response.data.access ? (jwtDecode(response.data.access)?.exp ?? 0) - Math.floor(Date.now() / 1000) : 0);
+        // await setCookie('refresh_token', response.data.refresh, response.data.refresh ? (jwtDecode(response.data.refresh)?.exp ?? 0) - Math.floor(Date.now() / 1000) : 0);
         await setCookie('user', JSON.stringify(response.data.user));
         return response.data;
     } catch (error) {
