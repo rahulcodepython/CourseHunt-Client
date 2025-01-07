@@ -1,9 +1,8 @@
 "use client"
+import { setCookie } from '@/app/action'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { useAuthStore } from '@/context/AuthStore'
-import { setCookie } from '@/server/action'
-import axios from 'axios'
+import { urlGenerator } from '@/utils'
 import { Link } from 'next-view-transitions'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React from 'react'
@@ -14,8 +13,6 @@ const GithubCallback = () => {
     const state = searchParams.get('state')
 
     const router = useRouter()
-
-    const loggedInUser = useAuthStore((state) => state.LoggedInUser)
 
     const [loading, setLoading] = React.useState<boolean>(true)
     const [error, setError] = React.useState<boolean>(false)
@@ -36,21 +33,28 @@ const GithubCallback = () => {
                 return
             }
 
-            try {
-                const response = await axios(`${process.env.BASE_API_URL}/auth/github/authenticate/?code=${code}&state=${state}`)
-                const data = await response.data
+            return await fetch(urlGenerator(`/auth/github/authenticate/?code=${code}&state=${state}`), {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(async (response) => {
+                if (response.ok) {
+                    const data = await response.json()
 
-                loggedInUser(data.access, data.refresh, data.user)
-                await setCookie('access_token', data.access)
-                await setCookie('refresh_token', data.refresh)
-                await setCookie('user', JSON.stringify(data.user))
-
-            } catch (error: any) {
-                setErrorMessage(error.response?.data?.error)
+                    await setCookie('access', data.access)
+                    await setCookie('access', data.refresh)
+                } else {
+                    const error = await response.json()
+                    setErrorMessage(error.error)
+                    setError(true)
+                }
+            }).catch((error) => {
+                setErrorMessage(error)
                 setError(true)
-            } finally {
+            }).finally(() => {
                 setLoading(false)
-            }
+            })
         }
 
         handle()

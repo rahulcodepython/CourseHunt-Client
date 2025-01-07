@@ -3,6 +3,10 @@ import { ApiResponseType, SignInFormType, SignUpFormType } from "@/types";
 import { handleApiError, handleApiResponse, urlGenerator } from "@/utils";
 import { cookies } from "next/headers";
 
+export const setCookie = async (cookie_name: string, cookie_value: string, maxAge?: number) => {
+    (await cookies()).set(cookie_name, cookie_value, { maxAge: maxAge });
+}
+
 export const getAccessToken = async (): Promise<string | undefined> => {
     const cookieStore = await cookies();
     return cookieStore.get("access")?.value;
@@ -50,6 +54,45 @@ export const initLoginUser = async (formData: SignInFormType): Promise<ApiRespon
         }) as ApiResponseType;
 }
 
+export const resendLoginOTP = async (email: string): Promise<ApiResponseType> => {
+    return await fetch(urlGenerator('/auth/users/login/email/resend/'), {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email }),
+    })
+        .then(response => response.json())
+        .then(async (response) => {
+            return await handleApiResponse(response);
+        })
+        .catch(async (error) => {
+            return await handleApiError(error);
+        }) as ApiResponseType;
+}
+
+export const loginUser = async (uid: string, token: string): Promise<ApiResponseType> => {
+    return await fetch(urlGenerator('/auth/users/jwt/create/'), {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            uid: uid,
+            token: token
+        }),
+    })
+        .then(response => response.json())
+        .then(async (response) => {
+            const access = response.access;
+            const refresh = response.refresh;
+
+            const cookieStore = await cookies();
+            cookieStore.set("access", access, { maxAge: 60 * 60 * 24 });
+            cookieStore.set("refresh", refresh, { maxAge: 60 * 60 * 24 * 4 });
+            return { status: 200, data: response.data };
+        })
+        .catch(async (error) => {
+            return await handleApiError(error);
+        }) as ApiResponseType;
+}
+
 export const signInAction = async (formData: SignInFormType): Promise<ApiResponseType> => {
     return await fetch(urlGenerator('/auth/users/jwt/create/'), {
         method: "POST",
@@ -83,6 +126,45 @@ export const initRegisterUser = async (data: SignUpFormType): Promise<ApiRespons
         .catch(async (error) => {
             console.log(JSON.stringify(error));
 
+            return await handleApiError(error);
+        }) as ApiResponseType;
+}
+
+export const registerUser = async (uid: string, token: string): Promise<ApiResponseType> => {
+    return await fetch(urlGenerator('/auth/users/activate/'), {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            uid: uid,
+            tokne: token
+        }),
+    })
+        .then(response => response.json())
+        .then(async (response) => {
+            const access = response.access;
+            const refresh = response.refresh;
+
+            const cookieStore = await cookies();
+            cookieStore.set("access", access, { maxAge: 60 * 60 * 24 });
+            cookieStore.set("refresh", refresh, { maxAge: 60 * 60 * 24 * 4 });
+            return { status: 200, data: response.data };
+        })
+        .catch(async (error) => {
+            return await handleApiError(error);
+        }) as ApiResponseType;
+}
+
+export const resendRegisterOTP = async (email: string) => {
+    return await fetch(urlGenerator('/auth/users/activate/email/resend/'), {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email }),
+    })
+        .then(response => response.json())
+        .then(async (response) => {
+            return await handleApiResponse(response);
+        })
+        .catch(async (error) => {
             return await handleApiError(error);
         }) as ApiResponseType;
 }
