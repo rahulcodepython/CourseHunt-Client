@@ -1,15 +1,16 @@
-import { getCookies } from "@/server/action"
 import * as React from "react"
 import { ListCourseDashboardType, PaginationType } from "@/types"
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import axios from "axios";
 import PurchasedCourseTable from "./PurchasedCourseTable";
+import { getAccessToken } from "@/app/action";
+import { urlGenerator } from "@/utils";
 
 const PurchasedCoursesPage = async () => {
-    const { access_token } = await getCookies(['access_token'])
-    const response = await axios(`${process.env.BASE_API_URL_SERVER}/course/purchased-courses/`, {
+    const access = await getAccessToken()
+    const response = await axios(urlGenerator(`/course/purchased-courses/`), {
         headers: {
-            Authorization: 'Bearer ' + access_token
+            Authorization: 'Bearer ' + access
         }
     })
     const data: PaginationType<ListCourseDashboardType> = response.data

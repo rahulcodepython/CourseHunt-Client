@@ -10,7 +10,6 @@ import { useRouter } from 'next/navigation';
 const PaymentButton = ({
     courseid,
     access_token,
-    username,
     is_discount,
     coupon_code
 }: {

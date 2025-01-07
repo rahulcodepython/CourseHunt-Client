@@ -1,16 +1,17 @@
-import { getCookies } from "@/server/action"
 import axios from "axios"
 import * as React from "react"
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { PaginationType, SelfTransactionType } from "@/types"
 import TransactionTable from "./TransactionTable"
+import { getAccessToken } from "@/app/action"
+import { urlGenerator } from "@/utils"
 
 const PurchasePage = async () => {
-    const { access_token } = await getCookies(['access_token'])
+    const access = await getAccessToken()
 
-    const response = await axios.get(`${process.env.BASE_API_URL_SERVER}/transactions/list-self-transactions/`, {
+    const response = await axios.get(urlGenerator(`/transactions/list-self-transactions/`), {
         headers: {
-            'Authorization': `Bearer ${access_token}`
+            'Authorization': `Bearer ${access}`
         }
     })
     const data: PaginationType<SelfTransactionType> = response.data

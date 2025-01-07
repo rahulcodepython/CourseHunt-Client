@@ -1,5 +1,5 @@
+import { getAccessToken } from "@/app/action";
 import { Button } from "@/components/ui/button";
-import { getCookies } from "@/server/action";
 import { StudyCourseType } from "@/types";
 import axios from "axios";
 import { Link } from "next-view-transitions";
@@ -8,16 +8,14 @@ import Markdown from "react-markdown";
 
 const StudyPage = async ({ params }: { params: Promise<{ courseid: string | undefined }> }) => {
     const { courseid } = await params;
-    const { access_token, user } = await getCookies(['access_token', 'user']);
-
-    const username = user ? JSON.parse(user).username : undefined;
+    const access = await getAccessToken();
 
     try {
         const response = await axios.request({
             url: `${process.env.BASE_API_URL_SERVER}/course/study-single-course/${courseid}/`,
             method: 'GET',
             headers: {
-                authorization: `Bearer ${access_token}`
+                authorization: `Bearer ${access}`
             }
         });
         const data: StudyCourseType = response.data;
@@ -73,11 +71,9 @@ const StudyPage = async ({ params }: { params: Promise<{ courseid: string | unde
     } catch (error) {
         return <div className="flex flex-col items-center justify-center mt-24 gap-4 container mx-auto">
             You {`haven't`} enrolled in this course yet.
-            {
-                username && <Link href={`/dashboard/checkout/${courseid}`}>
-                    <Button>Go back to dashboard</Button>
-                </Link>
-            }
+            <Link href={`/dashboard/checkout/${courseid}`}>
+                <Button>Go back to dashboard</Button>
+            </Link>
         </div>
     }
 }
