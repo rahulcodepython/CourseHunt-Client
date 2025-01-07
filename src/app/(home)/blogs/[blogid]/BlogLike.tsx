@@ -1,9 +1,10 @@
 "use client"
 import { useAuthStore } from '@/context/AuthStore'
+import { urlGenerator } from '@/utils'
 import { HeartFilledIcon } from '@radix-ui/react-icons'
-import axios from 'axios'
 import { Heart } from 'lucide-react'
 import React from 'react'
+import { toast } from 'sonner'
 
 const BlogLike = ({ data }: {
     data: {
@@ -21,12 +22,12 @@ const BlogLike = ({ data }: {
         if (!isAuthenticated) return
 
         try {
-            const response = await axios.post(`${process.env.BASE_API_URL}/blogs/like-blog/${id}/`, {}, {
+            const response = await fetch(urlGenerator(`/blogs/like-blog/${id}/`), {
                 headers: {
                     Authorization: `Bearer ${accessToken}`
                 }
             })
-            const data = await response.data
+            const data = await response.json()
             if (data.liked) {
                 setLikes(likes + 1)
                 setIsLiked(true)
@@ -35,6 +36,7 @@ const BlogLike = ({ data }: {
                 setIsLiked(false)
             }
         } catch (error) {
+            toast("Something went wrong")
         }
     }
 

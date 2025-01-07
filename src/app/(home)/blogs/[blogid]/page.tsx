@@ -1,22 +1,24 @@
 import { DetailBlogsType } from '@/types'
-import axios from 'axios'
 import { Eye } from 'lucide-react'
 import React from 'react'
 import Comments from './Comments'
 import BlogLike from './BlogLike'
-import { getCookies } from '@/server/action'
 import Markdown from 'react-markdown'
+import { getAccessToken } from '@/app/action'
+import { getUser, isAuthenticated, urlGenerator } from '@/utils'
 
 const BlogSingle = async ({ params }: { params: Promise<{ blogid: string | undefined }> }) => {
-    const { access_token } = await getCookies(['access_token'])
+    const access = await getAccessToken()
+    const isAuth = isAuthenticated(access)
+    const user = getUser(access)
     const blogid = (await params).blogid
 
-    const response = await axios.get(`${process.env.BASE_API_URL_SERVER}/blogs/read/${blogid}`, access_token ? {
+    const response = await fetch(urlGenerator(`/blogs/read/${blogid}`), isAuth ? {
         headers: {
-            Authorization: `Bearer ${access_token}`
+            Authorization: `Bearer ${access}`
         }
     } : {})
-    const data: DetailBlogsType = await response.data
+    const data: DetailBlogsType = await response.json()
 
     return (
         <section className="py-24">
@@ -49,7 +51,7 @@ const BlogSingle = async ({ params }: { params: Promise<{ blogid: string | undef
                             {data.content}
                         </Markdown>
                     </div>
-                    <Comments data={data} />
+                    <Comments data={data} isAuth={isAuth} access={access} user={user} />
                 </article>
             </div>
         </section>

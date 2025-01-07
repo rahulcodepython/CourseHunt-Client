@@ -5,31 +5,31 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { useAuthStore } from '@/context/AuthStore'
 import useMutation from '@/hooks/useMutation'
-import { DetailBlogsCommentType, DetailBlogsType } from '@/types'
+import { DetailBlogsCommentType, DetailBlogsType, UserType } from '@/types'
 import { ReloadIcon } from '@radix-ui/react-icons'
 import axios from 'axios'
 import { Pen, Reply, SendHorizonal, Trash } from 'lucide-react'
 import React from 'react'
 import { toast } from 'react-toastify'
 
-const Comments = ({ data }: {
-    data: DetailBlogsType
+const Comments = ({ data, isAuth, access, user }: {
+    data: DetailBlogsType,
+    isAuth: boolean,
+    access: string | undefined,
+    user: UserType | null
 }) => {
     const [comments, setComments] = React.useState<DetailBlogsCommentType[]>(data.comment)
     const [totalComments, setTotalComments] = React.useState<number>(data.comments)
     const [comment, setComment] = React.useState<string>('')
-    const isAuthenticated = useAuthStore(state => state.isAuthenticated)
-    const accessToken = useAuthStore(state => state.accessToken)
-    const user = useAuthStore(state => state.user)
 
     const { mutate, mutationIsLoading, mutationIsError, mutationError, mutationData, mutationState } = useMutation();
 
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        isAuthenticated && await mutate(async () => createComment({
+        isAuth && await mutate(async () => createComment({
             content: comment,
             blog: data.id
-        }, accessToken))
+        }, access))
     }
 
     React.useEffect(() => {
@@ -67,7 +67,7 @@ const Comments = ({ data }: {
                     mutationIsLoading ? <Button disabled className="gap-2">
                         <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
                         Please wait
-                    </Button> : <Button type="submit" className="gap-2" disabled={!isAuthenticated}>
+                    </Button> : <Button type="submit" className="gap-2" disabled={!isAuth}>
                         <SendHorizonal className="h-4 w-4" />
                         <span>
                             Post Comment
@@ -93,13 +93,13 @@ const Comments = ({ data }: {
                                             {item.created_at}
                                         </p>
                                         {
-                                            user?.username === item.user && isAuthenticated && <DeleteCommentComponent id={item.id} comments={comments} setComments={setComments} totalComments={totalComments} setTotalComments={setTotalComments} />
+                                            user?.username === item.user && isAuth && <DeleteCommentComponent id={item.id} comments={comments} setComments={setComments} totalComments={totalComments} setTotalComments={setTotalComments} />
                                         }
                                         {
-                                            user?.username === item.user && isAuthenticated && <EditCommentComponent data={item} setComments={setComments} />
+                                            user?.username === item.user && isAuth && <EditCommentComponent data={item} setComments={setComments} />
                                         }
                                         {
-                                            isAuthenticated && <ReplyCommentComponent data={data} setComments={setComments} totalComments={totalComments} setTotalComments={setTotalComments} parent={item.id} />
+                                            isAuth && <ReplyCommentComponent data={data} setComments={setComments} totalComments={totalComments} setTotalComments={setTotalComments} parent={item.id} />
                                         }
                                     </div>
                                 </footer>
@@ -123,13 +123,13 @@ const Comments = ({ data }: {
                                                     {child.created_at}
                                                 </p>
                                                 {
-                                                    user?.username === child.user && isAuthenticated && <DeleteCommentComponent id={child.id} comments={comments} setComments={setComments} totalComments={totalComments} setTotalComments={setTotalComments} parent={item.id} />
+                                                    user?.username === child.user && isAuth && <DeleteCommentComponent id={child.id} comments={comments} setComments={setComments} totalComments={totalComments} setTotalComments={setTotalComments} parent={item.id} />
                                                 }
                                                 {
-                                                    user?.username === child.user && isAuthenticated && <EditCommentComponent data={child} setComments={setComments} parent={item.id} />
+                                                    user?.username === child.user && isAuth && <EditCommentComponent data={child} setComments={setComments} parent={item.id} />
                                                 }
                                                 {
-                                                    isAuthenticated && <ReplyCommentComponent data={data} setComments={setComments} totalComments={totalComments} setTotalComments={setTotalComments} parent={item.id} />
+                                                    isAuth && <ReplyCommentComponent data={data} setComments={setComments} totalComments={totalComments} setTotalComments={setTotalComments} parent={item.id} />
                                                 }
                                             </div>
                                         </footer>

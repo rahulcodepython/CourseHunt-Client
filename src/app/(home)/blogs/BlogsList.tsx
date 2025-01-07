@@ -9,13 +9,15 @@ import { useAuthStore } from '@/context/AuthStore'
 import { Button } from '@/components/ui/button'
 
 const BlogsList = ({
-    data
+    data,
+    access,
+    isAuth
 }: {
-    data: PaginationType<ListBlogsType>
+    data: PaginationType<ListBlogsType>,
+    access: string | undefined,
+    isAuth: boolean
 }) => {
     const pagination = usePagination<ListBlogsType>(data)
-    const isAuthenticated = useAuthStore(state => state.isAuthenticated)
-    const accessToken = useAuthStore(state => state.accessToken)
 
     return (
         <div className='flex flex-col gap-12 items-center'>
@@ -50,7 +52,7 @@ const BlogsList = ({
             }
             {
                 pagination.is_next && <div className="w-full flex items-center justify-center">
-                    <Button onClick={() => pagination.fetchNext(pagination.nextPageUrl, isAuthenticated, accessToken)}>
+                    <Button onClick={() => pagination.fetchNext(pagination.nextPageUrl, isAuth, access)}>
                         Load More
                     </Button>
                 </div>
