@@ -28,6 +28,19 @@ export interface UserType {
     "is_superuser": boolean
 }
 
+export interface ApiResponseType {
+    "status": 200 | 400
+    "data": {
+        "success"?: string
+        "error"?: string
+    } | any
+}
+
+export interface SignInFormType {
+    email: string
+    password?: string
+}
+
 export interface AuthStoreState {
     isAuthenticated: boolean;
     accessToken: string | undefined;

@@ -79,7 +79,7 @@ export const revalidateTokens = async (refresh: string | undefined): Promise<boo
 export const handleApiResponse = async (response: Response) => {
     const result = await response.json();
     return {
-        status: response.status,
+        status: 200,
         data: result,
     };
 };
@@ -88,12 +88,12 @@ export const handleApiError = async (error: any) => {
     if (error instanceof Response) {
         const errorData = await error.json();
         return {
-            status: error.status,
+            status: 400,
             data: { error: errorData.message },
         };
     }
     return {
-        status: 500,
+        status: 400,
         data: { error: "An unexpected error occurred" },
     };
 };

@@ -1,5 +1,6 @@
 "use server";
-import { urlGenerator } from "@/utils";
+import { ApiResponseType, SignInFormType } from "@/types";
+import { handleApiError, handleApiResponse, urlGenerator } from "@/utils";
 import { cookies } from "next/headers";
 
 export const getAccessToken = async (): Promise<string | undefined> => {
@@ -32,4 +33,40 @@ export const fetchNewTokens = async (token: string) => {
     } catch (error) {
         return false;
     }
+};
+
+export const initLoginUser = async (formData: SignInFormType): Promise<ApiResponseType> => {
+    return await fetch(urlGenerator('/auth/users/login/email/'), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+    })
+        .then((response) => response.json())
+        .then(async (response) => {
+            return await handleApiResponse(response);
+        })
+        .catch(async (error) => {
+            return await handleApiError(error);
+        }) as ApiResponseType;
+}
+
+export const signInAction = async (formData: SignInFormType): Promise<ApiResponseType> => {
+    return await fetch(urlGenerator('/auth/users/jwt/create/'), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+    })
+        .then((response) => response.json())
+        .then(async (response) => {
+            const access = response.access;
+            const refresh = response.refresh;
+
+            const cookieStore = await cookies();
+            cookieStore.set("access", access, { maxAge: 60 * 60 * 24 }); //
+            cookieStore.set("refresh", refresh, { maxAge: 60 * 60 * 24 * 4 });
+            return { status: 200, data: { success: "Successfully signed in" } };
+        })
+        .catch(async (error) => {
+            return await handleApiError(error);
+        }) as ApiResponseType;
 };

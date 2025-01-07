@@ -13,6 +13,7 @@ const nextConfig = {
         MESSAGING_SENDER_ID: process.env.MESSAGING_SENDER_ID,
         APP_ID: process.env.APP_ID,
         MEASUREMENT_ID: process.env.MEASUREMENT_ID,
+        OTP_VERIFICATION_LOGIN: process.env.OTP_VERIFICATION_LOGIN,
     },
     output: 'standalone',
     transpilePackages: ['next-mdx-remote'],

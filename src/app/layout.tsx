@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ThemeProvider } from "next-themes";
+import { Toaster } from "@/components/ui/sonner"
 
 export const metadata: Metadata = {
     title: "CourseHunt | Home",
@@ -20,8 +20,8 @@ export default async function RootLayout({ children }: Readonly<{
                 enableSystem
                 disableTransitionOnChange
             > */}
-            <ToastContainer />
             {children}
+            <Toaster />
             {/* </ThemeProvider> */}
         </body>
     </html>

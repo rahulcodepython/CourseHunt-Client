@@ -4,41 +4,48 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { ReloadIcon } from '@radix-ui/react-icons';
 import { SendHorizonal } from 'lucide-react';
-import { toast } from 'react-toastify';
-import useMutation from '@/hooks/useMutation';
-import axios from 'axios';
+import { SignInFormType } from '@/types';
+import { initLoginUser, signInAction } from '@/app/action';
+import { useForm } from 'react-hook-form';
+import LoadingButton from '@/components/loading-button';
+import { toast } from 'sonner';
 
 const LoginPage: React.FC = () => {
+    const OTP_VERIFICATION_LOGIN = process.env.OTP_VERIFICATION_LOGIN === 'true' ? true : false;
+
+    if (OTP_VERIFICATION_LOGIN) {
+        return <LoginWithEmail />
+    } else {
+        return <LoginWithCredentials />
+    }
+};
+
+const LoginWithEmail = () => {
+    const [loading, setLoading] = React.useState<boolean>(false);
     const router = useRouter();
 
-    const { mutate, mutationIsLoading, mutationIsError, mutationError, mutationData, mutationState } = useMutation();
-    const [email, setEmail] = React.useState<string>("");
+    const { register, handleSubmit, reset } = useForm<SignInFormType>()
 
-    const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        await mutate(async () => initLoginUser(email));
-    };
+    const onSubmit = async (data: SignInFormType) => {
+        setLoading(true)
+        const result = await initLoginUser(data)
 
-    React.useEffect(() => {
-        const handler = async () => {
-            if (mutationState === 'done') {
-                if (mutationIsError) {
-                    toast.error(mutationError);
-                }
-                else {
-                    setEmail("");
-                    toast.success(mutationData.success);
-                    localStorage.setItem('resend_otp_email_login', email);
-                    router.push('/auth/verify/otp/login');
-                }
+        if (result) {
+            if (result.status === 200) {
+                localStorage.setItem('resend_otp_email_login', data.email);
+                router.push('/auth/verify/otp/login');
+                router.push('/')
+                toast(result.data.success)
+            } else {
+                reset()
+                toast(result.data.error)
             }
         }
-        handler();
-    }, [mutationState])
+        setLoading(false)
+    }
 
-    return <form onSubmit={(e) => onSubmit(e)} className="flex flex-col gap-6">
+    return <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
         <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-2">
                 <Label htmlFor="email" className="uppercase text-gray-600 text-xs">
@@ -46,8 +53,7 @@ const LoginPage: React.FC = () => {
                 </Label>
                 <Input
                     type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    {...register('email')}
                     placeholder="Enter your email"
                     id="email"
                     className="w-full"
@@ -57,28 +63,77 @@ const LoginPage: React.FC = () => {
                 />
             </div>
         </div>
-        {
-            mutationIsLoading ? <Button disabled className="gap-2">
-                <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-                Please wait
-            </Button> : <Button type="submit" className="gap-2">
+        <LoadingButton loading={loading}>
+            <Button type="submit" className="gap-2">
                 <SendHorizonal className="h-4 w-4" />
-                <span>Log In</span>
+                Log In
             </Button>
-        }
+        </LoadingButton>
     </form>
-};
+}
 
-const initLoginUser = async (email: string) => {
-    const options = {
-        url: `${process.env.BASE_API_URL}/auth/users/login/email/`,
-        method: 'POST',
-        data: {
-            email: email
+const LoginWithCredentials = () => {
+    const [loading, setLoading] = React.useState<boolean>(false);
+    const router = useRouter()
+
+    const { register, handleSubmit, reset } = useForm<SignInFormType>()
+
+    const onSubmit = async (data: SignInFormType) => {
+        setLoading(true)
+        const result = await signInAction(data)
+
+        if (result) {
+            if (result.status === 200) {
+                router.push('/')
+                toast(result.data.success)
+            } else {
+                reset()
+                toast(result.data.error)
+            }
         }
-    };
+        setLoading(false)
+    }
 
-    return await axios.request(options);
+    return <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
+        <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-2">
+                <Label htmlFor="email" className="uppercase text-gray-600 text-xs">
+                    Email
+                </Label>
+                <Input
+                    type="email"
+                    placeholder="Enter your email"
+                    id="email"
+                    className="w-full"
+                    autoFocus
+                    autoComplete="email"
+                    required
+                    {...register('email')}
+                />
+            </div>
+            <div className="flex flex-col gap-2">
+                <Label htmlFor="password" className="uppercase text-gray-600 text-xs">
+                    Password
+                </Label>
+                <Input
+                    type="password"
+                    placeholder="Enter your password"
+                    id="password"
+                    className="w-full"
+                    autoFocus
+                    autoComplete="password"
+                    required
+                    {...register('password')}
+                />
+            </div>
+        </div>
+        <LoadingButton loading={loading}>
+            <Button type="submit" className="gap-2">
+                <SendHorizonal className="h-4 w-4" />
+                Log In
+            </Button>
+        </LoadingButton>
+    </form>
 }
 
 export default LoginPage;
