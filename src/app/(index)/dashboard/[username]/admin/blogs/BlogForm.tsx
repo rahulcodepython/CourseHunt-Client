@@ -15,7 +15,7 @@ import { SendHorizonal } from 'lucide-react';
 import axios from 'axios';
 import Markdown from 'react-markdown';
 import FileUpload from '@/components/FileUpload';
-import { handleUploadFile } from '@/utils';
+import { handleUploadFile } from '@/utils/firebase';
 
 const blogSchema = z.object({
     title: z.string().min(1, 'Title is required'),

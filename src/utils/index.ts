@@ -1,35 +1,99 @@
-"use client"
-import {
-    getStorage,
-    ref,
-    uploadBytesResumable,
-    getDownloadURL,
-} from "firebase/storage";
-import { initializeApp } from "firebase/app";
+import { AccessTokenUserType, UserType } from '@/types';
+import { fetchNewTokens } from "@/app/action";
 
-const firebaseConfig = {
-    apiKey: process.env.API_KEY,
-    authDomain: process.env.AUTH_DOMAIN,
-    projectId: process.env.PROJECT_ID,
-    storageBucket: process.env.STORAGE_BUCKET,
-    messagingSenderId: process.env.MESSAGING_SENDER_ID,
-    appId: process.env.APP_ID,
-    measurementId: process.env.MEASUREMENT_ID,
+export const checkTokenExpiry = (exp: number): boolean => {
+    const currentTime = Math.floor(Date.now() / 1000);
+    return exp <= currentTime;
+}
+
+export const urlGenerator = (url: string) => {
+    return `${process.env.BASE_API_URL}${url}`;
+}
+
+export const decodeJwtToken = (token: string): AccessTokenUserType | null => {
+    try {
+        const parts = token.split('.');
+
+        if (parts.length !== 3) {
+            throw new Error('Invalid JWT token');
+        }
+
+        const base64Url = parts[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+
+        const jsonPayload = decodeURIComponent(
+            atob(base64)
+                .split('')
+                .map(char => `%${char.charCodeAt(0).toString(16).padStart(2, '0')}`)
+                .join('')
+        );
+
+        return JSON.parse(jsonPayload);
+    } catch (error) {
+        return null;
+    }
+}
+
+export const getUser = (token: string | undefined): UserType | null => {
+    try {
+        if (!token) {
+            return null;
+        }
+        const decoded = decodeJwtToken(token);
+        return decoded as UserType;
+    } catch (error) {
+        return null;
+    }
+}
+
+export const isAuthenticated = (token: string | undefined): boolean => {
+    if (!token) {
+        return false;
+    }
+
+    const decoded = decodeJwtToken(token) as AccessTokenUserType | null;
+    if (!decoded) {
+        return false;
+    }
+
+    return !checkTokenExpiry(decoded.exp);
+}
+
+export const revalidateTokens = async (refresh: string | undefined): Promise<boolean> => {
+    if (!refresh) {
+        return false;
+    }
+
+    const decoded = decodeJwtToken(refresh) as AccessTokenUserType | null;
+    if (!decoded) {
+        return false;
+    }
+
+    if (checkTokenExpiry(decoded.exp)) {
+        return false;
+    }
+
+    return await fetchNewTokens(refresh as string);
+}
+
+export const handleApiResponse = async (response: Response) => {
+    const result = await response.json();
+    return {
+        status: response.status,
+        data: result,
+    };
 };
 
-const app = initializeApp(firebaseConfig);
-const storage = getStorage(app);
-
-export const handleUploadFile = async (file: File | null): Promise<string | undefined> => {
-    if (!file) {
-        return undefined;
+export const handleApiError = async (error: any) => {
+    if (error instanceof Response) {
+        const errorData = await error.json();
+        return {
+            status: error.status,
+            data: { error: errorData.message },
+        };
     }
-    try {
-        const storageRef = ref(storage, `CourseHunt/${file.name}`);
-        const uploadTask = await uploadBytesResumable(storageRef, file);
-        return await getDownloadURL(uploadTask.ref);
-
-    } catch (error) {
-        return undefined;
-    }
+    return {
+        status: 500,
+        data: { error: "An unexpected error occurred" },
+    };
 };
