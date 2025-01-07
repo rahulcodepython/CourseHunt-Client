@@ -1,22 +1,24 @@
 "use client"
 import { Card, CardContent } from '@/components/ui/card'
 import usePagination from '@/hooks/usePagination'
-import { ListCourseType, PaginationType } from '@/types'
+import { ListCourseType, PaginationType, UserType } from '@/types'
 import Image from 'next/image'
-import Link from 'next/link'
 import React from 'react'
-import EnrollButton from './EnrollButton'
-import { useAuthStore } from '@/context/AuthStore'
 import { Button } from '@/components/ui/button'
+import { Link } from 'next-view-transitions'
 
 const CourseList = ({
-    data
+    data,
+    isAuthenticated,
+    accessToken,
+    user
 }: {
-    data: PaginationType<ListCourseType>
+    data: PaginationType<ListCourseType>,
+    isAuthenticated: boolean,
+    accessToken: string | undefined
+    user: UserType | null
 }) => {
     const pagination = usePagination<ListCourseType>(data)
-    const isAuthenticated = useAuthStore(state => state.isAuthenticated)
-    const accessToken = useAuthStore(state => state.accessToken)
 
     return (
         <div className='flex flex-col gap-12 items-center'>
@@ -52,7 +54,15 @@ const CourseList = ({
                                         </div>
                                     </div>
                                     <div className="flex items-center justify-between w-full">
-                                        <EnrollButton id={item.id} enrolled={item.enrolled} />
+                                        {
+                                            isAuthenticated ? item.enrolled ? <Link href={`/dashboard/${user?.username}/study/${item.id}/`} className='w-full'>
+                                                <Button className='w-full'>Study</Button>
+                                            </Link> : <Button className="w-full">
+                                                <Link href={`/dashboard/${user?.username}/checkout/${item.id}`}>Enroll Now</Link>
+                                            </Button> : <Button variant={'destructive'} className='w-full'>
+                                                <Link href="/auth/login">Login to enroll</Link>
+                                            </Button>
+                                        }
                                     </div>
                                 </CardContent>
                             </Card>

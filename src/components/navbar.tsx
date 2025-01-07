@@ -1,9 +1,9 @@
 import { Button } from "./ui/button";
-import Link from "next/link";
 import { MountainIcon, UserIcon } from "lucide-react";
 import ModeToggle from "./ModeToggle";
 import { getUser, isAuthenticated } from "@/utils";
 import { getAccessToken } from "@/app/action";
+import { Link } from "next-view-transitions";
 
 const Navbar = async () => {
     const access = await getAccessToken();
@@ -52,7 +52,7 @@ const Navbar = async () => {
                 <div className="flex items-center gap-4">
                     <ModeToggle />
                     {
-                        !isAuth ?
+                        isAuth ?
                             <div className="flex items-center gap-4">
                                 {
                                     user?.is_superuser ? <Link href={`/dashboard/${user.username}/admin`} prefetch={false}>

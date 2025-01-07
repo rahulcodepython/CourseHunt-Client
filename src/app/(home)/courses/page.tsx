@@ -7,19 +7,21 @@ import { Slider } from "@/components/ui/slider"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectItem } from "@/components/ui/select"
 import { FilterIcon } from "lucide-react";
 import { ListCourseType, PaginationType } from "@/types";
-import axios from "axios";
-import { getCookies } from "@/server/action";
 import CourseList from "./CourseList";
+import { getUser, isAuthenticated, urlGenerator } from "@/utils";
+import { getAccessToken } from "@/app/action";
 
 const Courses = async () => {
-    const { access_token } = await getCookies(['access_token']);
+    const access = await getAccessToken();
+    const isAuth = isAuthenticated(access)
+    const user = getUser(access)
 
-    const response = await axios(`${process.env.BASE_API_URL_SERVER}/course/list-course/`, access_token ? {
+    const response = await fetch(urlGenerator(`/course/list-course/`), isAuth ? {
         headers: {
-            'Authorization': `Bearer ${access_token}`
+            'Authorization': `Bearer ${access}`
         }
     } : {})
-    const data: PaginationType<ListCourseType> = await response.data
+    const data: PaginationType<ListCourseType> = await response.json()
 
     return <div className="flex flex-col min-h-[100dvh]">
         <section className="container w-full pt-12 md:pt-24 lg:pt-32 px-4 md:px-6 flex items-center gap-4 bg-background p-4 rounded-lg shadow-lg">
@@ -71,7 +73,7 @@ const Courses = async () => {
             </div>
         </section>
         <section className="container w-full py-6 md:py-12 lg:py-16 px-4 md:px-6 flex flex-col items-center justify-center">
-            <CourseList data={data} />
+            <CourseList data={data} isAuthenticated={isAuth} accessToken={access} user={user} />
         </section>
     </div>
 }

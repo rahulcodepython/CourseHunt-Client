@@ -3,10 +3,9 @@ import { Card, CardContent } from '@/components/ui/card'
 import usePagination from '@/hooks/usePagination'
 import { ListBlogsType, PaginationType } from '@/types'
 import Image from 'next/image'
-import Link from 'next/link'
 import React from 'react'
-import { useAuthStore } from '@/context/AuthStore'
 import { Button } from '@/components/ui/button'
+import { Link } from 'next-view-transitions'
 
 const BlogsList = ({
     data,

@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { getCookies } from "@/server/action";
 import { StudyCourseType } from "@/types";
 import axios from "axios";
-import Link from "next/link";
+import { Link } from "next-view-transitions";
 import React from "react";
 import Markdown from "react-markdown";
 

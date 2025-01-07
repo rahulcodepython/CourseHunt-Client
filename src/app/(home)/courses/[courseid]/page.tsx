@@ -1,23 +1,27 @@
 import React from "react"
 import Image from "next/image"
 import { Card, CardHeader, CardTitle } from "@/components/ui/card"
-import axios from "axios"
 import { DetailSingleCourseType } from "@/types"
-import EnrollButton from "../EnrollButton"
-import { getCookies } from "@/server/action"
 import Markdown from "react-markdown"
+import { getAccessToken } from "@/app/action"
+import { getUser, isAuthenticated, urlGenerator } from "@/utils"
+import { Button } from "@/components/ui/button"
+import { Link } from "next-view-transitions"
 
 const CoursePage = async ({ params }: { params: Promise<{ courseid: string | undefined }> }) => {
-    const { access_token } = await getCookies(['access_token']);
+    const access = await getAccessToken()
+    const isAuth = isAuthenticated(access)
+    const user = getUser(access)
+
     const { courseid } = await params;
 
-    const response = await axios(`${process.env.BASE_API_URL_SERVER}/course/detail-single-course/${courseid}/`, access_token ? {
+    const response = await fetch(urlGenerator(`/course/detail-single-course/${courseid}/`), isAuth ? {
         headers: {
-            'Authorization': `Bearer ${access_token}`
+            'Authorization': `Bearer ${access}`
         }
     } : {}
     );
-    const data: DetailSingleCourseType = response.data;
+    const data: DetailSingleCourseType = await response.json();
 
     return <section className="flex flex-col min-h-[100dvh] py-24 gap-6">
         <section className="w-fullflex flex-col items-center justify-center">
@@ -69,7 +73,17 @@ const CoursePage = async ({ params }: { params: Promise<{ courseid: string | und
                         </CardHeader>
                     </Card>
                 </div>
-                <EnrollButton id={data.id} enrolled={data.enrolled} />
+                {
+
+                    isAuth ? data.enrolled ? <Link href={`/dashboard/${user?.username}/study/${data.id}/`} className='w-full'>
+                        <Button className='w-full'>Study</Button>
+                    </Link> : <Button className="w-full">
+                        <Link href={`/dashboard/${user?.username}/checkout/${data.id}`}>Enroll Now</Link>
+                    </Button> : <Button variant={'destructive'} className='w-full'>
+                        <Link href="/auth/login">Login to enroll</Link>
+                    </Button>
+
+                }
             </div>
         </section>
         <section className="w-full flex flex-col items-center justify-center">
