@@ -8,13 +8,13 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectI
 import { FilterIcon } from "lucide-react";
 import { ListBlogsType, PaginationType } from "@/types";
 import BlogsList from "./BlogsList";
-import { isAuthenticated, urlGenerator } from "@/utils";
+import { isAuthenticated, serverUrlGenerator } from "@/utils";
 import { getAccessToken } from "@/app/action";
 
 const Blogs = async () => {
     const access = await getAccessToken();
     const isAuth = isAuthenticated(access);
-    const response = await fetch(urlGenerator(`/blogs/list/`), {
+    const response = await fetch(serverUrlGenerator(`/blogs/list/`), {
         method: 'GET',
         headers: isAuth ? {
             'Authorization': `Bearer ${access}`

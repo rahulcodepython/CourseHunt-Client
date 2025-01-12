@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import { useRouter } from "next/navigation"
 import React from "react"
 import { SignUpFormType } from "@/types"
-import { urlGenerator } from "@/utils"
+import { clientUrlGenerator } from "@/utils"
 import LoadingButton from "@/components/loading-button"
 import { initRegisterUser } from "@/app/action"
 import { toast } from "sonner"
@@ -43,7 +43,7 @@ const RegisterPage = () => {
     }
 
     const checkEmailAvailability = async (email: string) => {
-        await fetch(urlGenerator('/auth/users/check-email/'), {
+        await fetch(clientUrlGenerator('/auth/users/check-email/'), {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email }),

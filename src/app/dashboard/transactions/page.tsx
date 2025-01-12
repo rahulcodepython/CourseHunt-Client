@@ -4,12 +4,12 @@ import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/ca
 import { PaginationType, SelfTransactionType } from "@/types"
 import TransactionTable from "./TransactionTable"
 import { getAccessToken } from "@/app/action"
-import { urlGenerator } from "@/utils"
+import { serverUrlGenerator } from "@/utils"
 
 const PurchasePage = async () => {
     const access = await getAccessToken()
 
-    const response = await axios.get(urlGenerator(`/transactions/list-self-transactions/`), {
+    const response = await axios.get(serverUrlGenerator(`/transactions/list-self-transactions/`), {
         headers: {
             'Authorization': `Bearer ${access}`
         }

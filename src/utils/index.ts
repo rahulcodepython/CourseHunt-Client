@@ -6,7 +6,11 @@ export const checkTokenExpiry = (exp: number): boolean => {
     return exp <= currentTime;
 }
 
-export const urlGenerator = (url: string) => {
+export const serverUrlGenerator = (url: string) => {
+    return `${process.env.BASE_API_URL_SERVER}${url}`;
+}
+
+export const clientUrlGenerator = (url: string) => {
     return `${process.env.BASE_API_URL}${url}`;
 }
 

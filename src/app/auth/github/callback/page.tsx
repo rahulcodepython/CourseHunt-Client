@@ -2,7 +2,7 @@
 import { setCookie } from '@/app/action'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { urlGenerator } from '@/utils'
+import { clientUrlGenerator } from '@/utils'
 import { Link } from 'next-view-transitions'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React from 'react'
@@ -33,7 +33,7 @@ const GithubCallback = () => {
                 return
             }
 
-            return await fetch(urlGenerator(`/auth/github/authenticate/?code=${code}&state=${state}`), {
+            return await fetch(clientUrlGenerator(`/auth/github/authenticate/?code=${code}&state=${state}`), {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'

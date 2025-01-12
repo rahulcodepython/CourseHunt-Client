@@ -5,7 +5,7 @@ import Comments from './Comments'
 import BlogLike from './BlogLike'
 import Markdown from 'react-markdown'
 import { getAccessToken } from '@/app/action'
-import { getUser, isAuthenticated, urlGenerator } from '@/utils'
+import { getUser, isAuthenticated, serverUrlGenerator } from '@/utils'
 
 const BlogSingle = async ({ params }: { params: Promise<{ blogid: string | undefined }> }) => {
     const access = await getAccessToken()
@@ -13,7 +13,7 @@ const BlogSingle = async ({ params }: { params: Promise<{ blogid: string | undef
     const user = getUser(access)
     const blogid = (await params).blogid
 
-    const response = await fetch(urlGenerator(`/blogs/read/${blogid}`), isAuth ? {
+    const response = await fetch(serverUrlGenerator(`/blogs/read/${blogid}`), isAuth ? {
         headers: {
             Authorization: `Bearer ${access}`
         }

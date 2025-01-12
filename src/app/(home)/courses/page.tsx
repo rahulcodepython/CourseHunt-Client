@@ -8,7 +8,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectI
 import { FilterIcon } from "lucide-react";
 import { ListCourseType, PaginationType } from "@/types";
 import CourseList from "./CourseList";
-import { getUser, isAuthenticated, urlGenerator } from "@/utils";
+import { getUser, isAuthenticated, serverUrlGenerator } from "@/utils";
 import { getAccessToken } from "@/app/action";
 
 const Courses = async () => {
@@ -16,7 +16,7 @@ const Courses = async () => {
     const isAuth = isAuthenticated(access)
     const user = getUser(access)
 
-    const response = await fetch(urlGenerator(`/course/list-course/`), isAuth ? {
+    const response = await fetch(serverUrlGenerator(`/course/list-course/`), isAuth ? {
         headers: {
             'Authorization': `Bearer ${access}`
         }

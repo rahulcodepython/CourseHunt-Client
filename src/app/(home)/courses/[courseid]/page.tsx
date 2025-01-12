@@ -4,7 +4,7 @@ import { Card, CardHeader, CardTitle } from "@/components/ui/card"
 import { DetailSingleCourseType } from "@/types"
 import Markdown from "react-markdown"
 import { getAccessToken } from "@/app/action"
-import { getUser, isAuthenticated, urlGenerator } from "@/utils"
+import { getUser, isAuthenticated, serverUrlGenerator } from "@/utils"
 import { Button } from "@/components/ui/button"
 import { Link } from "next-view-transitions"
 
@@ -15,7 +15,7 @@ const CoursePage = async ({ params }: { params: Promise<{ courseid: string | und
 
     const { courseid } = await params;
 
-    const response = await fetch(urlGenerator(`/course/detail-single-course/${courseid}/`), isAuth ? {
+    const response = await fetch(serverUrlGenerator(`/course/detail-single-course/${courseid}/`), isAuth ? {
         headers: {
             'Authorization': `Bearer ${access}`
         }

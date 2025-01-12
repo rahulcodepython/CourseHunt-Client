@@ -4,11 +4,11 @@ import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/ca
 import axios from "axios";
 import PurchasedCourseTable from "./PurchasedCourseTable";
 import { getAccessToken } from "@/app/action";
-import { urlGenerator } from "@/utils";
+import { serverUrlGenerator } from "@/utils";
 
 const PurchasedCoursesPage = async () => {
     const access = await getAccessToken()
-    const response = await axios(urlGenerator(`/course/purchased-courses/`), {
+    const response = await axios(serverUrlGenerator(`/course/purchased-courses/`), {
         headers: {
             Authorization: 'Bearer ' + access
         }

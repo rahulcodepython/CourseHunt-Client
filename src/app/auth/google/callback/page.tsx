@@ -2,7 +2,7 @@
 import { setCookie } from '@/app/action'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { urlGenerator } from '@/utils'
+import { clientUrlGenerator } from '@/utils'
 import { Link } from 'next-view-transitions'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React from 'react'
@@ -26,7 +26,7 @@ const GoogleCallback = () => {
                 return
             }
 
-            return await fetch(urlGenerator(`/auth/google/authenticate/?code=${code}`), {
+            return await fetch(clientUrlGenerator(`/auth/google/authenticate/?code=${code}`), {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'

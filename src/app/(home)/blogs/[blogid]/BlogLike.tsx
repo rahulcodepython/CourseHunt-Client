@@ -1,6 +1,6 @@
 "use client"
 import { useAuthStore } from '@/context/AuthStore'
-import { urlGenerator } from '@/utils'
+import { clientUrlGenerator } from '@/utils'
 import { HeartFilledIcon } from '@radix-ui/react-icons'
 import { Heart } from 'lucide-react'
 import React from 'react'
@@ -22,7 +22,7 @@ const BlogLike = ({ data }: {
         if (!isAuthenticated) return
 
         try {
-            const response = await fetch(urlGenerator(`/blogs/like-blog/${id}/`), {
+            const response = await fetch(clientUrlGenerator(`/blogs/like-blog/${id}/`), {
                 headers: {
                     Authorization: `Bearer ${accessToken}`
                 }
