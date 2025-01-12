@@ -45,13 +45,11 @@ export interface AuthStoreState {
     isAuthenticated: boolean;
     accessToken: string | undefined;
     refreshToken: string | undefined;
-    user: UserType | undefined;
 }
 
 export interface AuthStoreActions {
-    LoggedInUser: (access: string, refresh: string, user: UserType) => void;
+    LoggedInUser: (access: string | undefined, refresh: string | undefined) => void;
     LogoutUser: () => void;
-    UpdateUser: (user: UserType | undefined) => void;
 }
 
 export interface CheckoutStoreState {

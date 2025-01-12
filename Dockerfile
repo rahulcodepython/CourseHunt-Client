@@ -3,13 +3,13 @@ FROM node:latest AS build
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+COPY package.json bun.lockb ./
 
-RUN npm install --force
+RUN npm install -g bun
 
 COPY . .
 
-RUN npm run build
+RUN bun run build
 
 # Production Stage
 FROM node:23.4.0-alpine AS production

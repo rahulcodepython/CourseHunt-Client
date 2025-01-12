@@ -11,7 +11,6 @@ const BlogsAction = ({ id, deleteBlogItem }: {
     id: string,
     deleteBlogItem: (id: string) => void
 }) => {
-    const user = useAuthStore(state => state.user)
     const accessToken = useAuthStore(state => state.accessToken)
 
     const { mutationIsLoading, mutate, mutationData, mutationIsError, mutationState, mutationError } = useMutation();

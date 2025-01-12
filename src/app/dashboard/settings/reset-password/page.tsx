@@ -6,9 +6,7 @@ import { useAuthStore } from '@/context/AuthStore'
 import useMutation from '@/hooks/useMutation'
 import { ReloadIcon } from '@radix-ui/react-icons'
 import axios from 'axios'
-import { jwtDecode } from 'jwt-decode'
 import { Eye, EyeClosed, SendHorizonal } from 'lucide-react'
-import { useRouter } from 'next/navigation'
 import React from 'react'
 import { toast } from 'react-toastify'
 import Countdown, { zeroPad } from 'react-countdown';
@@ -17,8 +15,6 @@ import { Label } from '@/components/ui/label'
 
 const ResetPasswordPage = () => {
     const accessToken = useAuthStore((state) => state.accessToken);
-    const loggedInUser = useAuthStore((state) => state.LoggedInUser);
-    const router = useRouter();
 
     const { mutate, mutationIsLoading, mutationIsError, mutationError, mutationData, mutationState } = useMutation();
 

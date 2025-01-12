@@ -43,7 +43,6 @@ const BlogForm = ({
 
     const [file, setFile] = React.useState<File | null>(null);
 
-    const user = useAuthStore(state => state.user);
     const accessToken = useAuthStore(state => state.accessToken);
 
     const router = useRouter();

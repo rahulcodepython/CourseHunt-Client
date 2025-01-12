@@ -10,14 +10,17 @@ import {
 } from "@/components/ui/sidebar"
 import { Bell, Search, UserIcon } from "lucide-react"
 import DashboardBreadcrumbComponent from "./breadcrumb"
-import { getAccessToken } from "@/app/action"
+import { getAccessToken, getRefreshToken } from "@/app/action"
 import { getUser } from "@/utils"
+import AddStateValues from "./add-state-values"
 
 const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
     const access = await getAccessToken()
+    const refresh = await getRefreshToken()
     const user = getUser(access)
     return (
         <SidebarProvider>
+            <AddStateValues access={access} refresh={refresh} />
             {user && <AppSidebar is_superuser={user.is_superuser} />}
             <SidebarInset>
                 <header className="flex h-16 shrink-0 items-center justify-between px-4 gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">

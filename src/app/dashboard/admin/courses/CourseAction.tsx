@@ -13,7 +13,6 @@ const CourseAction = ({ courseid, removeCourse }:
         courseid: string,
         removeCourse: (courseid: string) => void
     }) => {
-    const user = useAuthStore(state => state.user);
     const accessToken = useAuthStore(state => state.accessToken);
 
     return (

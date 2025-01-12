@@ -51,7 +51,6 @@ const EditCourseForm = ({
         resolver: zodResolver(courseSchema),
         defaultValues: defaultValues,
     });
-    const user = useAuthStore(state => state.user);
     const router = useRouter();
 
     const { mutationIsLoading, mutate, mutationData, mutationIsError, mutationState, mutationError } = useMutation();

@@ -14,7 +14,6 @@ const PurchasedCourseTable = ({ data, columnList }: {
 }) => {
     const pagination = usePagination<ListCourseDashboardType>(data)
     const accessToken = useAuthStore(state => state.accessToken)
-    const user = useAuthStore(state => state.user)
 
     return (
         <CardContent>

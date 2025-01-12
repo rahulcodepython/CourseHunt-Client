@@ -1,6 +1,5 @@
 import * as React from "react"
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { getCookies } from "@/server/action"
 import axios from "axios"
 import { FeedbackType, PaginationType } from "@/types"
 import FeedbackTable from "./FeedbackTable"
