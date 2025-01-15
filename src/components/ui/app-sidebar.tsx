@@ -23,16 +23,12 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { useAuthStore } from "@/context/AuthStore"
 import { usePathname } from "next/navigation"
 import { Link } from "next-view-transitions"
 
-export function AppSidebar({
-    is_superuser,
-    ...props
-
-}: {
-    is_superuser: boolean,
-}) {
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+    const user = useAuthStore((state) => state.user);
     const pathname = usePathname();
 
     const data = {
@@ -42,42 +38,42 @@ export function AppSidebar({
         },
         navMain: [{
             title: "Admin Panel",
-            items: is_superuser && pathname.includes('/admin') ?
+            items: user?.is_superuser && pathname.includes('/admin') ?
                 [
                     {
                         title: "Dashboard",
-                        url: `/dashboard/admin`,
+                        url: `/dashboard/${user?.username}/admin`,
                         icon: House,
                         isActive: true,
                     },
                     {
                         title: "Purchase",
-                        url: `/dashboard/admin/purchase`,
+                        url: `/dashboard/${user?.username}/admin/purchase`,
                         icon: CircleDollarSign,
                     },
                     {
                         title: "Feedback",
-                        url: `/dashboard/admin/feedback`,
+                        url: `/dashboard/${user?.username}/admin/feedback`,
                         icon: MessageCircleMore,
                     },
                     {
                         title: "Courses",
-                        url: `/dashboard/admin/courses`,
+                        url: `/dashboard/${user?.username}/admin/courses`,
                         icon: Book,
                     },
                     {
                         title: "Blogs",
-                        url: `/dashboard/admin/blogs`,
+                        url: `/dashboard/${user?.username}/admin/blogs`,
                         icon: File,
                     },
                     {
                         title: "Users",
-                        url: `/dashboard/admin/users`,
+                        url: `/dashboard/${user?.username}/admin/users`,
                         icon: UserIcon,
                     },
                     {
                         title: "Coupon Codes",
-                        url: `/dashboard/admin/cupone-codes`,
+                        url: `/dashboard/${user?.username}/admin/cupone-codes`,
                         icon: Asterisk,
                     },
                 ]
@@ -85,23 +81,23 @@ export function AppSidebar({
                 [
                     {
                         title: "Dashboard",
-                        url: `/dashboard`,
+                        url: `/dashboard/${user?.username}`,
                         icon: House,
                         isActive: true,
                     },
                     {
                         title: "Purchased Courses",
-                        url: `/dashboard/purchased-courses`,
+                        url: `/dashboard/${user?.username}/purchased-courses`,
                         icon: Book,
                     },
                     {
                         title: "Transactions",
-                        url: `/dashboard/transactions`,
+                        url: `/dashboard/${user?.username}/transactions`,
                         icon: CircleDollarSign,
                     },
                     {
                         title: "Feedback",
-                        url: `/dashboard/feedback`,
+                        url: `/dashboard/${user?.username}/feedback`,
                         icon: FlagTriangleRightIcon,
                     },
                 ],

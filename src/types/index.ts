@@ -11,29 +11,7 @@ export interface AccessTokenUserType {
     "is_superuser": boolean
 }
 
-export interface UserType {
-    "username": string
-    "email": string
-    "first_name": string
-    "last_name": string
-    "image": string
-    "is_superuser": boolean
-}
-
-export interface ApiResponseType {
-    "status": 200 | 400
-    "data": {
-        "success"?: string
-        "error"?: string
-    } | any
-}
-
-export interface SignInFormType {
-    email: string
-    password?: string
-}
-
-export interface SignUpFormType {
+export interface InitialRegisterValuesType {
     first_name: string
     last_name: string
     email: string
@@ -41,15 +19,26 @@ export interface SignUpFormType {
     confirmpassword: string
 }
 
+export interface UserType {
+    username: string,
+    first_name: string,
+    last_name: string,
+    image: string,
+    email: string,
+    is_superuser: boolean
+}
+
 export interface AuthStoreState {
     isAuthenticated: boolean;
     accessToken: string | undefined;
     refreshToken: string | undefined;
+    user: UserType | undefined;
 }
 
 export interface AuthStoreActions {
-    LoggedInUser: (access: string | undefined, refresh: string | undefined) => void;
+    LoggedInUser: (access: string, refresh: string, user: UserType) => void;
     LogoutUser: () => void;
+    UpdateUser: (user: UserType | undefined) => void;
 }
 
 export interface CheckoutStoreState {

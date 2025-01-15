@@ -3,11 +3,20 @@ FROM node:latest AS build
 
 WORKDIR /app
 
-COPY package.json bun.lockb ./
-
 RUN npm install -g bun
 
-COPY . .
+COPY package.json bun.lockb ./
+
+RUN bun install
+
+COPY public ./public
+COPY src ./src
+COPY .env.* ./
+COPY components.json ./components.json
+COPY next.config.mjs ./next.config.mjs
+COPY postcss.config.mjs ./postcss.config.mjs
+COPY tailwind.config.ts ./tailwind.config.ts
+COPY tsconfig.json ./tsconfig.json
 
 RUN bun run build
 

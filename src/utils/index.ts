@@ -1,18 +1,39 @@
-import { AccessTokenUserType, ApiResponseType, UserType } from '@/types';
-import { fetchNewTokens } from "@/app/action";
+"use client"
+import {
+    getStorage,
+    ref,
+    uploadBytesResumable,
+    getDownloadURL,
+} from "firebase/storage";
+import { initializeApp } from "firebase/app";
+import { AccessTokenUserType, UserType } from "@/types";
 
-export const checkTokenExpiry = (exp: number): boolean => {
-    const currentTime = Math.floor(Date.now() / 1000);
-    return exp <= currentTime;
-}
+const firebaseConfig = {
+    apiKey: process.env.API_KEY,
+    authDomain: process.env.AUTH_DOMAIN,
+    projectId: process.env.PROJECT_ID,
+    storageBucket: process.env.STORAGE_BUCKET,
+    messagingSenderId: process.env.MESSAGING_SENDER_ID,
+    appId: process.env.APP_ID,
+    measurementId: process.env.MEASUREMENT_ID,
+};
 
-export const serverUrlGenerator = (url: string) => {
-    return `${process.env.BASE_API_URL_SERVER}${url}`;
-}
+const app = initializeApp(firebaseConfig);
+const storage = getStorage(app);
 
-export const clientUrlGenerator = (url: string) => {
-    return `${process.env.BASE_API_URL}${url}`;
-}
+export const handleUploadFile = async (file: File | null): Promise<string | undefined> => {
+    if (!file) {
+        return undefined;
+    }
+    try {
+        const storageRef = ref(storage, `CourseHunt/${file.name}`);
+        const uploadTask = await uploadBytesResumable(storageRef, file);
+        return await getDownloadURL(uploadTask.ref);
+
+    } catch (error) {
+        return undefined;
+    }
+};
 
 export const decodeJwtToken = (token: string): AccessTokenUserType | null => {
     try {
@@ -49,55 +70,3 @@ export const getUser = (token: string | undefined): UserType | null => {
         return null;
     }
 }
-
-export const isAuthenticated = (token: string | undefined): boolean => {
-    if (!token) {
-        return false;
-    }
-
-    const decoded = decodeJwtToken(token) as AccessTokenUserType | null;
-    if (!decoded) {
-        return false;
-    }
-
-    return !checkTokenExpiry(decoded.exp);
-}
-
-export const revalidateTokens = async (refresh: string | undefined): Promise<boolean> => {
-    if (!refresh) {
-        return false;
-    }
-
-    const decoded = decodeJwtToken(refresh) as AccessTokenUserType | null;
-    if (!decoded) {
-        return false;
-    }
-
-    if (checkTokenExpiry(decoded.exp)) {
-        return false;
-    }
-
-    return await fetchNewTokens(refresh as string);
-}
-
-export const handleApiResponse = async (response: Response): Promise<ApiResponseType> => {
-    const result = await response.json();
-    return {
-        status: 200,
-        data: result,
-    };
-};
-
-export const handleApiError = async (error: any): Promise<ApiResponseType> => {
-    if (error instanceof Response) {
-        const errorData = await error.json();
-        return {
-            status: 400,
-            data: { error: errorData.message },
-        };
-    }
-    return {
-        status: 400,
-        data: { error: "An unexpected error occurred" },
-    };
-};
