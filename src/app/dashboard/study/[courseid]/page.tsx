@@ -1,8 +1,9 @@
 import { getAccessToken } from "@/app/action";
 import { Button } from "@/components/ui/button";
 import { StudyCourseType } from "@/types";
+import { serverUrlGenerator } from "@/utils";
 import axios from "axios";
-import { Link } from "next-view-transitions";
+import Link from "next/link";
 import React from "react";
 import Markdown from "react-markdown";
 
@@ -12,7 +13,7 @@ const StudyPage = async ({ params }: { params: Promise<{ courseid: string | unde
 
     try {
         const response = await axios.request({
-            url: `${process.env.BASE_API_URL_SERVER}/course/study-single-course/${courseid}/`,
+            url: serverUrlGenerator(`/course/study-single-course/${courseid}/`),
             method: 'GET',
             headers: {
                 authorization: `Bearer ${access}`

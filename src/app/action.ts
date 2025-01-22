@@ -1,6 +1,6 @@
 "use server";
-import { ApiResponseType, SignInFormType, SignUpFormType } from "@/types";
-import { handleApiError, handleApiResponse, serverUrlGenerator } from "@/utils";
+import { AccessTokenUserType, SignInFormType, UserType } from "@/types";
+import { checkTokenExpiry, decodeJwtToken, serverUrlGenerator } from "@/utils";
 import { cookies } from "next/headers";
 
 export const setCookie = async (cookie_name: string, cookie_value: string, maxAge?: number) => {
@@ -14,7 +14,7 @@ export const getAccessToken = async (): Promise<string | undefined> => {
 
 export const getRefreshToken = async (): Promise<string | undefined> => {
     const cookieStore = await cookies();
-    return cookieStore.get("access")?.value;
+    return cookieStore.get("refresh")?.value;
 }
 
 export const fetchNewTokens = async (token: string) => {
@@ -39,61 +39,78 @@ export const fetchNewTokens = async (token: string) => {
     }
 };
 
-export const initLoginUser = async (formData: SignInFormType): Promise<ApiResponseType> => {
-    return await fetch(serverUrlGenerator('/auth/users/login/email/'), {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-    })
-        .then((response) => response.json())
-        .then(async (response) => {
-            return await handleApiResponse(response);
-        })
-        .catch(async (error) => {
-            return await handleApiError(error);
-        }) as ApiResponseType;
+export const getUser = async (): Promise<UserType | null> => {
+    const token = await getAccessToken();
+
+    try {
+        if (!token) {
+            return null;
+        }
+        const decoded = decodeJwtToken(token);
+        return decoded as UserType;
+    } catch (error) {
+        return null;
+    }
 }
 
-export const resendLoginOTP = async (email: string): Promise<ApiResponseType> => {
-    return await fetch(serverUrlGenerator('/auth/users/login/email/resend/'), {
-        method: 'POST',
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email }),
-    })
-        .then(response => response.json())
-        .then(async (response) => {
-            return await handleApiResponse(response);
-        })
-        .catch(async (error) => {
-            return await handleApiError(error);
-        }) as ApiResponseType;
+export const isAuthenticated = async (): Promise<boolean> => {
+    const token = await getAccessToken();
+
+    if (!token) {
+        return false;
+    }
+
+    const decoded = decodeJwtToken(token) as AccessTokenUserType | null;
+    if (!decoded) {
+        return false;
+    }
+
+    return !checkTokenExpiry(decoded.exp);
 }
 
-export const loginUser = async (uid: string, token: string): Promise<ApiResponseType> => {
-    return await fetch(serverUrlGenerator('/auth/users/jwt/create/'), {
-        method: 'POST',
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            uid: uid,
-            token: token
-        }),
-    })
-        .then(response => response.json())
-        .then(async (response) => {
-            const access = response.access;
-            const refresh = response.refresh;
+export const revalidateTokens = async (): Promise<boolean> => {
+    const refresh = await getRefreshToken();
 
-            const cookieStore = await cookies();
-            cookieStore.set("access", access, { maxAge: 60 * 60 * 24 });
-            cookieStore.set("refresh", refresh, { maxAge: 60 * 60 * 24 * 4 });
-            return { status: 200, data: response.data };
-        })
-        .catch(async (error) => {
-            return await handleApiError(error);
-        }) as ApiResponseType;
+    if (!refresh) {
+        return false;
+    }
+
+    const decoded = decodeJwtToken(refresh) as AccessTokenUserType | null;
+    if (!decoded) {
+        return false;
+    }
+
+    if (checkTokenExpiry(decoded.exp)) {
+        return false;
+    }
+
+    return await fetchNewTokens(refresh as string);
 }
 
-export const signInAction = async (formData: SignInFormType): Promise<ApiResponseType> => {
+export const loginUser = async (uid: string, token: string) => {
+    try {
+        const response = await fetch(serverUrlGenerator('/auth/users/jwt/create/'), {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                uid: uid,
+                token: token
+            }),
+        });
+        const data = await response.json();
+        const access = data.access;
+        const refresh = data.refresh;
+
+        const cookieStore = await cookies();
+        cookieStore.set("access", access, { maxAge: 60 * 60 * 24 });
+        cookieStore.set("refresh", refresh, { maxAge: 60 * 60 * 24 * 4 });
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
+export const signInAction = async (formData: SignInFormType) => {
     return await fetch(serverUrlGenerator('/auth/users/jwt/create/'), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -107,30 +124,14 @@ export const signInAction = async (formData: SignInFormType): Promise<ApiRespons
             const cookieStore = await cookies();
             cookieStore.set("access", access, { maxAge: 60 * 60 * 24 }); //
             cookieStore.set("refresh", refresh, { maxAge: 60 * 60 * 24 * 4 });
-            return { status: 200, data: { success: "Successfully signed in" } };
-        })
-        .catch(async (error) => {
-            return await handleApiError(error);
-        }) as ApiResponseType;
+            return true;
+        }).catch(() => {
+            return false;
+        });
 };
 
-export const initRegisterUser = async (data: SignUpFormType): Promise<ApiResponseType> => {
-    return await fetch(serverUrlGenerator('/auth/users/me/'), {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-    })
-        .then(async (response) => {
-            return await handleApiResponse(response);
-        })
-        .catch(async (error) => {
-            console.log(JSON.stringify(error));
 
-            return await handleApiError(error);
-        }) as ApiResponseType;
-}
-
-export const registerUser = async (uid: string, token: string): Promise<ApiResponseType> => {
+export const registerUser = async (uid: string, token: string) => {
     return await fetch(serverUrlGenerator('/auth/users/activate/'), {
         method: 'POST',
         headers: { "Content-Type": "application/json" },
@@ -147,24 +148,9 @@ export const registerUser = async (uid: string, token: string): Promise<ApiRespo
             const cookieStore = await cookies();
             cookieStore.set("access", access, { maxAge: 60 * 60 * 24 });
             cookieStore.set("refresh", refresh, { maxAge: 60 * 60 * 24 * 4 });
-            return { status: 200, data: response.data };
+            return true
         })
         .catch(async (error) => {
-            return await handleApiError(error);
-        }) as ApiResponseType;
-}
-
-export const resendRegisterOTP = async (email: string) => {
-    return await fetch(serverUrlGenerator('/auth/users/activate/email/resend/'), {
-        method: 'POST',
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email }),
-    })
-        .then(response => response.json())
-        .then(async (response) => {
-            return await handleApiResponse(response);
-        })
-        .catch(async (error) => {
-            return await handleApiError(error);
-        }) as ApiResponseType;
+            return false;
+        });
 }

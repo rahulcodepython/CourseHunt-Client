@@ -7,14 +7,13 @@ import { Slider } from "@/components/ui/slider"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectItem } from "@/components/ui/select"
 import { FilterIcon } from "lucide-react";
 import { ListCourseType, PaginationType } from "@/types";
-import CourseList from "./CourseList";
-import { getUser, isAuthenticated, serverUrlGenerator } from "@/utils";
-import { getAccessToken } from "@/app/action";
+import { getAccessToken, getUser, isAuthenticated } from "@/app/action";
+import { serverUrlGenerator } from "@/utils";
+import CourseList from "./course-list";
 
 const Courses = async () => {
     const access = await getAccessToken();
-    const isAuth = isAuthenticated(access)
-    const user = getUser(access)
+    const isAuth = await isAuthenticated()
 
     const response = await fetch(serverUrlGenerator(`/course/list-course/`), isAuth ? {
         headers: {
@@ -73,7 +72,7 @@ const Courses = async () => {
             </div>
         </section>
         <section className="container w-full py-6 md:py-12 lg:py-16 px-4 md:px-6 flex flex-col items-center justify-center">
-            <CourseList data={data} isAuthenticated={isAuth} accessToken={access} user={user} />
+            <CourseList data={data} />
         </section>
     </div>
 }

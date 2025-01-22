@@ -1,7 +1,7 @@
 "use client"
 
 import React from 'react';
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import { usePathname } from 'next/navigation';
 
 const DashboardBreadcrumbComponent = () => {
@@ -16,7 +16,7 @@ const DashboardBreadcrumbComponent = () => {
                             <React.Fragment key={index}>
                                 <BreadcrumbItem>
                                     <BreadcrumbLink>
-                                        {path}
+                                        {path.length > 10 ? `${path.substring(0, 10)}...` : path}
                                     </BreadcrumbLink>
                                 </BreadcrumbItem>
                                 {

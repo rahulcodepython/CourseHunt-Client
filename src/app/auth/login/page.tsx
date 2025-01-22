@@ -5,11 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { SendHorizonal } from 'lucide-react';
-import { SignInFormType } from '@/types';
-import { initLoginUser, signInAction } from '@/app/action';
+import { SignInFormCredentialsType, SignInFormType } from '@/types';
+import { signInAction } from '@/app/action';
 import { useForm } from 'react-hook-form';
 import LoadingButton from '@/components/loading-button';
-import { toast } from 'sonner';
+import { toast } from 'react-toastify';
+import axios from 'axios';
+import { clientUrlGenerator, serverUrlGenerator } from '@/utils';
 
 const LoginPage: React.FC = () => {
     const OTP_VERIFICATION_LOGIN = process.env.OTP_VERIFICATION_LOGIN === 'true' ? true : false;
@@ -29,18 +31,17 @@ const LoginWithEmail = () => {
 
     const onSubmit = async (data: SignInFormType) => {
         setLoading(true)
-        const result = await initLoginUser(data)
 
-        if (result) {
-            if (result.status === 200) {
-                localStorage.setItem('resend_otp_email_login', data.email);
-                router.push('/auth/verify/otp/login');
-                router.push('/')
-                toast(result.data.success)
-            } else {
-                reset()
-                toast(result.data.error)
-            }
+        try {
+            const result = await axios.post(clientUrlGenerator('/auth/users/login/email/'), data, {
+                headers: { "Content-Type": "application/json" }
+            });
+            localStorage.setItem('resend_otp_email_login', data.email);
+            router.push('/auth/verify/otp/login');
+            toast.success(result.data.success)
+        } catch (error: any) {
+            reset()
+            toast.error(error.response.data.error)
         }
         setLoading(false)
     }
@@ -76,20 +77,17 @@ const LoginWithCredentials = () => {
     const [loading, setLoading] = React.useState<boolean>(false);
     const router = useRouter()
 
-    const { register, handleSubmit, reset } = useForm<SignInFormType>()
+    const { register, handleSubmit, reset } = useForm<SignInFormCredentialsType>()
 
-    const onSubmit = async (data: SignInFormType) => {
+    const onSubmit = async (data: SignInFormCredentialsType) => {
         setLoading(true)
         const result = await signInAction(data)
-
         if (result) {
-            if (result.status === 200) {
-                router.push('/')
-                toast(result.data.success)
-            } else {
-                reset()
-                toast(result.data.error)
-            }
+            toast.success("Logged in successfully")
+            router.push('/dashboard')
+        } else {
+            reset()
+            toast.error("Failed to login")
         }
         setLoading(false)
     }

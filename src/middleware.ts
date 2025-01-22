@@ -1,22 +1,29 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { getAccessToken, getRefreshToken } from "./app/action";
-import { isAuthenticated, revalidateTokens } from "./utils";
+import { getUser, isAuthenticated, revalidateTokens } from "./app/action";
 
 const AUTH_ROUTE = '/auth';
 const PROTECTED_ROUTE = '/dashboard';
+const ADMIN_ROUTE = '/dashboard/admin';
 
 export async function middleware(request: NextRequest) {
-    const access = await getAccessToken();
-    const refresh = await getRefreshToken();
-
     const { pathname } = request.nextUrl;
 
-    const redirectAuthenticateUser = () => {
-        if (pathname.startsWith(AUTH_ROUTE)) {
+    const redirectAdminUser = async () => {
+        const user = await getUser();
+
+        if (pathname.startsWith(ADMIN_ROUTE) && !user?.is_superuser) {
             return NextResponse.redirect(new URL('/dashboard', request.url));
         }
         return NextResponse.next();
+    }
+
+    const redirectAuthenticateUser = async () => {
+        if (pathname.startsWith(AUTH_ROUTE)) {
+            return NextResponse.redirect(new URL('/dashboard', request.url));
+        }
+
+        return await redirectAdminUser();
     }
 
     const redirectUnauthenticateUser = () => {
@@ -26,10 +33,10 @@ export async function middleware(request: NextRequest) {
         return NextResponse.next();
     }
 
-    const auth: boolean = isAuthenticated(access);
+    const auth: boolean = await isAuthenticated();
 
     if (!auth) {
-        const tokens = await revalidateTokens(refresh);
+        const tokens = await revalidateTokens();
 
         if (!tokens) {
             const cookieStore = await cookies();
@@ -39,10 +46,10 @@ export async function middleware(request: NextRequest) {
             return redirectUnauthenticateUser();
         }
 
-        return redirectAuthenticateUser();
+        return await redirectAuthenticateUser();
     }
 
-    return redirectAuthenticateUser();
+    return await redirectAuthenticateUser();
 }
 
 export const config = {

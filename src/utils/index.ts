@@ -1,5 +1,4 @@
-import { AccessTokenUserType, ApiResponseType, UserType } from '@/types';
-import { fetchNewTokens } from "@/app/action";
+import { AccessTokenUserType } from '@/types';
 
 export const checkTokenExpiry = (exp: number): boolean => {
     const currentTime = Math.floor(Date.now() / 1000);
@@ -37,67 +36,3 @@ export const decodeJwtToken = (token: string): AccessTokenUserType | null => {
         return null;
     }
 }
-
-export const getUser = (token: string | undefined): UserType | null => {
-    try {
-        if (!token) {
-            return null;
-        }
-        const decoded = decodeJwtToken(token);
-        return decoded as UserType;
-    } catch (error) {
-        return null;
-    }
-}
-
-export const isAuthenticated = (token: string | undefined): boolean => {
-    if (!token) {
-        return false;
-    }
-
-    const decoded = decodeJwtToken(token) as AccessTokenUserType | null;
-    if (!decoded) {
-        return false;
-    }
-
-    return !checkTokenExpiry(decoded.exp);
-}
-
-export const revalidateTokens = async (refresh: string | undefined): Promise<boolean> => {
-    if (!refresh) {
-        return false;
-    }
-
-    const decoded = decodeJwtToken(refresh) as AccessTokenUserType | null;
-    if (!decoded) {
-        return false;
-    }
-
-    if (checkTokenExpiry(decoded.exp)) {
-        return false;
-    }
-
-    return await fetchNewTokens(refresh as string);
-}
-
-export const handleApiResponse = async (response: Response): Promise<ApiResponseType> => {
-    const result = await response.json();
-    return {
-        status: 200,
-        data: result,
-    };
-};
-
-export const handleApiError = async (error: any): Promise<ApiResponseType> => {
-    if (error instanceof Response) {
-        const errorData = await error.json();
-        return {
-            status: 400,
-            data: { error: errorData.message },
-        };
-    }
-    return {
-        status: 400,
-        data: { error: "An unexpected error occurred" },
-    };
-};

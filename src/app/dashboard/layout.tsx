@@ -10,14 +10,14 @@ import {
 } from "@/components/ui/sidebar"
 import { Bell, Search, UserIcon } from "lucide-react"
 import DashboardBreadcrumbComponent from "./breadcrumb"
-import { getAccessToken, getRefreshToken } from "@/app/action"
-import { getUser } from "@/utils"
-import AddStateValues from "./add-state-values"
+import { getAccessToken, getRefreshToken, getUser } from "@/app/action"
+import AddStateValues from "@/components/add-state-values"
 
 const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
     const access = await getAccessToken()
     const refresh = await getRefreshToken()
-    const user = getUser(access)
+    const user = await getUser()
+
     return (
         <SidebarProvider>
             <AddStateValues access={access} refresh={refresh} />

@@ -1,11 +1,14 @@
 "use client"
 import { setCookie } from '@/app/action'
+import Spinner from '@/components/spinner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { clientUrlGenerator } from '@/utils'
-import { Link } from 'next-view-transitions'
+import axios from 'axios'
+import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React from 'react'
+import { toast } from 'react-toastify'
 
 const GithubCallback = () => {
     const searchParams = useSearchParams()
@@ -33,44 +36,24 @@ const GithubCallback = () => {
                 return
             }
 
-            return await fetch(clientUrlGenerator(`/auth/github/authenticate/?code=${code}&state=${state}`), {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).then(async (response) => {
-                if (response.ok) {
-                    const data = await response.json()
-
-                    await setCookie('access', data.access)
-                    await setCookie('access', data.refresh)
-                } else {
-                    const error = await response.json()
-                    setErrorMessage(error.error)
-                    setError(true)
-                }
-            }).catch((error) => {
-                setErrorMessage(error)
+            try {
+                const response = await axios.get(clientUrlGenerator(`/auth/github/authenticate/?code=${code}&state=${state}`),)
+                const data = response.data
+                await setCookie('access', data.access)
+                await setCookie('refresh', data.refresh)
+                toast.success('Successfully authenticated with GitHub')
+            } catch (error) {
                 setError(true)
-            }).finally(() => {
-                setLoading(false)
-            })
+                toast.error('An error occurred while trying to authenticate with GitHub')
+            }
+            setLoading(false)
         }
-
         handle()
-    }, [])
+    }, [code, state])
 
     if (loading && !error) {
         return (
-            <div className='flex items-center justify-center w-screen h-screen'>
-                <Card>
-                    <CardContent className='pt-6 flex flex-col gap-4 items-center justify-center'>
-                        <span className="text-xl font-bold leading-tight tracking-tight">
-                            Authenticating with GitHub ...
-                        </span>
-                    </CardContent>
-                </Card>
-            </div>
+            <Spinner />
         )
     }
 

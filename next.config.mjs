@@ -3,9 +3,9 @@ const nextConfig = {
     reactStrictMode: false,
     env: {
         BASE_API_URL: process.env.BASE_API_URL,
+        BASE_API_URL_SERVER: process.env.BASE_API_URL_SERVER,
         ENCRYPTION_KEY: process.env.ENCRYPTION_KEY,
         RAZORPAY_KEY: process.env.RAZORPAY_KEY,
-        BASE_API_URL_SERVER: process.env.BASE_API_URL_SERVER,
         API_KEY: process.env.API_KEY,
         AUTH_DOMAIN: process.env.AUTH_DOMAIN,
         PROJECT_ID: process.env.PROJECT_ID,

@@ -11,7 +11,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import ReferralsTable from "./ReferralsTable";
+import ReferralsTable from "./referrals-table";
 
 const ReferralsPage = () => {
     return <section className="grid gap-4 pt-8">

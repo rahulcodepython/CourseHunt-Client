@@ -2,9 +2,9 @@ import axios from "axios"
 import * as React from "react"
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { PaginationType, SelfTransactionType } from "@/types"
-import TransactionTable from "./TransactionTable"
 import { getAccessToken } from "@/app/action"
 import { serverUrlGenerator } from "@/utils"
+import TransactionTable from "./transaction-table"
 
 const PurchasePage = async () => {
     const access = await getAccessToken()
@@ -38,7 +38,7 @@ const PurchasePage = async () => {
                     </div>
                 </div>
             </CardHeader>
-            <TransactionTable data={data} columnList={columnsList} />
+            <TransactionTable data={data} columnList={columnsList} accessToken={access} />
         </Card>
     </div>
 }

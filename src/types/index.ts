@@ -20,17 +20,13 @@ export interface UserType {
     "is_superuser": boolean
 }
 
-export interface ApiResponseType {
-    "status": 200 | 400
-    "data": {
-        "success"?: string
-        "error"?: string
-    } | any
-}
-
 export interface SignInFormType {
     email: string
-    password?: string
+}
+
+export interface SignInFormCredentialsType {
+    email: string
+    password: string
 }
 
 export interface SignUpFormType {
@@ -45,11 +41,28 @@ export interface AuthStoreState {
     isAuthenticated: boolean;
     accessToken: string | undefined;
     refreshToken: string | undefined;
+    user: UserType | undefined;
 }
 
 export interface AuthStoreActions {
     LoggedInUser: (access: string | undefined, refresh: string | undefined) => void;
     LogoutUser: () => void;
+}
+
+export interface CommentStoreState {
+    comments: DetailBlogsType['comment']
+    totalComments: number
+}
+
+export interface CommentStoreActions {
+    setComments: (comments: DetailBlogsType['comment']) => void;
+    setTotalComments: (totalComments: number) => void;
+    createComment: (content: DetailBlogsCommentType) => void;
+    createReply: (parent: string, content: DetailBlogsCommentType) => void;
+    deleteComment: (parent: string) => void;
+    deleteReply: (parent: string, child: string) => void;
+    editComment: (parent: string, content: string) => void;
+    editReply: (parent: string, child: string, content: string) => void;
 }
 
 export interface CheckoutStoreState {
@@ -153,14 +166,13 @@ export interface DetailSingleCourseType {
 }
 
 export interface ListCuponeCodeType {
-    map(arg0: (coupne: any, index: any) => import("react").JSX.Element): import("react").ReactNode
     id: string,
+    created_at: string,
+    expiry: string,
     code: string,
     discount: number,
-    expiry: string,
-    create_at: string,
-    used: number,
     quantity: null | number,
+    used: number,
     is_unlimited: boolean,
     is_active: boolean
 }

@@ -9,14 +9,15 @@ import axios from 'axios'
 import { Eye, EyeClosed, SendHorizonal } from 'lucide-react'
 import React from 'react'
 import { toast } from 'react-toastify'
-import Countdown, { zeroPad } from 'react-countdown';
+import Countdown from 'react-countdown';
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import Timer from '@/components/timer'
+import { clientUrlGenerator } from '@/utils'
+import LoadingButton from '@/components/loading-button'
 
 const ResetPasswordPage = () => {
     const accessToken = useAuthStore((state) => state.accessToken);
-
-    const { mutate, mutationIsLoading, mutationIsError, mutationError, mutationData, mutationState } = useMutation();
 
     const [oldPassword, setOldPassword] = React.useState<string>("")
     const [toggleOldPassword, setToggleOldPassword] = React.useState<boolean>(true)
@@ -25,6 +26,8 @@ const ResetPasswordPage = () => {
     const [rewriteNewPassword, setRewriteNewPassword] = React.useState<string>("")
     const [toggleRewriteNewPassword, setToggleRewriteNewPassword] = React.useState<boolean>(true)
     const [value, setValue] = React.useState<string>("")
+
+    const { mutate, onSuccess, onError, mutationIsLoading } = useMutation();
 
     const onSubmit = async () => {
         if (value.length < 8) {
@@ -39,29 +42,33 @@ const ResetPasswordPage = () => {
         const uid = value.slice(0, 4);
         const token = value.slice(4, 8);
 
-        await mutate(async () => resetPassword({ uid, token, oldPassword, newPassword }, accessToken));
+
+        const options = {
+            url: clientUrlGenerator(`/auth/users/reset_password/`),
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            },
+            data: { uid, token, oldPassword, newPassword }
+        };
+
+        await mutate(options);
     };
 
-    React.useEffect(() => {
-        const handler = async () => {
-            if (mutationState === 'done') {
-                if (mutationIsError) {
-                    toast.error(mutationError);
-                }
-                else {
-                    setOldPassword("");
-                    setNewPassword("");
-                    setRewriteNewPassword("");
-                    setValue("");
-                    setToggleNewPassword(true);
-                    setToggleOldPassword(true);
-                    setToggleRewriteNewPassword(true);
-                    toast.success(mutationData.success);
-                }
-            }
-        }
-        handler();
-    }, [mutationState])
+    onSuccess((data) => {
+        setOldPassword("");
+        setNewPassword("");
+        setRewriteNewPassword("");
+        setValue("");
+        setToggleNewPassword(true);
+        setToggleOldPassword(true);
+        setToggleRewriteNewPassword(true);
+        toast.success(data.success);
+    })
+
+    onError((error) => {
+        toast.error(error);
+    })
 
     return (
         <div className='flex flex-col gap-4 items-center justify-center h-screen'>
@@ -139,15 +146,12 @@ const ResetPasswordPage = () => {
                 </CardContent>
                 <CardFooter className="flex flex-col gap-2">
                     <ResendResetPasswordOTPComponent />
-                    {
-                        mutationIsLoading ? <Button disabled className="gap-2 w-full">
-                            <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-                            Please wait
-                        </Button> : <Button type="submit" className="gap-2 w-full" onClick={() => onSubmit()}>
+                    <LoadingButton loading={mutationIsLoading}>
+                        <Button className="w-full gap-2">
                             <SendHorizonal className="h-4 w-4" />
                             <span>Update</span>
                         </Button>
-                    }
+                    </LoadingButton>
                 </CardFooter>
             </Card>
         </div>
@@ -156,29 +160,30 @@ const ResetPasswordPage = () => {
 
 const ResendResetPasswordOTPComponent = () => {
     const accessToken = useAuthStore((state) => state.accessToken);
-    const { mutate, mutationIsLoading, mutationIsError, mutationError, mutationData, mutationState } = useMutation();
+    const { mutate, onSuccess, onError, mutationIsLoading } = useMutation();
 
     const [allowResend, setAllowResend] = React.useState<boolean>(false);
 
     const handleResendResetPasswordOTP = async () => {
-        !mutationIsLoading && await mutate(async () => resendResetPasswordOTP(accessToken));
+        const options = {
+            url: clientUrlGenerator(`/auth/users/reset_password/`),
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        };
 
+        !mutationIsLoading && await mutate(options);
     }
 
-    React.useEffect(() => {
-        const handler = async () => {
-            if (mutationState === 'done') {
-                if (mutationIsError) {
-                    toast.error(mutationError);
-                }
-                else {
-                    setAllowResend(false);
-                    toast.success(mutationData.success);
-                }
-            }
-        }
-        handler();
-    }, [mutationState])
+    onSuccess((data) => {
+        setAllowResend(false);
+        toast.success(data.success);
+    })
+
+    onError((error) => {
+        toast.error(error);
+    })
 
     return (
         <div className='text-right w-full'>
@@ -186,59 +191,21 @@ const ResendResetPasswordOTPComponent = () => {
                 {
                     !allowResend && <Countdown
                         date={Date.now() + (1000 * (2))} // 2 minutes
-                        renderer={TimerComponent}
+                        renderer={Timer}
                         zeroPadTime={2}
                         onComplete={() => setAllowResend(true)}
                     />
                 }
-                {
-                    mutationIsLoading ? <span className="text-sm font-semibold text-gray-700 hover:text-gray-500 focus:text-gray-500 hover:underline cursor-pointer">
-                        Resending OTP
-                    </span> :
-                        <span className="text-sm font-semibold text-gray-700 hover:text-gray-500 focus:text-gray-500 hover:underline cursor-pointer" onClick={() => allowResend && handleResendResetPasswordOTP()}>
-                            Resend OTP
-                        </span>
-                }
+                <LoadingButton loading={mutationIsLoading} loadingC={<span className="text-sm font-semibold text-gray-700 hover:text-gray-500 focus:text-gray-500 hover:underline cursor-pointer">
+                    Resending OTP
+                </span>}>
+                    <span className="text-sm font-semibold text-gray-700 hover:text-gray-500 focus:text-gray-500 hover:underline cursor-pointer" onClick={() => allowResend && handleResendResetPasswordOTP()}>
+                        Resend OTP
+                    </span>
+                </LoadingButton>
             </div>
         </div>
     )
-}
-
-const TimerComponent = ({ minutes, seconds, completed }: {
-    minutes: number,
-    seconds: number,
-    completed: boolean
-}) => {
-    if (!completed) {
-        return <span>{zeroPad(minutes)}:{zeroPad(seconds)}</span>;
-    } else {
-        return <></>
-    }
-}
-
-const resendResetPasswordOTP = async (access_token: string | undefined) => {
-    const options = {
-        url: `${process.env.BASE_API_URL}/auth/users/reset_password/`,
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${access_token}`
-        }
-    };
-
-    return await axios.request(options);
-}
-
-const resetPassword = async (data: { uid: string, token: string, oldPassword: string, newPassword: string }, access_token: string | undefined) => {
-    const options = {
-        url: `${process.env.BASE_API_URL}/auth/users/reset_password/`,
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${access_token}`
-        },
-        data: data
-    };
-
-    return await axios.request(options);
 }
 
 export default ResetPasswordPage;

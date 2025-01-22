@@ -2,13 +2,14 @@ import * as React from "react"
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import axios from "axios"
 import { FeedbackType, PaginationType } from "@/types"
-import FeedbackTable from "./FeedbackTable"
 import { getAccessToken } from "@/app/action"
+import { serverUrlGenerator } from "@/utils"
+import FeedbackTable from "./feedback-table"
 
 const FeedbackPage = async () => {
     const access_token = await getAccessToken()
 
-    const response = await axios.get(`${process.env.BASE_API_URL_SERVER}/feedback/list/`, {
+    const response = await axios.get(serverUrlGenerator(`/feedback/list/`), {
         headers: {
             Authorization: `Bearer ${access_token}`
         }

@@ -6,10 +6,12 @@ import { useRouter } from 'next/navigation'
 import React from 'react'
 import { toast } from 'react-toastify'
 import Countdown from 'react-countdown';
-import { registerUser, resendRegisterOTP } from '@/app/action'
+import { registerUser } from '@/app/action'
 import LoadingButton from '@/components/loading-button'
 import { useForm } from 'react-hook-form'
 import Timer from '@/components/timer'
+import axios from 'axios'
+import { clientUrlGenerator } from '@/utils'
 
 const VerifyOTPRegisterPage = () => {
     const [loading, setLoading] = React.useState<boolean>(false);
@@ -31,12 +33,12 @@ const VerifyOTPRegisterPage = () => {
         setLoading(true);
         const response = await registerUser(uid, token);
 
-        if (response.status === 200) {
+        if (response) {
             localStorage.removeItem('resend_otp_email_login');
-            toast(response.data.success);
+            toast.success('Account activated successfully');
             router.push('/');
         } else {
-            toast(response.data.error);
+            toast.error('Error activating account');
         }
         setLoading(false);
     };
@@ -113,13 +115,15 @@ const ResendRegisterOTPComponent = () => {
         }
 
         setLoading(true);
-        const response = await resendRegisterOTP(email);
 
-        if (response.status === 200) {
+        try {
+            const response = await axios.post(clientUrlGenerator('/auth/users/activate/email/resend/'), {
+                email: email
+            })
             setAllowResend(false);
-            toast(response.data.success);
-        } else {
-            toast(response.data.error);
+            toast.success(response.data.success);
+        } catch (error: any) {
+            toast.error(error.response.data.error);
         }
         setLoading(false);
     }
@@ -135,14 +139,13 @@ const ResendRegisterOTPComponent = () => {
                         onComplete={() => setAllowResend(true)}
                     />
                 }
-                {
-                    loading ? <span className="text-sm font-semibold text-gray-700 hover:text-gray-500 focus:text-gray-500 hover:underline cursor-pointer">
-                        Resending OTP ...
-                    </span> :
-                        <span className="text-sm font-semibold text-gray-700 hover:text-gray-500 focus:text-gray-500 hover:underline cursor-pointer">
-                            Resend OTP
-                        </span>
-                }
+                <LoadingButton loading={loading} loadingC={<span className="text-sm font-semibold text-gray-700 hover:text-gray-500 focus:text-gray-500 hover:underline cursor-pointer">
+                    Resending OTP ...
+                </span>}>
+                    <span className="text-sm font-semibold text-gray-700 hover:text-gray-500 focus:text-gray-500 hover:underline cursor-pointer">
+                        Resend OTP
+                    </span>
+                </LoadingButton>
             </div>
         </form>
     )

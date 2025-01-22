@@ -1,14 +1,15 @@
 import axios from "axios"
 import * as React from "react"
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import PurchaseTable from "./PurchaseTable"
 import { PaginationType, TransactionType } from "@/types"
 import { getAccessToken } from "@/app/action"
+import { serverUrlGenerator } from "@/utils"
+import PurchaseTable from "./purchase-table"
 
 const PurchasePage = async () => {
     const access = await getAccessToken()
 
-    const response = await axios.get(`${process.env.BASE_API_URL_SERVER}/transactions/list-transactions/`, {
+    const response = await axios.get(serverUrlGenerator(`/transactions/list-transactions/`), {
         headers: {
             'Authorization': `Bearer ${access}`
         }

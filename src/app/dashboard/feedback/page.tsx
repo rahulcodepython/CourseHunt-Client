@@ -10,38 +10,42 @@ import { useAuthStore } from "@/context/AuthStore";
 import useMutation from "@/hooks/useMutation";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import axios from "axios";
+import { clientUrlGenerator } from "@/utils";
+import LoadingButton from "@/components/loading-button";
 
 const FeedbackPage = () => {
     const [rating, setRating] = React.useState(0);
     const [ratingHover, setRatingHover] = React.useState(0);
     const [feedback, setFeedback] = React.useState("");
 
-    const isAuthenticated = useAuthStore(state => state.isAuthenticated);
     const accessToken = useAuthStore(state => state.accessToken);
 
-    const { mutate, mutationIsLoading, mutationIsError, mutationError, mutationData, mutationState } = useMutation();
+    const options = {
+        url: clientUrlGenerator(`/feedback/create/`),
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+        },
+        method: "POST",
+        data: { feedback, rating },
+    }
+
+    const { mutate, onSuccess, onError, mutationIsLoading } = useMutation();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        isAuthenticated && await mutate(() => createFeedback({ feedback, rating }, accessToken));
+        mutate(options);
     }
 
-    React.useEffect(() => {
-        const handler = async () => {
-            if (mutationState === 'done') {
-                if (mutationIsError) {
-                    toast.error(mutationError);
-                }
-                else {
-                    setRating(0);
-                    setRatingHover(0);
-                    setFeedback("");
-                    toast.success(mutationData.success);
-                }
-            }
-        }
-        handler();
-    }, [mutationState])
+    onSuccess((data) => {
+        setRating(0);
+        setRatingHover(0);
+        setFeedback("");
+        toast.success(data.success);
+    })
+
+    onError((error) => {
+        toast.error(error);
+    })
 
     return (
         <CardContent>
@@ -67,15 +71,12 @@ const FeedbackPage = () => {
                     </div>
                 </div>
                 <CardFooter className="flex justify-end p-0">
-                    {
-                        mutationIsLoading ? <Button disabled className="gap-2">
-                            <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-                            Please wait
-                        </Button> : <Button type="submit" className="gap-2">
+                    <LoadingButton loading={mutationIsLoading}>
+                        <Button type="submit" className="gap-2">
                             <SendHorizonal className="h-4 w-4" />
                             <span>Send Feedback</span>
                         </Button>
-                    }
+                    </LoadingButton>
                 </CardFooter>
             </form>
         </CardContent>

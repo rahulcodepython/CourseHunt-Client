@@ -9,8 +9,8 @@ import React from "react"
 import { SignUpFormType } from "@/types"
 import { clientUrlGenerator } from "@/utils"
 import LoadingButton from "@/components/loading-button"
-import { initRegisterUser } from "@/app/action"
-import { toast } from "sonner"
+import { toast } from "react-toastify"
+import axios from "axios"
 
 const RegisterPage = () => {
     const [loading, setLoading] = React.useState<boolean>(false);
@@ -25,39 +25,30 @@ const RegisterPage = () => {
 
     const onSubmit = async (data: SignUpFormType) => {
         if (data.password !== data.confirmpassword) {
-            toast('Password and confirm password does not match');
+            toast.error('Password and confirm password does not match');
             return;
         }
 
         setLoading(true);
-        const response = await initRegisterUser(data);
-        if (response.status === 200) {
+        try {
+            const response = await axios.post(clientUrlGenerator('/auth/users/me/'), data)
             localStorage.setItem('resend_otp_email_register', data.email);
             router.push('/auth/verify/otp/register');
-            toast(response.data.success);
-        } else {
+            toast.success(response.data.success);
+        } catch (error: any) {
             reset();
-            toast(response.data.error);
-        };
+            toast.error(error.response.data.error);
+        }
         setLoading(false);
     }
 
     const checkEmailAvailability = async (email: string) => {
-        await fetch(clientUrlGenerator('/auth/users/check-email/'), {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email }),
-        })
-            .then((response) => {
-                if (response.status === 200) {
-                    setEmailIsValid(true);
-                } else {
-                    setEmailIsValid(false);
-                }
-            })
-            .catch(async (error) => {
-                setEmailIsValid(false);
-            });
+        try {
+            await axios.post(clientUrlGenerator('/auth/users/check-email/'), { email });
+            setEmailIsValid(true);
+        } catch (error) {
+            setEmailIsValid(false);
+        }
     }
 
     return <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">

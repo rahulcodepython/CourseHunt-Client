@@ -1,13 +1,15 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import React from 'react'
-import BlogForm from '../../BlogForm'
 import axios from 'axios'
 import { getAccessToken } from '@/app/action'
+import { serverUrlGenerator } from '@/utils'
+import BlogForm from '../../blog-form'
 
 const BlogEdit = async ({ params }: { params: Promise<{ blogid: string | undefined }> }) => {
     const blogid = (await params).blogid
     const access_token = await getAccessToken()
-    const response = await axios.get(`${process.env.BASE_API_URL_SERVER}/blogs/update/${blogid}/`, {
+
+    const response = await axios.get(serverUrlGenerator(`/blogs/update/${blogid}/`), {
         headers: {
             'Authorization': 'Bearer ' + access_token
         }

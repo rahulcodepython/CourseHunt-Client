@@ -2,7 +2,7 @@ import { Card, CardHeader, CardDescription, CardContent, CardFooter } from "@/co
 import React from "react";
 import GithubLogin from "@/components/github-login";
 import GoogleLogin from "@/components/google-login";
-import { Link } from "next-view-transitions";
+import Link from "next/link";
 
 const RegisterLayout = ({ children }: { children: React.ReactNode }) => {
     return <main className="flex items-center justify-center w-screen h-screen">

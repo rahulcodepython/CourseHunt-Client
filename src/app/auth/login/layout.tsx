@@ -7,7 +7,7 @@ import {
     CardFooter,
     CardHeader,
 } from '@/components/ui/card';
-import { Link } from 'next-view-transitions';
+import Link from 'next/link';
 
 const LoginLayout = ({ children }: { children: React.ReactNode }) => {
     return <main className="flex items-center justify-center w-screen h-screen">

@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import EditCourseForm from "../edit-course/[courseid]/EditCourseForm";
 import { getAccessToken } from "@/app/action";
+import CourseForm from "../course-form";
 
 const CreateCourse = async () => {
     const access_token = await getAccessToken();
@@ -29,7 +29,7 @@ const CreateCourse = async () => {
                 <h2 className="text-xl font-semibold">Create Course</h2>
             </CardHeader>
             <CardContent>
-                <EditCourseForm courseid={undefined} access_token={access_token} defaultValues={defaultData} />
+                <CourseForm courseid={undefined} access_token={access_token} defaultValues={defaultData} />
             </CardContent>
         </Card>
     );

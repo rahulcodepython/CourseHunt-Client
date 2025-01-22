@@ -24,7 +24,7 @@ import {
     SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { usePathname } from "next/navigation"
-import { Link } from "next-view-transitions"
+import Link from "next/link"
 
 export function AppSidebar({
     is_superuser,

@@ -2,12 +2,12 @@ import * as React from "react"
 import { ListCourseDashboardType, PaginationType } from "@/types"
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import axios from "axios";
-import PurchasedCourseTable from "./PurchasedCourseTable";
 import { getAccessToken } from "@/app/action";
 import { serverUrlGenerator } from "@/utils";
+import CourseTable from "./course-table";
 
 const PurchasedCoursesPage = async () => {
-    const access = await getAccessToken()
+    const access = await getAccessToken();
     const response = await axios(serverUrlGenerator(`/course/purchased-courses/`), {
         headers: {
             Authorization: 'Bearer ' + access
@@ -29,7 +29,7 @@ const PurchasedCoursesPage = async () => {
                     </div>
                 </div>
             </CardHeader>
-            <PurchasedCourseTable data={data} columnList={['Course']} />
+            <CourseTable data={data} columnList={['Course', 'Action']} accessToken={access} />
         </Card>
     </div>
 }

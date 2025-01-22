@@ -1,14 +1,12 @@
 import { Button } from "./ui/button";
 import { MountainIcon, UserIcon } from "lucide-react";
-import ModeToggle from "./ModeToggle";
-import { getUser, isAuthenticated } from "@/utils";
-import { getAccessToken } from "@/app/action";
-import { Link } from "next-view-transitions";
+import { getUser, isAuthenticated } from "@/app/action";
+import ModeToggle from "./mode-toggle";
+import Link from "next/link";
 
 const Navbar = async () => {
-    const access = await getAccessToken();
-    const isAuth = isAuthenticated(access);
-    const user = getUser(access);
+    const isAuth = await isAuthenticated();
+    const user = await getUser();
 
     const NavItems = [
         {

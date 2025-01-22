@@ -9,7 +9,9 @@ import Countdown from 'react-countdown';
 import { useForm } from 'react-hook-form'
 import Timer from '@/components/timer'
 import LoadingButton from '@/components/loading-button'
-import { loginUser, resendLoginOTP } from '@/app/action'
+import { loginUser } from '@/app/action'
+import axios from 'axios'
+import { clientUrlGenerator } from '@/utils'
 
 const VerifyOTPLoginPage = () => {
     const [loading, setLoading] = React.useState<boolean>(false);
@@ -31,12 +33,12 @@ const VerifyOTPLoginPage = () => {
         setLoading(true);
         const response = await loginUser(uid, token);
 
-        if (response.status === 200) {
-            toast(response.data.success);
+        if (response) {
+            toast.success('Login successful');
             localStorage.removeItem('resend_otp_email_login');
             router.push('/');
         } else {
-            toast(response.data.error);
+            toast.error('Login failed');
         }
         setLoading(false);
     };
@@ -94,8 +96,6 @@ const ResendLoginOTPComponent = () => {
     const [loading, setLoading] = React.useState<boolean>(false);
     const [allowResend, setAllowResend] = React.useState<boolean>(false);
 
-    const { handleSubmit } = useForm();
-
     const handleResendLoginOTP = async () => {
         if (!allowResend) {
             return
@@ -113,19 +113,20 @@ const ResendLoginOTPComponent = () => {
         }
 
         setLoading(true);
-        const response = await resendLoginOTP(email);
 
-        if (response.status === 200) {
-            setAllowResend(false);
-            toast(response.data.success);
-        } else {
-            toast(response.data.error);
+        try {
+            const response = await axios.post(clientUrlGenerator('/auth/users/login/email/resend/'), {
+                email: email
+            })
+            toast.success(response.data.success);
+        } catch (error: any) {
+            toast.error(error.response.data.error);
         }
         setLoading(false);
     }
 
     return (
-        <form onSubmit={handleSubmit(handleResendLoginOTP)} className='text-right w-full'>
+        <div onClick={handleResendLoginOTP} className='text-right w-full'>
             <div className='flex w-full justify-end items-center gap-2'>
                 {
                     !allowResend && <Countdown
@@ -135,16 +136,15 @@ const ResendLoginOTPComponent = () => {
                         onComplete={() => setAllowResend(true)}
                     />
                 }
-                {
-                    loading ? <span className="text-sm font-semibold text-gray-700 hover:text-gray-500 focus:text-gray-500 hover:underline cursor-pointer">
-                        Resending OTP ...
-                    </span> :
-                        <span className="text-sm font-semibold text-gray-700 hover:text-gray-500 focus:text-gray-500 hover:underline cursor-pointer">
-                            Resend OTP
-                        </span>
-                }
+                <LoadingButton loading={loading} loadingC={<span className="text-sm font-semibold text-gray-700 hover:text-gray-500 focus:text-gray-500 hover:underline cursor-pointer">
+                    Resending OTP ...
+                </span>}>
+                    <span className="text-sm font-semibold text-gray-700 hover:text-gray-500 focus:text-gray-500 hover:underline cursor-pointer">
+                        Resend OTP
+                    </span>
+                </LoadingButton>
             </div>
-        </form>
+        </div>
     )
 }
 

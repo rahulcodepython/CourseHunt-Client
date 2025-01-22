@@ -2,8 +2,11 @@ import React from "react"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { BarChart, BarChartIcon, BellIcon, BriefcaseIcon, CircleCheckIcon, CircleDollarSign, EyeIcon, LineChart, LineChartIcon, TrashIcon, TrophyIcon } from "lucide-react"
+import { getUser } from "../action"
 
-const Dashboard = () => {
+const Dashboard = async () => {
+    const user = await getUser();
+
     const Notification = [
         {
             status: "unread",
@@ -49,6 +52,9 @@ const Dashboard = () => {
     return (
         <section className="flex min-h-screen w-full flex-col bg-muted/40">
             <div className="grid items-start gap-4 p-4 sm:p-6 md:gap-8">
+                <div>
+                    Hello, {user?.email}
+                </div>
                 <div className="grid gap-4 md:grid-cols-4">
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between pb-2">

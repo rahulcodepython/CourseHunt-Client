@@ -3,15 +3,14 @@ import Image from "next/image"
 import { Card, CardHeader, CardTitle } from "@/components/ui/card"
 import { DetailSingleCourseType } from "@/types"
 import Markdown from "react-markdown"
-import { getAccessToken } from "@/app/action"
-import { getUser, isAuthenticated, serverUrlGenerator } from "@/utils"
+import { getAccessToken, isAuthenticated } from "@/app/action"
+import { serverUrlGenerator } from "@/utils"
 import { Button } from "@/components/ui/button"
-import { Link } from "next-view-transitions"
+import Link from "next/link"
 
 const CoursePage = async ({ params }: { params: Promise<{ courseid: string | undefined }> }) => {
     const access = await getAccessToken()
-    const isAuth = isAuthenticated(access)
-    const user = getUser(access)
+    const isAuth = await isAuthenticated()
 
     const { courseid } = await params;
 
@@ -41,6 +40,7 @@ const CoursePage = async ({ params }: { params: Promise<{ courseid: string | und
                     </h1>
                     <p className="text-center text-muted-foreground">
                         {data.short_description}
+                        {`${isAuth}`}
                     </p>
                 </div>
             </div>

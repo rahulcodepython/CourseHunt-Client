@@ -11,6 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import axios from "axios"
 import { UserType } from "@/types"
 import { getAccessToken } from "@/app/action"
+import { serverUrlGenerator } from "@/utils"
 
 const UsersPage = async () => {
     const columnsList = [
@@ -24,7 +25,7 @@ const UsersPage = async () => {
 
     const options = {
         method: 'get',
-        url: `${process.env.BASE_API_URL_SERVER}/auth/users/alluser/`,
+        url: serverUrlGenerator(`/auth/users/alluser/`),
         headers: {
             'Authorization': 'Bearer ' + access_token
         }
