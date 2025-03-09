@@ -5,7 +5,6 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { SendHorizonal, StarIcon } from "lucide-react";
-import { toast } from "react-toastify";
 import { useAuthStore } from "@/context/AuthStore";
 import useMutation from "@/hooks/useMutation";
 import { ReloadIcon } from "@radix-ui/react-icons";
@@ -40,11 +39,6 @@ const FeedbackPage = () => {
         setRating(0);
         setRatingHover(0);
         setFeedback("");
-        toast.success(data.success);
-    })
-
-    onError((error) => {
-        toast.error(error);
     })
 
     return (

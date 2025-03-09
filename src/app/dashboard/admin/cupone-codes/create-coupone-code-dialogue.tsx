@@ -7,7 +7,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useMutation from "@/hooks/useMutation";
-import { toast } from "react-toastify";
 import { useAuthStore } from "@/context/AuthStore";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import LoadingButton from "@/components/loading-button";
@@ -62,12 +61,7 @@ const CreateCouponeCodeDialogue = ({
 
     onSuccess((data) => {
         addData(data);
-        toast.success("Coupon code added successfully");
         setIsOpen(false);
-    });
-
-    onError((error) => {
-        toast.error(error);
     });
 
     return (

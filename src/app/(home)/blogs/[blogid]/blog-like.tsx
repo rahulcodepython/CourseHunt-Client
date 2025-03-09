@@ -5,7 +5,6 @@ import { HeartFilledIcon } from '@radix-ui/react-icons'
 import axios from 'axios'
 import { Heart } from 'lucide-react'
 import React from 'react'
-import { toast } from 'react-toastify'
 
 const BlogLike = ({ data }: {
     data: {
@@ -41,8 +40,7 @@ const BlogLike = ({ data }: {
                 setLikes(likes - 1)
                 setIsLiked(false)
             }
-        } catch (error) {
-            toast.error("Something went wrong")
+        } catch {
         }
     }
 

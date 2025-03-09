@@ -3,7 +3,6 @@ import { Button } from '@/components/ui/button'
 import React from 'react'
 import Script from 'next/script';
 import axios from 'axios';
-import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import { clientUrlGenerator } from '@/utils';
 import LoadingButton from '@/components/loading-button';
@@ -36,11 +35,11 @@ const PaymentButton = ({
                 },
                 data: { ...data, course_id: courseid, coupon_code, is_discount }
             })
-            toast.success(response.data.success);
+            // toast.success(response.data.success);
             router.push(`/dashboard/study/${courseid}`);
         } catch (error: any) {
             setLoading(false);
-            toast.error(error?.response?.data?.message);
+            // toast.error(error?.response?.data?.message);
         }
     }
 
@@ -53,9 +52,9 @@ const PaymentButton = ({
                 },
                 data: { razorpay_order_id }
             })
-            toast.error(response.data.success);
-        } catch (error: any) {
-            toast.error(error?.response?.data?.message);
+            // toast.error(response.data.success);
+        } catch {
+            // toast.error(error?.response?.data?.message);
         } finally {
             setLoading(false);
         }
@@ -89,9 +88,9 @@ const PaymentButton = ({
 
             const razorpay = new (window as any).Razorpay(options);
             razorpay.open();
-        } catch (error: any) {
+        } catch {
             setLoading(false);
-            toast.error(error?.response?.data?.message);
+            // toast.error(error?.response?.data?.message);
         }
     }
 
@@ -108,9 +107,9 @@ const PaymentButton = ({
             const data = await response.data;
             makePayment(data);
             return;
-        } catch (error: any) {
+        } catch {
             setLoading(false);
-            toast.error(error?.response?.data?.message);
+            // toast.error(error?.response?.data?.message);
 
         }
     }

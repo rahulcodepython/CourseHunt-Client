@@ -10,7 +10,6 @@ import { clientUrlGenerator } from '@/utils'
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@radix-ui/react-dialog'
 import { Pen, SendHorizonal } from 'lucide-react'
 import React from 'react'
-import { toast } from 'react-toastify'
 
 const EditReply = ({
     data,
@@ -49,10 +48,6 @@ const EditReply = ({
     onSuccess((data) => {
         editReply(parent, data.id, data.content)
         setOpen(false)
-    })
-
-    onError((error) => {
-        toast.error(error)
     })
 
     return (

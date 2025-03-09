@@ -8,7 +8,6 @@ import axios from 'axios'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React from 'react'
-import { toast } from 'react-toastify'
 
 const GithubCallback = () => {
     const searchParams = useSearchParams()
@@ -41,10 +40,8 @@ const GithubCallback = () => {
                 const data = response.data
                 await setCookie('access', data.access)
                 await setCookie('refresh', data.refresh)
-                toast.success('Successfully authenticated with GitHub')
-            } catch (error) {
+            } catch {
                 setError(true)
-                toast.error('An error occurred while trying to authenticate with GitHub')
             }
             setLoading(false)
         }

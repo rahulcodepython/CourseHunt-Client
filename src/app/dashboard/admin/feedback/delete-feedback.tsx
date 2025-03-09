@@ -5,7 +5,6 @@ import { useAuthStore } from '@/context/AuthStore';
 import useMutation from '@/hooks/useMutation';
 import { clientUrlGenerator } from '@/utils';
 import React from 'react'
-import { toast } from 'react-toastify';
 
 const DeleteFeedback = ({ feedbackId, removeFeedback }: {
     feedbackId: string,
@@ -29,11 +28,6 @@ const DeleteFeedback = ({ feedbackId, removeFeedback }: {
 
     onSuccess((data) => {
         removeFeedback(feedbackId);
-        toast.success(data.success);
-    })
-
-    onError((error) => {
-        toast.error(error);
     })
 
 

@@ -4,7 +4,6 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import useMutation from "@/hooks/useMutation";
-import { toast } from "react-toastify";
 import { useAuthStore } from "@/context/AuthStore";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import LoadingButton from "@/components/loading-button";
@@ -44,10 +43,6 @@ const EditCouponeCodeDialogue = ({
             is_active: data.get('is_active') === 'on',
         };
 
-        if (!formData.is_unlimited && !formData.quantity) {
-            toast.error("Quantity is required");
-            return;
-        }
 
         // Uncomment and use when making an API request
         const options = {
@@ -63,12 +58,7 @@ const EditCouponeCodeDialogue = ({
 
     onSuccess((data) => {
         updateData(data.id, data);
-        toast.success("Coupon code updated successfully");
         setIsOpen(false);
-    });
-
-    onError((error) => {
-        toast.error(error);
     });
 
     return (

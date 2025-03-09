@@ -7,7 +7,6 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import useMutation from '@/hooks/useMutation';
-import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/context/AuthStore';
 import { SendHorizonal } from 'lucide-react';
@@ -21,9 +20,10 @@ import { Label } from '@/components/ui/label';
 const blogSchema = z.object({
     title: z.string().min(1, 'Title is required'),
     content: z.string().min(1, 'Content is required'),
+    image: z.string().optional(),
 });
 
-type BlogFormValues = z.infer<typeof blogSchema> & { image: string };
+type BlogFormValues = z.infer<typeof blogSchema>;
 
 const BlogForm = ({
     edit, data, id
@@ -63,8 +63,7 @@ const BlogForm = ({
                 }
                 data.image = image;
             }
-        } catch (error: any) {
-            toast.error(error.message || 'An error occurred during file upload');
+        } catch {
         }
 
         if (edit && id) {
@@ -94,11 +93,6 @@ const BlogForm = ({
     onSuccess((data) => {
         reset();
         router.push(`/dashboard/admin/blogs`);
-        toast.success(data.success);
-    });
-
-    onError((error) => {
-        toast.error(error);
     });
 
     const content = watch('content');

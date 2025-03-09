@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import axios from "axios";
 import useMutation from "@/hooks/useMutation";
 import React from "react";
-import { toast } from "react-toastify";
 import LoadingButton from "@/components/loading-button";
 import { clientUrlGenerator } from "@/utils";
 import { ListCourseAdminDashboardType } from "@/types";
@@ -40,11 +39,6 @@ const ToggleCourseComponent = ({ course, updateCourse }:
         updateCourse(course.id, {
             status: course.status === 'published' ? 'draft' : 'published'
         });
-        toast.success(data.success);
-    })
-
-    onError(error => {
-        toast.error(error.message);
     })
 
     const options = {
@@ -74,12 +68,8 @@ const DeleteCourseComponent = ({ course, removeCourse }:
 
     onSuccess(data => {
         removeCourse(course.id);
-        toast.success(data.success);
     });
 
-    onError(error => {
-        toast.error(error.message);
-    });
 
     const options = {
         url: `${process.env.BASE_API_URL}/course/edit-course/${course.id}/`,

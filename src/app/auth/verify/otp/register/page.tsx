@@ -4,7 +4,6 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/components/ui/input-otp'
 import { useRouter } from 'next/navigation'
 import React from 'react'
-import { toast } from 'react-toastify'
 import Countdown from 'react-countdown';
 import { registerUser } from '@/app/action'
 import LoadingButton from '@/components/loading-button'
@@ -35,10 +34,7 @@ const VerifyOTPRegisterPage = () => {
 
         if (response) {
             localStorage.removeItem('resend_otp_email_login');
-            toast.success('Account activated successfully');
             router.push('/');
-        } else {
-            toast.error('Error activating account');
         }
         setLoading(false);
     };
@@ -105,10 +101,6 @@ const ResendRegisterOTPComponent = () => {
 
         const email = localStorage.getItem('resend_otp_email_login');
 
-        if (!email) {
-            toast('Email not found');
-            return;
-        }
 
         if (loading) {
             return;
@@ -121,9 +113,7 @@ const ResendRegisterOTPComponent = () => {
                 email: email
             })
             setAllowResend(false);
-            toast.success(response.data.success);
-        } catch (error: any) {
-            toast.error(error.response.data.error);
+        } catch {
         }
         setLoading(false);
     }

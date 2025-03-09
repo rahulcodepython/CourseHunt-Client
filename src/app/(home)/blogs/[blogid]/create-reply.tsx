@@ -9,7 +9,6 @@ import { clientUrlGenerator } from '@/utils'
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@radix-ui/react-dialog'
 import { Pen, Reply, SendHorizonal } from 'lucide-react'
 import React from 'react'
-import { toast } from 'react-toastify'
 
 const CreateReply = ({
     blogid,
@@ -52,10 +51,6 @@ const CreateReply = ({
     onSuccess((data) => {
         createReply(parent, data)
         setOpen(false)
-    })
-
-    onError((error) => {
-        toast.error(error)
     })
 
     return (

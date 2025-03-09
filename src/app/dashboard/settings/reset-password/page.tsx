@@ -4,11 +4,8 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/components/ui/input-otp'
 import { useAuthStore } from '@/context/AuthStore'
 import useMutation from '@/hooks/useMutation'
-import { ReloadIcon } from '@radix-ui/react-icons'
-import axios from 'axios'
 import { Eye, EyeClosed, SendHorizonal } from 'lucide-react'
 import React from 'react'
-import { toast } from 'react-toastify'
 import Countdown from 'react-countdown';
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -34,10 +31,10 @@ const ResetPasswordPage = () => {
             return;
         }
 
-        if (newPassword !== rewriteNewPassword) {
-            toast.error("New password and rewrite new password does not match");
-            return;
-        }
+        // if (newPassword !== rewriteNewPassword) {
+        //     toast.error("New password and rewrite new password does not match");
+        //     return;
+        // }
 
         const uid = value.slice(0, 4);
         const token = value.slice(4, 8);
@@ -63,12 +60,12 @@ const ResetPasswordPage = () => {
         setToggleNewPassword(true);
         setToggleOldPassword(true);
         setToggleRewriteNewPassword(true);
-        toast.success(data.success);
+        // toast.success(data.success);
     })
 
-    onError((error) => {
-        toast.error(error);
-    })
+    // onError((error) => {
+    //     toast.error(error);
+    // })
 
     return (
         <div className='flex flex-col gap-4 items-center justify-center h-screen'>
@@ -178,12 +175,12 @@ const ResendResetPasswordOTPComponent = () => {
 
     onSuccess((data) => {
         setAllowResend(false);
-        toast.success(data.success);
+        // toast.success(data.success);
     })
 
-    onError((error) => {
-        toast.error(error);
-    })
+    // onError((error) => {
+    //     toast.error(error);
+    // })
 
     return (
         <div className='text-right w-full'>

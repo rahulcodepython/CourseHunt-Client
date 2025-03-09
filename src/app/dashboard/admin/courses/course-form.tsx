@@ -9,7 +9,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { AllCourseType } from "@/types";
 import useMutation from "@/hooks/useMutation";
-import { toast } from "react-toastify";
 import React from "react";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { SendHorizonal } from "lucide-react";
@@ -21,7 +20,7 @@ import { clientUrlGenerator } from "@/utils";
 const courseSchema = z.object({
     name: z.string().min(1, "Course name is required"),
     short_description: z.string().min(1, "Short description is required"),
-    long_description: z.string().min(1, "Long description is required"),
+    long_description: z.string().min(1, "Long description is required").optional(),
     duration: z.string().min(1, "Duration should be a positive number"),
     price: z.number().min(1, "Price should be a positive number"),
     offer: z.number().min(0).max(100, "Offer should be between 0 and 100"),
@@ -32,7 +31,13 @@ const courseSchema = z.object({
     presentationURL: z.string().optional(),
     codeURL: z.string().optional(),
     content: z.string().optional(),
+    id: z.string().optional(),
+    created_at: z.string().optional(),
+    updated_at: z.string().optional(),
+    instructor: z.string().optional(),
 });
+
+type CourseFormValues = z.infer<typeof courseSchema>;
 
 const CourseForm = ({
     defaultValues,
@@ -46,7 +51,7 @@ const CourseForm = ({
     const textareaContentRef = React.useRef<HTMLTextAreaElement>(null);
     const textareaLongDescriptionRef = React.useRef<HTMLTextAreaElement>(null);
 
-    const form = useForm<AllCourseType>({
+    const form = useForm<CourseFormValues>({
         resolver: zodResolver(courseSchema),
         defaultValues: defaultValues,
     });
@@ -54,7 +59,7 @@ const CourseForm = ({
 
     const { mutationIsLoading, mutate, onSuccess, onError } = useMutation();
 
-    const onSubmit = async (data: AllCourseType) => {
+    const onSubmit = async (data: CourseFormValues) => {
         if (courseid) {
             const options = {
                 url: clientUrlGenerator(`/course/edit-course/${courseid}/`),
@@ -94,11 +99,6 @@ const CourseForm = ({
     onSuccess((data) => {
         form.reset();
         router.push(`/dashboard/admin/courses`);
-        toast.success(data.success);
-    });
-
-    onError((error) => {
-        toast.error(error);
     });
 
     const contentValue = form.watch("content");

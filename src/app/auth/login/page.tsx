@@ -9,7 +9,6 @@ import { SignInFormCredentialsType, SignInFormType } from '@/types';
 import { signInAction } from '@/app/action';
 import { useForm } from 'react-hook-form';
 import LoadingButton from '@/components/loading-button';
-import { toast } from 'react-toastify';
 import axios from 'axios';
 import { clientUrlGenerator, serverUrlGenerator } from '@/utils';
 
@@ -38,10 +37,8 @@ const LoginWithEmail = () => {
             });
             localStorage.setItem('resend_otp_email_login', data.email);
             router.push('/auth/verify/otp/login');
-            toast.success(result.data.success)
-        } catch (error: any) {
+        } catch {
             reset()
-            toast.error(error.response.data.error)
         }
         setLoading(false)
     }
@@ -83,11 +80,9 @@ const LoginWithCredentials = () => {
         setLoading(true)
         const result = await signInAction(data)
         if (result) {
-            toast.success("Logged in successfully")
             router.push('/dashboard')
         } else {
             reset()
-            toast.error("Failed to login")
         }
         setLoading(false)
     }

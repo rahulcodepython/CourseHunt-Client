@@ -9,7 +9,6 @@ import React from "react"
 import { SignUpFormType } from "@/types"
 import { clientUrlGenerator } from "@/utils"
 import LoadingButton from "@/components/loading-button"
-import { toast } from "react-toastify"
 import axios from "axios"
 
 const RegisterPage = () => {
@@ -25,7 +24,6 @@ const RegisterPage = () => {
 
     const onSubmit = async (data: SignUpFormType) => {
         if (data.password !== data.confirmpassword) {
-            toast.error('Password and confirm password does not match');
             return;
         }
 
@@ -34,10 +32,8 @@ const RegisterPage = () => {
             const response = await axios.post(clientUrlGenerator('/auth/users/me/'), data)
             localStorage.setItem('resend_otp_email_register', data.email);
             router.push('/auth/verify/otp/register');
-            toast.success(response.data.success);
-        } catch (error: any) {
+        } catch {
             reset();
-            toast.error(error.response.data.error);
         }
         setLoading(false);
     }

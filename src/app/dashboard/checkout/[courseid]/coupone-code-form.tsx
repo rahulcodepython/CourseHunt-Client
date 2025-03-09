@@ -6,7 +6,6 @@ import { useCheckoutStore } from '@/context/CheckoutStore';
 import useMutation from '@/hooks/useMutation';
 import { clientUrlGenerator } from '@/utils';
 import React from 'react'
-import { toast } from 'react-toastify';
 
 const CouponeCodeForm = ({
     access_token,
@@ -29,9 +28,6 @@ const CouponeCodeForm = ({
         setCouponCodeValue(data.coupon_code_id);
     })
 
-    onError((error) => {
-        toast.error(error);
-    })
 
     const handleSubmit = async () => {
         if (couponCode.trim().length <= 0) {

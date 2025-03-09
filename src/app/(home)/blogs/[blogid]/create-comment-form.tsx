@@ -9,7 +9,6 @@ import useMutation from '@/hooks/useMutation'
 import { clientUrlGenerator } from '@/utils'
 import { SendHorizonal } from 'lucide-react'
 import React from 'react'
-import { toast } from 'react-toastify'
 
 const CreateCommentForm = ({ blogid }: {
     blogid: string | undefined,
@@ -43,11 +42,6 @@ const CreateCommentForm = ({ blogid }: {
 
     onSuccess((data) => {
         createComment(data)
-        toast.success('Comment posted successfully')
-    })
-
-    onError((error) => {
-        toast.error(error)
     })
 
     return (

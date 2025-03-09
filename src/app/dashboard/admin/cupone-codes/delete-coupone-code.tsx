@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button'
 import useMutation from '@/hooks/useMutation'
 import { clientUrlGenerator } from '@/utils'
 import React from 'react'
-import { toast } from 'react-toastify'
 
 const DeleteCouponeCode = ({ access_token, id, removeCuponeCode }: {
     access_token: string | undefined,
@@ -15,11 +14,6 @@ const DeleteCouponeCode = ({ access_token, id, removeCuponeCode }: {
 
     onSuccess((data) => {
         removeCuponeCode(id);
-        toast.success(data.success);
-    })
-
-    onError((error) => {
-        toast.error(error);
     })
 
     const options = {

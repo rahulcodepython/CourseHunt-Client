@@ -4,7 +4,6 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/components/ui/input-otp'
 import { useRouter } from 'next/navigation'
 import React from 'react'
-import { toast } from 'react-toastify'
 import Countdown from 'react-countdown';
 import { useForm } from 'react-hook-form'
 import Timer from '@/components/timer'
@@ -34,11 +33,9 @@ const VerifyOTPLoginPage = () => {
         const response = await loginUser(uid, token);
 
         if (response) {
-            toast.success('Login successful');
             localStorage.removeItem('resend_otp_email_login');
             router.push('/');
         } else {
-            toast.error('Login failed');
         }
         setLoading(false);
     };
@@ -103,10 +100,6 @@ const ResendLoginOTPComponent = () => {
 
         const email = localStorage.getItem('resend_otp_email_login');
 
-        if (!email) {
-            toast('Email not found');
-            return;
-        }
 
         if (loading) {
             return;
@@ -118,10 +111,7 @@ const ResendLoginOTPComponent = () => {
             const response = await axios.post(clientUrlGenerator('/auth/users/login/email/resend/'), {
                 email: email
             })
-            toast.success(response.data.success);
-        } catch (error: any) {
-            toast.error(error.response.data.error);
-        }
+        } catch { }
         setLoading(false);
     }
 

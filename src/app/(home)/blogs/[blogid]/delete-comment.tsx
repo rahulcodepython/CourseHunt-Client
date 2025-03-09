@@ -4,7 +4,6 @@ import useMutation from '@/hooks/useMutation';
 import { clientUrlGenerator } from '@/utils';
 import { Trash } from 'lucide-react'
 import React from 'react'
-import { toast } from 'react-toastify';
 
 const DeleteComment = ({ id }: {
     id: string,
@@ -16,11 +15,6 @@ const DeleteComment = ({ id }: {
 
     onSuccess((data) => {
         deleteComment(id);
-        toast.success(data.success);
-    })
-
-    onError((error) => {
-        toast.error(error);
     })
 
     const options = {

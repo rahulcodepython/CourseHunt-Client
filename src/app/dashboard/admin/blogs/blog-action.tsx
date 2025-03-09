@@ -6,7 +6,6 @@ import useMutation from '@/hooks/useMutation'
 import { clientUrlGenerator } from '@/utils'
 import Link from 'next/link'
 import React from 'react'
-import { toast } from 'react-toastify'
 
 const BlogAction = ({ id, deleteBlogItem }: {
     id: string,
@@ -26,11 +25,6 @@ const BlogAction = ({ id, deleteBlogItem }: {
 
     onSuccess((data) => {
         deleteBlogItem(id);
-        toast.success(data.success);
-    });
-
-    onError((error) => {
-        toast.error(error);
     });
 
     return (

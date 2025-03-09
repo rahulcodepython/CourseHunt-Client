@@ -10,7 +10,6 @@ import { clientUrlGenerator } from '@/utils'
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@radix-ui/react-dialog'
 import { Pen, SendHorizonal } from 'lucide-react'
 import React from 'react'
-import { toast } from 'react-toastify'
 
 const EditComment = ({
     data,
@@ -49,9 +48,6 @@ const EditComment = ({
         setOpen(false)
     })
 
-    onError((error) => {
-        toast.error(error)
-    })
 
     return (
         <Dialog open={open} onOpenChange={() => setOpen(!open)}>
