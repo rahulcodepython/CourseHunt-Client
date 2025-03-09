@@ -181,9 +181,9 @@
 		@apply bg-background text-foreground;
 	}
 
-	/* ::-webkit-scrollbar {
+	::-webkit-scrollbar {
 		display: none;
-	} */
+	}
 
 	code {
 		padding: 0.5em 0.5em;

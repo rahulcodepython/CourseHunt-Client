@@ -5,24 +5,24 @@ import { ThemeProvider } from "next-themes";
 import { ToastContainer } from "react-toastify";
 
 export const metadata: Metadata = {
-	title: "CourseHunt | Home",
-	description: "This is a demo course selling website.",
+    title: "CourseHunt | Home",
+    description: "This is a demo course selling website.",
 };
 
 export default async function RootLayout({ children }: Readonly<{
-	children: React.ReactNode;
+    children: React.ReactNode;
 }>) {
-	return <html lang="en">
-		<body>
-			{/* <ThemeProvider
+    return <html lang="en">
+        <body>
+            <ThemeProvider
                 attribute="class"
                 defaultTheme="system"
                 enableSystem
                 disableTransitionOnChange
-            > */}
-			{children}
-			<ToastContainer />
-			{/* </ThemeProvider> */}
-		</body>
-	</html>
+            >
+                {children}
+                <ToastContainer />
+            </ThemeProvider>
+        </body>
+    </html>
 }
