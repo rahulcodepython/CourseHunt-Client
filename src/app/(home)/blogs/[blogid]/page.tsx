@@ -2,7 +2,7 @@ import { DetailBlogsType } from '@/types'
 import { Eye } from 'lucide-react'
 import React from 'react'
 import Markdown from 'react-markdown'
-import { getAccessToken, getUser, isAuthenticated } from '@/app/action'
+import { getAccessToken, isAuthenticated } from '@/app/action'
 import { serverUrlGenerator } from '@/utils'
 import Comments from './comments'
 import BlogLike from './blog-like'
@@ -10,7 +10,6 @@ import BlogLike from './blog-like'
 const BlogSingle = async ({ params }: { params: Promise<{ blogid: string | undefined }> }) => {
     const access = await getAccessToken()
     const isAuth = await isAuthenticated()
-    const user = await getUser()
     const blogid = (await params).blogid
 
     const response = await fetch(serverUrlGenerator(`/blogs/read/${blogid}`), isAuth ? {

@@ -13,12 +13,14 @@ import {
     UserIcon,
 } from "lucide-react"
 
-import { NavMain } from "@/components/ui/nav-main"
 import {
     Sidebar,
     SidebarContent,
     SidebarHeader,
     SidebarRail,
+    SidebarGroup,
+    SidebarGroupContent,
+    SidebarGroupLabel,
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
@@ -40,7 +42,7 @@ export function AppSidebar({
             name: "CourseHunt",
             logo: MountainIcon,
         },
-        navMain: [{
+        navMain: {
             title: "Admin Panel",
             items: is_superuser && pathname.includes('/admin') ?
                 [
@@ -105,7 +107,7 @@ export function AppSidebar({
                         icon: FlagTriangleRightIcon,
                     },
                 ],
-        }]
+        }
     }
 
     return (
@@ -116,7 +118,7 @@ export function AppSidebar({
                         <Link href="/">
                             <SidebarMenuButton
                                 size="lg"
-                                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground cursor-pointer"
                             >
                                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                                     <data.site.logo className="size-4" />
@@ -132,7 +134,27 @@ export function AppSidebar({
                 </SidebarMenu>
             </SidebarHeader>
             <SidebarContent>
-                <NavMain items={data.navMain} />
+                <SidebarGroup>
+                    <SidebarGroupLabel>
+                        {data.navMain.title}
+                    </SidebarGroupLabel>
+                    <SidebarGroupContent>
+                        <SidebarMenu>
+                            {
+                                data.navMain.items.map((item) => (
+                                    <SidebarMenuItem key={item.title}>
+                                        <SidebarMenuButton asChild>
+                                            <Link href={item.url}>
+                                                <item.icon />
+                                                <span>{item.title}</span>
+                                            </Link>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                ))
+                            }
+                        </SidebarMenu>
+                    </SidebarGroupContent>
+                </SidebarGroup>
             </SidebarContent>
             <SidebarRail />
         </Sidebar>

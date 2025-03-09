@@ -25,11 +25,11 @@ const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
             <SidebarInset>
                 <header className="flex h-16 shrink-0 items-center justify-between px-4 gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
                     <div className="flex items-center gap-2">
-                        <SidebarTrigger className="-ml-1" />
+                        <SidebarTrigger className="cursor-pointer" />
                         <Separator orientation="vertical" className="mr-2 h-4" />
                         <DashboardBreadcrumbComponent />
                     </div>
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between gap-3">
                         <div className="relative flex-1 sm:grow-0">
                             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                             <Input
@@ -39,23 +39,23 @@ const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
                             />
                         </div>
                         <div className="flex items-center gap-2">
-                            <Button size="icon" variant="ghost" className="rounded-full">
+                            <Button size="icon" variant="ghost" className="rounded-full cursor-pointer">
                                 <Bell className="h-5 w-5" />
                                 <span className="sr-only">Notifications</span>
                             </Button>
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <Button variant="outline" size="icon" className="overflow-hidden rounded-full">
+                                    <Button variant="outline" size="icon" className="overflow-hidden rounded-full cursor-pointer">
                                         <UserIcon />
                                     </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
                                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
                                     <DropdownMenuSeparator />
-                                    <DropdownMenuItem>Settings</DropdownMenuItem>
-                                    <DropdownMenuItem>Support</DropdownMenuItem>
+                                    <DropdownMenuItem className="cursor-pointer">Settings</DropdownMenuItem>
+                                    <DropdownMenuItem className="cursor-pointer">Support</DropdownMenuItem>
                                     <DropdownMenuSeparator />
-                                    <DropdownMenuItem>Logout</DropdownMenuItem>
+                                    <DropdownMenuItem className="cursor-pointer">Logout</DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </div>

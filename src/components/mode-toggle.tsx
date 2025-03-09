@@ -30,7 +30,7 @@ const ModeToggle = () => {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size={"sm"}>
+                <Button variant="ghost" size={"sm"} className="cursor-pointer">
                     {theme === "light" ? (
                         <Sun
                             key="light"

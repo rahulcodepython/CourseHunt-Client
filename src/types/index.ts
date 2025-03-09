@@ -163,6 +163,13 @@ export interface DetailSingleCourseType {
     offer: number
     thumbnail: string
     enrolled: boolean
+    language: string[]
+    rating: number
+    learners: number
+    tags: string[]
+    includes: string[]
+    requirements: string[]
+    created_by: string
 }
 
 export interface ListCuponeCodeType {

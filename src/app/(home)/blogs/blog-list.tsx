@@ -2,7 +2,6 @@
 import { Card, CardContent } from '@/components/ui/card'
 import usePagination from '@/hooks/usePagination'
 import { ListBlogsType, PaginationType } from '@/types'
-import Image from 'next/image'
 import React from 'react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
@@ -17,6 +16,8 @@ const BlogsList = ({
     isAuth: boolean
 }) => {
     const pagination = usePagination<ListBlogsType>(data)
+    console.log(pagination.results);
+
 
     return (
         <div className='flex flex-col gap-12 items-center'>
@@ -27,7 +28,7 @@ const BlogsList = ({
                     </div> : pagination.results.map((item, i) => {
                         return <div className="flex items-center justify-center w-full" key={i}>
                             <Card className="w-full max-w-md">
-                                <Image width={200} height={200} src="/placeholder.svg" alt="Course thumbnail" className="rounded-t-lg object-cover w-full aspect-[2/1]" />
+                                <img width={200} height={200} src="/placeholder.svg" alt="Course thumbnail" className="rounded-t-lg object-cover w-full aspect-[2/1]" />
                                 <CardContent className="p-6 grid gap-6">
                                     <div className="space-y-2">
                                         <Link href={`/blogs/${item.id}`} className="text-xl font-semibold hover:underline">

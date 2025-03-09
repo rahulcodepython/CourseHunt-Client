@@ -6,7 +6,6 @@ import { useAuthStore } from '@/context/AuthStore'
 import RepliesList from './replies-list'
 import EditComment from './edit-comment'
 import CreateReply from './create-reply'
-import Image from 'next/image'
 
 const CommentsList = ({ blogid }: {
     blogid: string | undefined
@@ -24,7 +23,7 @@ const CommentsList = ({ blogid }: {
                             <footer className="flex justify-between items-center mb-2">
                                 <div className="flex items-center gap-4">
                                     <p className="inline-flex items-center font-semibold text-sm">
-                                        <Image
+                                        <img
                                             width={24}
                                             height={24}
                                             className="mr-2 w-6 h-6 rounded-full"

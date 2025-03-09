@@ -1,12 +1,10 @@
 "use client"
-"use client"
 import React from 'react'
 import DeleteReply from './delete-reply'
 import { useCommentStore } from '@/context/CommentStore'
 import { useAuthStore } from '@/context/AuthStore'
 import EditReply from './edit-reply'
 import CreateReply from './create-reply'
-import Image from 'next/image'
 
 const RepliesList = ({ parent, parentIndex, blogid }: {
     parent: string,
@@ -22,7 +20,7 @@ const RepliesList = ({ parent, parentIndex, blogid }: {
                 <footer className="flex justify-between items-center mb-2">
                     <div className="flex items-center gap-4">
                         <p className="inline-flex items-center font-semibold text-sm">
-                            <Image
+                            <img
                                 width={24}
                                 height={24}
                                 className="mr-2 w-6 h-6 rounded-full"

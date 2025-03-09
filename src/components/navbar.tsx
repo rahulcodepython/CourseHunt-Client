@@ -54,7 +54,7 @@ const Navbar = async () => {
                             <div className="flex items-center gap-4">
                                 {
                                     user?.is_superuser ? <Link href={`/dashboard/admin`} prefetch={false}>
-                                        <Button variant="outline" size="sm">
+                                        <Button variant="outline" size="sm" className="cursor-pointer">
                                             Admin
                                         </Button>
                                     </Link> : null
