@@ -20,9 +20,9 @@ const CouponeCodeForm = ({
     const updateTotal = useCheckoutStore(state => state.updateTotal);
     const setCouponCodeValue = useCheckoutStore(state => state.setCouponCode);
 
-    const { mutate, onSuccess, onError, mutationIsLoading, mutationIsError } = useMutation();
+    const { mutate, onSuccess, mutationIsLoading, mutationIsError } = useMutation();
 
-    onSuccess((data) => {
+    onSuccess((data: any) => {
         updateDiscount(data.discount, true);
         updateTotal(data.total);
         setCouponCodeValue(data.coupon_code_id);

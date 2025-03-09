@@ -1,6 +1,7 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-    reactStrictMode: false,
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+    /* config options here */
     env: {
         BASE_API_URL: process.env.BASE_API_URL,
         BASE_API_URL_SERVER: process.env.BASE_API_URL_SERVER,

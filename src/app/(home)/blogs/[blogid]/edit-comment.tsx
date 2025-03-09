@@ -22,7 +22,7 @@ const EditComment = ({
     const accessToken = useAuthStore((state) => state.accessToken)
     const editComment = useCommentStore((state) => state.editComment)
 
-    const { mutate, mutationIsLoading, onSuccess, onError } = useMutation()
+    const { mutate, mutationIsLoading, onSuccess, } = useMutation()
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()

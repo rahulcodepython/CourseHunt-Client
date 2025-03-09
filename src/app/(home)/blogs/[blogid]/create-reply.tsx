@@ -7,7 +7,7 @@ import { useCommentStore } from '@/context/CommentStore'
 import useMutation from '@/hooks/useMutation'
 import { clientUrlGenerator } from '@/utils'
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@radix-ui/react-dialog'
-import { Pen, Reply, SendHorizonal } from 'lucide-react'
+import { Reply, SendHorizonal } from 'lucide-react'
 import React from 'react'
 
 const CreateReply = ({
@@ -23,7 +23,7 @@ const CreateReply = ({
     const accessToken = useAuthStore((state) => state.accessToken)
     const createReply = useCommentStore((state) => state.createReply)
 
-    const { mutate, mutationIsLoading, onSuccess, onError } = useMutation()
+    const { mutate, mutationIsLoading, onSuccess, } = useMutation()
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -48,7 +48,7 @@ const CreateReply = ({
 
     }
 
-    onSuccess((data) => {
+    onSuccess((data: any) => {
         createReply(parent, data)
         setOpen(false)
     })

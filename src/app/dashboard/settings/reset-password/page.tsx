@@ -24,7 +24,7 @@ const ResetPasswordPage = () => {
     const [toggleRewriteNewPassword, setToggleRewriteNewPassword] = React.useState<boolean>(true)
     const [value, setValue] = React.useState<string>("")
 
-    const { mutate, onSuccess, onError, mutationIsLoading } = useMutation();
+    const { mutate, onSuccess, mutationIsLoading } = useMutation();
 
     const onSubmit = async () => {
         if (value.length < 8) {
@@ -63,7 +63,7 @@ const ResetPasswordPage = () => {
         // toast.success(data.success);
     })
 
-    // onError((error) => {
+    // ((error) => {
     //     toast.error(error);
     // })
 
@@ -157,7 +157,7 @@ const ResetPasswordPage = () => {
 
 const ResendResetPasswordOTPComponent = () => {
     const accessToken = useAuthStore((state) => state.accessToken);
-    const { mutate, onSuccess, onError, mutationIsLoading } = useMutation();
+    const { mutate, onSuccess, mutationIsLoading } = useMutation();
 
     const [allowResend, setAllowResend] = React.useState<boolean>(false);
 
@@ -178,7 +178,7 @@ const ResendResetPasswordOTPComponent = () => {
         // toast.success(data.success);
     })
 
-    // onError((error) => {
+    // ((error) => {
     //     toast.error(error);
     // })
 

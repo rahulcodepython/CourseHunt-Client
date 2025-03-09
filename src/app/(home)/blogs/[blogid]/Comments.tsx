@@ -1,5 +1,5 @@
 "use client"
-import { DetailBlogsCommentType, DetailBlogsType, UserType } from '@/types'
+import { DetailBlogsType } from '@/types'
 import React from 'react'
 import CreateCommentForm from './create-comment-form'
 import CommentsList from './comments-list'

@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button"
 import { SendHorizonal, StarIcon } from "lucide-react";
 import { useAuthStore } from "@/context/AuthStore";
 import useMutation from "@/hooks/useMutation";
-import { ReloadIcon } from "@radix-ui/react-icons";
 import axios from "axios";
 import { clientUrlGenerator } from "@/utils";
 import LoadingButton from "@/components/loading-button";
@@ -28,7 +27,7 @@ const FeedbackPage = () => {
         data: { feedback, rating },
     }
 
-    const { mutate, onSuccess, onError, mutationIsLoading } = useMutation();
+    const { mutate, onSuccess, mutationIsLoading } = useMutation();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();

@@ -12,7 +12,7 @@ const DeleteFeedback = ({ feedbackId, removeFeedback }: {
 }) => {
     const accessToken = useAuthStore(state => state.accessToken);
 
-    const { mutate, mutationIsLoading, onSuccess, onError } = useMutation();
+    const { mutate, mutationIsLoading, onSuccess, } = useMutation();
 
     const options = {
         url: clientUrlGenerator(`/feedback/delete/${feedbackId}/`),

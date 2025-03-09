@@ -30,7 +30,7 @@ const EditCouponeCodeDialogue = ({
     const [isOpen, setIsOpen] = React.useState(false);
 
     const accessToken = useAuthStore((state) => state.accessToken);
-    const { mutate, mutationIsLoading, onSuccess, onError } = useMutation();
+    const { mutate, mutationIsLoading, onSuccess, } = useMutation();
 
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();

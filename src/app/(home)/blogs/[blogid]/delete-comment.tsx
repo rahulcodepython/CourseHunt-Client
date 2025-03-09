@@ -8,7 +8,7 @@ import React from 'react'
 const DeleteComment = ({ id }: {
     id: string,
 }) => {
-    const { mutate, onSuccess, onError } = useMutation();
+    const { mutate, onSuccess, } = useMutation();
 
     const accessToken = useAuthStore((state) => state.accessToken);
     const deleteComment = useCommentStore((state) => state.deleteComment);

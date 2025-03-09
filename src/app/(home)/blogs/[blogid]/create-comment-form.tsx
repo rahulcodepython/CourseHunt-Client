@@ -13,7 +13,7 @@ import React from 'react'
 const CreateCommentForm = ({ blogid }: {
     blogid: string | undefined,
 }) => {
-    const { mutate, mutationIsLoading, onSuccess, onError } = useMutation();
+    const { mutate, mutationIsLoading, onSuccess, } = useMutation();
 
     const accessToken = useAuthStore((state) => state.accessToken)
     const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
@@ -40,7 +40,7 @@ const CreateCommentForm = ({ blogid }: {
         mutate(options)
     }
 
-    onSuccess((data) => {
+    onSuccess((data: any) => {
         createComment(data)
     })
 

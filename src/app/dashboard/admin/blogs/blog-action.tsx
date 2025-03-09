@@ -13,7 +13,7 @@ const BlogAction = ({ id, deleteBlogItem }: {
 }) => {
     const accessToken = useAuthStore(state => state.accessToken)
 
-    const { mutationIsLoading, mutate, onSuccess, onError } = useMutation();
+    const { mutationIsLoading, mutate, onSuccess, } = useMutation();
 
     const options = {
         headers: {

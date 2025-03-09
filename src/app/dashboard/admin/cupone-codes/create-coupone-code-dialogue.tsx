@@ -33,7 +33,7 @@ const CreateCouponeCodeDialogue = ({
     const [isOpen, setIsOpen] = React.useState(false);
 
     const accessToken = useAuthStore((state) => state.accessToken);
-    const { mutate, mutationIsLoading, onSuccess, onError } = useMutation();
+    const { mutate, mutationIsLoading, onSuccess, } = useMutation();
 
     const { register, handleSubmit, watch, setValue } = useForm<CuponCodeFormDataType>({
         resolver: zodResolver(formSchema),

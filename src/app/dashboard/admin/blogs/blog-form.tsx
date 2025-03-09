@@ -49,7 +49,7 @@ const BlogForm = ({
 
     const router = useRouter();
 
-    const { mutationIsLoading, mutate, onSuccess, onError } = useMutation();
+    const { mutationIsLoading, mutate, onSuccess, } = useMutation();
 
     const onSubmit = async (data: BlogFormValues) => {
         try {

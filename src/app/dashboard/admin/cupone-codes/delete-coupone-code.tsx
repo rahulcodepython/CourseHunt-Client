@@ -10,7 +10,7 @@ const DeleteCouponeCode = ({ access_token, id, removeCuponeCode }: {
     id: string,
     removeCuponeCode: (id: string) => void
 }) => {
-    const { mutate, mutationIsLoading, onSuccess, onError } = useMutation();
+    const { mutate, mutationIsLoading, onSuccess, } = useMutation();
 
     onSuccess((data) => {
         removeCuponeCode(id);

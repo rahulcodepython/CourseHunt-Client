@@ -15,7 +15,7 @@ const DeleteReply = ({
     const accessToken = useAuthStore((state) => state.accessToken)
     const deleteReply = useCommentStore((state) => state.deleteReply)
 
-    const { mutate, onSuccess, onError } = useMutation();
+    const { mutate, onSuccess, } = useMutation();
 
     onSuccess((data) => {
         deleteReply(parent, id);

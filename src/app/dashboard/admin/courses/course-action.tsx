@@ -32,10 +32,10 @@ const ToggleCourseComponent = ({ course, updateCourse }:
         course: ListCourseAdminDashboardType,
         updateCourse: (courseid: string, data: Partial<ListCourseAdminDashboardType>) => void
     }) => {
-    const { mutate, onSuccess, onError, mutationIsLoading } = useMutation();
+    const { mutate, onSuccess, mutationIsLoading } = useMutation();
     const accessToken = useAuthStore(state => state.accessToken);
 
-    onSuccess(data => {
+    onSuccess((data: any) => {
         updateCourse(course.id, {
             status: course.status === 'published' ? 'draft' : 'published'
         });
@@ -63,10 +63,10 @@ const DeleteCourseComponent = ({ course, removeCourse }:
         course: ListCourseAdminDashboardType,
         removeCourse: (courseid: string) => void
     }) => {
-    const { mutate, onSuccess, onError, mutationIsLoading } = useMutation();
+    const { mutate, onSuccess, mutationIsLoading } = useMutation();
     const accessToken = useAuthStore(state => state.accessToken);
 
-    onSuccess(data => {
+    onSuccess((data: any) => {
         removeCourse(course.id);
     });
 
