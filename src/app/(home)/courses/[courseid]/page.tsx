@@ -21,6 +21,7 @@ const CoursePage = async ({ params }: { params: Promise<{ courseid: string | und
     const { courseid } = await params;
 
     const response = await fetch(serverUrlGenerator(`/course/detail-single-course/${courseid}/`), isAuth ? {
+        cache: 'no-store',
         headers: {
             'Authorization': `Bearer ${access}`
         }

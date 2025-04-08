@@ -16,6 +16,7 @@ const Courses = async () => {
     const isAuth = await isAuthenticated()
 
     const response = await fetch(serverUrlGenerator(`/course/list-course/`), isAuth ? {
+        cache: 'no-store',
         headers: {
             'Authorization': `Bearer ${access}`
         }

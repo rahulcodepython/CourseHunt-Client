@@ -16,6 +16,7 @@ const Blogs = async () => {
     const isAuth = await isAuthenticated();
     const response = await fetch(serverUrlGenerator(`/blogs/list/`), {
         method: 'GET',
+        cache: 'no-store',
         headers: isAuth ? {
             'Authorization': `Bearer ${access}`
         } : {}

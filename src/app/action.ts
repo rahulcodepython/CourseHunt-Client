@@ -20,6 +20,7 @@ export const getRefreshToken = async (): Promise<string | undefined> => {
 export const fetchNewTokens = async (token: string) => {
     const options = {
         method: "POST",
+        cache: "no-store" as RequestCache,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             "refresh": token
@@ -92,6 +93,7 @@ export const loginUser = async (uid: string, token: string) => {
         const response = await fetch(serverUrlGenerator('/auth/users/jwt/create/'), {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
+            cache: 'no-store',
             body: JSON.stringify({
                 uid: uid,
                 token: token
