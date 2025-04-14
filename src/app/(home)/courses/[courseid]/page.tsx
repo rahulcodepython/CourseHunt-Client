@@ -13,6 +13,7 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion"
+import Section from "@/components/section"
 
 const CoursePage = async ({ params }: { params: Promise<{ courseid: string | undefined }> }) => {
     const access = await getAccessToken()
@@ -149,9 +150,9 @@ const CoursePage = async ({ params }: { params: Promise<{ courseid: string | und
         }
     ];
 
-    return <section className="flex flex-col min-h-[100dvh] py-24 gap-6 mx-60">
-        <section className="w-fullflex flex-col items-center justify-center">
-            <div className="container px-4 md:px-6 space-y-4">
+    return <Section className="py-16 px-32 gap-8">
+        <section className="w-full flex flex-col items-center justify-center">
+            <div className="px-4 md:px-6 space-y-4">
                 <div className="space-y-2 flex items-center justify-center flex-col gap-10">
                     <div className="w-[800px]">
                         <Image
@@ -173,7 +174,7 @@ const CoursePage = async ({ params }: { params: Promise<{ courseid: string | und
             </div>
         </section>
         <section className="w-full flex flex-col items-center justify-center">
-            <div className="container grid gap-12 px-4 md:px-6">
+            <div className="grid gap-12">
                 <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
                     <Card className="space-y-2">
                         <CardHeader className="flex items-center justify-center">
@@ -254,14 +255,14 @@ const CoursePage = async ({ params }: { params: Promise<{ courseid: string | und
                         <Button className='w-full'>Study</Button>
                     </Link> : <Button className="w-full">
                         <Link href={`/dashboard/checkout/${data.id}`}>Enroll Now</Link>
-                    </Button> : <Button variant={'destructive'} className='w-full'>
+                    </Button> : <Button variant={'destructive'}>
                         <Link href="/auth/login">Login to enroll</Link>
                     </Button>
 
                 }
             </div>
         </section>
-        <section className="w-full flex flex-col items-center justify-center mt-8">
+        <section className="w-full flex flex-col items-center justify-center">
             <Card className="w-full">
                 <CardHeader>
                     <CardTitle className="text-xl font-bold tracking-tighter sm:text-2xl md:text-3xl">
@@ -279,7 +280,7 @@ const CoursePage = async ({ params }: { params: Promise<{ courseid: string | und
                 </CardContent>
             </Card>
         </section>
-        <section className="w-full flex flex-col items-center justify-center mt-8">
+        <section className="w-full flex flex-col items-center justify-center">
             <Card className="w-full">
                 <CardHeader>
                     <CardTitle className="text-xl font-bold tracking-tighter sm:text-2xl md:text-3xl">
@@ -297,7 +298,7 @@ const CoursePage = async ({ params }: { params: Promise<{ courseid: string | und
                 </CardContent>
             </Card>
         </section>
-        <section className="w-full flex flex-col items-center justify-center mt-8">
+        <section className="w-full flex flex-col items-center justify-center">
             <Card className="w-full">
                 <CardHeader>
                     <CardTitle className="text-xl font-bold tracking-tighter sm:text-2xl md:text-3xl">
@@ -347,13 +348,13 @@ const CoursePage = async ({ params }: { params: Promise<{ courseid: string | und
                 </CardContent>
             </Card>
         </section>
-        <section className="w-full flex flex-col items-center justify-center mt-8">
+        <section className="w-full flex flex-col items-center justify-center">
             <div className="container grid gap-6 px-4 md:px-6 space-y-4">
                 <h2 className="text-xl font-bold tracking-tighter sm:text-2xl md:text-3xl">Description</h2>
                 <MarkdownContent content={data.long_description} />
             </div>
         </section>
-    </section>
+    </Section>
 }
 
 export default CoursePage

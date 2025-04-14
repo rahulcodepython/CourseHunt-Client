@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import LoadingButton from "@/components/loading-button";
 import { clientUrlGenerator } from "@/utils";
 import { Label } from "@/components/ui/label";
-import { ListCuponeCodeType } from "@/types";
+import { ListCouponCodeType } from "@/types";
 
 const formSchema = z.object({
     code: z.string().min(1),
@@ -22,12 +22,12 @@ const formSchema = z.object({
     is_active: z.boolean(),
 });
 
-type CuponCodeFormDataType = z.infer<typeof formSchema>;
+type CouponCodeFormDataType = z.infer<typeof formSchema>;
 
 const CreateCouponeCodeDialogue = ({
     addData,
 }: {
-    addData: (data: ListCuponeCodeType) => void
+    addData: (data: ListCouponCodeType) => void
 }) => {
     const [date, setDate] = React.useState<Date>(new Date());
     const [isOpen, setIsOpen] = React.useState(false);
@@ -35,13 +35,13 @@ const CreateCouponeCodeDialogue = ({
     const accessToken = useAuthStore((state) => state.accessToken);
     const { mutate, mutationIsLoading, onSuccess, } = useMutation();
 
-    const { register, handleSubmit, watch, setValue } = useForm<CuponCodeFormDataType>({
+    const { register, handleSubmit, watch, setValue } = useForm<CouponCodeFormDataType>({
         resolver: zodResolver(formSchema),
     });
 
     const watchedUnLimited = watch("is_unlimited");
 
-    const onSubmit = async (data: CuponCodeFormDataType) => {
+    const onSubmit = async (data: CouponCodeFormDataType) => {
         const formattedData = {
             ...data,
             expiry_date: date.toISOString().split("T")[0], // Inject only today's date

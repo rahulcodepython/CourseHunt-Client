@@ -172,7 +172,7 @@ export interface DetailSingleCourseType {
     created_by: string
 }
 
-export interface ListCuponeCodeType {
+export interface ListCouponCodeType {
     id: string,
     created_at: string,
     expiry: string,

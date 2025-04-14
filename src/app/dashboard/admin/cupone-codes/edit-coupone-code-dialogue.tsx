@@ -8,10 +8,10 @@ import { useAuthStore } from "@/context/AuthStore";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import LoadingButton from "@/components/loading-button";
 import { clientUrlGenerator } from "@/utils";
-import { ListCuponeCodeType } from "@/types";
+import { ListCouponCodeType } from "@/types";
 import { Label } from "@/components/ui/label";
 
-interface CuponCodeFormDataType {
+interface CouponCodeFormDataType {
     code: string;
     discount: number;
     is_unlimited: boolean;
@@ -23,8 +23,8 @@ const EditCouponeCodeDialogue = ({
     defaultData,
     updateData,
 }: {
-    defaultData: ListCuponeCodeType,
-    updateData: (id: string, data: ListCuponeCodeType) => void
+    defaultData: ListCouponCodeType,
+    updateData: (id: string, data: ListCouponCodeType) => void
 }) => {
     const [isUnlimited, setIsUnlimited] = React.useState<boolean>(defaultData.is_unlimited);
     const [isOpen, setIsOpen] = React.useState(false);
@@ -35,7 +35,7 @@ const EditCouponeCodeDialogue = ({
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const data = new FormData(e.currentTarget);
-        const formData: CuponCodeFormDataType = {
+        const formData: CouponCodeFormDataType = {
             code: data.get('code')?.toString() || '',
             discount: Number(data.get('discount')) || 0,
             is_unlimited: isUnlimited,

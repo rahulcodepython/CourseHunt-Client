@@ -10,7 +10,9 @@ import { signInAction } from '@/app/action';
 import { useForm } from 'react-hook-form';
 import LoadingButton from '@/components/loading-button';
 import axios from 'axios';
-import { clientUrlGenerator, serverUrlGenerator } from '@/utils';
+import { clientUrlGenerator } from '@/utils';
+import { toast } from "sonner"
+
 
 const LoginPage: React.FC = () => {
     const OTP_VERIFICATION_LOGIN = process.env.OTP_VERIFICATION_LOGIN === 'true' ? true : false;
@@ -32,7 +34,7 @@ const LoginWithEmail = () => {
         setLoading(true)
 
         try {
-            const result = await axios.post(clientUrlGenerator('/auth/users/login/email/'), data, {
+            await axios.post(clientUrlGenerator('/auth/users/login/email/'), data, {
                 headers: { "Content-Type": "application/json" }
             });
             localStorage.setItem('resend_otp_email_login', data.email);
@@ -61,7 +63,7 @@ const LoginWithEmail = () => {
                 />
             </div>
         </div>
-        <LoadingButton loading={loading}>
+        <LoadingButton loading={loading} className='cursor-pointer'>
             <Button type="submit" className="gap-2">
                 <SendHorizonal className="h-4 w-4" />
                 Log In
@@ -80,8 +82,10 @@ const LoginWithCredentials = () => {
         setLoading(true)
         const result = await signInAction(data)
         if (result) {
+            toast.success('Logged in successfully')
             router.push('/dashboard')
         } else {
+            toast.error('Invalid credentials')
             reset()
         }
         setLoading(false)
@@ -121,7 +125,7 @@ const LoginWithCredentials = () => {
             </div>
         </div>
         <LoadingButton loading={loading}>
-            <Button type="submit" className="gap-2">
+            <Button type="submit" className="gap-2 cursor-pointer">
                 <SendHorizonal className="h-4 w-4" />
                 Log In
             </Button>

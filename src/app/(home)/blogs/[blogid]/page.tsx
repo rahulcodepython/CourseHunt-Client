@@ -6,6 +6,7 @@ import { getAccessToken, isAuthenticated } from '@/app/action'
 import { serverUrlGenerator } from '@/utils'
 import Comments from './comments'
 import BlogLike from './blog-like'
+import Section from '@/components/section'
 
 const BlogSingle = async ({ params }: { params: Promise<{ blogid: string | undefined }> }) => {
     const access = await getAccessToken()
@@ -20,8 +21,8 @@ const BlogSingle = async ({ params }: { params: Promise<{ blogid: string | undef
     const data: DetailBlogsType = await response.json()
 
     return (
-        <section className="py-24">
-            <div className="flex justify-between px-4 mx-auto max-w-screen-xl">
+        <Section className='py-10'>
+            <div className="flex justify-between px-4">
                 <article className="mx-auto w-full max-w-4xl">
                     <header className="mb-12">
                         <div className='flex flex-col gap-4'>
@@ -53,7 +54,7 @@ const BlogSingle = async ({ params }: { params: Promise<{ blogid: string | undef
                     <Comments data={data} blogid={blogid} />
                 </article>
             </div>
-        </section>
+        </Section>
     )
 }
 

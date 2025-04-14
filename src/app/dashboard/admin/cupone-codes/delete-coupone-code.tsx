@@ -5,15 +5,15 @@ import useMutation from '@/hooks/useMutation'
 import { clientUrlGenerator } from '@/utils'
 import React from 'react'
 
-const DeleteCouponeCode = ({ access_token, id, removeCuponeCode }: {
+const DeleteCouponeCode = ({ access_token, id, removeCouponCode }: {
     access_token: string | undefined,
     id: string,
-    removeCuponeCode: (id: string) => void
+    removeCouponCode: (id: string) => void
 }) => {
     const { mutate, mutationIsLoading, onSuccess, } = useMutation();
 
     onSuccess((data) => {
-        removeCuponeCode(id);
+        removeCouponCode(id);
     })
 
     const options = {

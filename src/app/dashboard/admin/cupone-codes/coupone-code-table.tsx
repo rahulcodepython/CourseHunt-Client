@@ -9,7 +9,7 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import React from 'react'
-import { ListCuponeCodeType, PaginationType } from '@/types'
+import { ListCouponCodeType, PaginationType } from '@/types'
 import usePagination from '@/hooks/usePagination'
 import { useAuthStore } from '@/context/AuthStore'
 import PaginationControl from "@/components/pagination-control"
@@ -18,10 +18,10 @@ import EditCouponeCodeDialogue from "./edit-coupone-code-dialogue"
 import DeleteCouponeCode from "./delete-coupone-code"
 
 const CouponeCodeTable = ({ data, columnList }: {
-    data: PaginationType<ListCuponeCodeType>
+    data: PaginationType<ListCouponCodeType>
     columnList: string[]
 }) => {
-    const pagination = usePagination<ListCuponeCodeType>(data, 2)
+    const pagination = usePagination<ListCouponCodeType>(data, 2)
     const accessToken = useAuthStore(state => state.accessToken)
 
     return (
@@ -79,7 +79,7 @@ const CouponeCodeTable = ({ data, columnList }: {
                                     <TableCell>
                                         <div className="flex items-center gap-4">
                                             <EditCouponeCodeDialogue defaultData={item} updateData={pagination.updateData} />
-                                            <DeleteCouponeCode id={item.id} access_token={accessToken} removeCuponeCode={pagination.removeData} />
+                                            <DeleteCouponeCode id={item.id} access_token={accessToken} removeCouponCode={pagination.removeData} />
                                         </div>
                                     </TableCell>
                                 </TableRow>

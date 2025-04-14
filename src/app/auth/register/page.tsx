@@ -142,7 +142,7 @@ const RegisterPage = () => {
             </div>
         </div>
         <LoadingButton loading={loading}>
-            <Button type="submit" className="gap-2">
+            <Button type="submit" className="gap-2 cursor-pointer">
                 <SendHorizonal className="h-4 w-4" />
                 Register
             </Button>

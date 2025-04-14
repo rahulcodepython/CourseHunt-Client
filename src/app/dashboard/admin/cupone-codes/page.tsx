@@ -1,11 +1,11 @@
 import React from "react";
 import axios from "axios";
-import { ListCuponeCodeType, PaginationType } from "@/types";
+import { ListCouponCodeType, PaginationType } from "@/types";
 import { getAccessToken } from "@/app/action";
 import { serverUrlGenerator } from "@/utils";
 import CouponeCodeTable from "./coupone-code-table";
 
-const CuponCodesPage = async () => {
+const CouponCodesPage = async () => {
     const access_token = await getAccessToken();
 
     const response = await axios.request({
@@ -15,7 +15,7 @@ const CuponCodesPage = async () => {
             Authorization: `Bearer ${access_token}`
         }
     })
-    const data: PaginationType<ListCuponeCodeType> = response.data;
+    const data: PaginationType<ListCouponCodeType> = response.data;
 
     const columnsList = [
         "Code",
@@ -38,4 +38,4 @@ const CuponCodesPage = async () => {
     </section>
 }
 
-export default CuponCodesPage;
+export default CouponCodesPage;

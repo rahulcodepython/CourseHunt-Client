@@ -10,11 +10,13 @@ const Comments = ({ data, blogid }: {
     blogid: string | undefined
 }) => {
     const totalComments = useCommentStore((state) => state.totalComments)
+    const setTotalComments = useCommentStore((state) => state.setTotalComments)
     const setComments = useCommentStore((state) => state.setComments)
 
     React.useEffect(() => {
         setComments(data.comment)
-    }, [data.comment, setComments])
+        setTotalComments(data.comment.length)
+    }, [data.comment, setComments, setTotalComments])
 
     return (
         <section className="not-format">

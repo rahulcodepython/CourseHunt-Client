@@ -13,7 +13,7 @@ const GithubLogin = () => {
     }
 
     return (
-        <Button variant="outline" className="w-full" onClick={() => handleGithubLogin()}>
+        <Button variant="outline" className="w-full cursor-pointer" onClick={() => handleGithubLogin()}>
             <GitHubLogoIcon className="mr-2 h-4 w-4" />
             Sign up with GitHub
         </Button>
